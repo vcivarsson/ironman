@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import cachedWorkouts from "./workouts-cache.json";
 import ironmanLogo from "./assets/images.jpeg";
 
-const RACE_DATE = new Date("2026-11-22");
+const RACE_DATE = new Date(2026, 10, 22); // month is 0-indexed
 
 function MDotLogo({ size = 64 }) {
   return (
