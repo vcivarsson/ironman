@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import cachedWorkouts from "./workouts-cache.json";
 
 const RACE_DATE = new Date("2026-11-22");
@@ -53,9 +53,32 @@ function getOverallProgress(workouts) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function IronmanTracker() {
-  const [workouts] = useState(cachedWorkouts);
+  const [completions, setCompletions] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("ironman-completions") || "{}"); }
+    catch { return {}; }
+  });
   const [weekOffset, setWeekOffset] = useState(0);
   const [selectedDay, setSelectedDay] = useState(null);
+
+  const workouts = useMemo(() => {
+    const merged = {};
+    for (const [key, w] of Object.entries(cachedWorkouts)) {
+      merged[key] = {
+        ...w,
+        completed: completions[key] !== undefined ? completions[key] : w.completed,
+      };
+    }
+    return merged;
+  }, [completions]);
+
+  function toggleCompletion(dateKey) {
+    setCompletions(prev => {
+      const current = prev[dateKey] !== undefined ? prev[dateKey] : (cachedWorkouts[dateKey]?.completed ?? false);
+      const next = { ...prev, [dateKey]: !current };
+      localStorage.setItem("ironman-completions", JSON.stringify(next));
+      return next;
+    });
+  }
 
   const today = getToday();
   const todayKey = today.toISOString().split("T")[0];
@@ -93,6 +116,7 @@ export default function IronmanTracker() {
         .ticker-number { font-family: 'Bebas Neue', sans-serif; line-height: 1; }
         .discipline-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; }
         .completed-check { animation: popIn 0.3s ease; }
+        .completed-check:hover { opacity: 1 !important; transform: scale(1.15); }
         @keyframes popIn { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
       `}</style>
 
@@ -196,9 +220,20 @@ export default function IronmanTracker() {
                       {disc.label}
                     </div>
                     <div style={{ fontSize: 10, color: "#94a3b8", lineHeight: 1.4, letterSpacing: "0.02em" }}>{workout.label}</div>
-                    {workout.completed && (
-                      <div className="completed-check" style={{ position: "absolute", top: 10, right: 10, width: 16, height: 16, background: disc.color, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#000" }}>✓</div>
-                    )}
+                    <div
+                      className="completed-check"
+                      onClick={e => { e.stopPropagation(); toggleCompletion(key); }}
+                      title={workout.completed ? "Mark incomplete" : "Mark complete"}
+                      style={{
+                        position: "absolute", top: 10, right: 10, width: 16, height: 16,
+                        background: workout.completed ? disc.color : "transparent",
+                        border: `1px solid ${disc.color}`,
+                        borderRadius: "50%", display: "flex", alignItems: "center",
+                        justifyContent: "center", fontSize: 9, color: "#000",
+                        cursor: "pointer", opacity: workout.completed ? 1 : 0.5,
+                        transition: "all 0.2s",
+                      }}
+                    >{workout.completed ? "✓" : ""}</div>
                   </>
                 ) : workout?.type === "rest" ? (
                   <div style={{ fontSize: 10, color: "#334155", letterSpacing: "0.05em" }}>REST</div>
@@ -225,9 +260,24 @@ export default function IronmanTracker() {
             </div>
             <div>
               <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#475569", marginBottom: 6 }}>STATUS</div>
-              <div style={{ fontSize: 11, color: workouts[selectedDay].completed ? "#4ade80" : "#f59e0b", letterSpacing: "0.1em" }}>
+              <div style={{ fontSize: 11, color: workouts[selectedDay].completed ? "#4ade80" : "#f59e0b", letterSpacing: "0.1em", marginBottom: 10 }}>
                 {workouts[selectedDay].completed ? "✓ COMPLETED" : "… UPCOMING"}
               </div>
+              {workouts[selectedDay].type !== "rest" && (
+                <button
+                  onClick={() => toggleCompletion(selectedDay)}
+                  style={{
+                    background: "transparent",
+                    border: `1px solid ${workouts[selectedDay].completed ? "#4ade8040" : "#4ade80"}`,
+                    color: workouts[selectedDay].completed ? "#475569" : "#4ade80",
+                    padding: "5px 12px", cursor: "pointer",
+                    fontFamily: "'DM Mono', monospace", fontSize: 10,
+                    letterSpacing: "0.1em", transition: "all 0.2s",
+                  }}
+                >
+                  {workouts[selectedDay].completed ? "MARK INCOMPLETE" : "MARK COMPLETE"}
+                </button>
+              )}
             </div>
           </div>
         )}
