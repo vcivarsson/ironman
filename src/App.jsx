@@ -37,6 +37,16 @@ const PLAN_TOTALS = {
   run:  { min: 142 * 32, km: 25.8 * 32 },
 };
 
+// Strava YTD actuals (Jan 1 – Mar 22, 2026)
+const STRAVA_YTD = {
+  swim:  { count: 4,  min: 91,  km: 3.93 },
+  bike:  { count: 10, min: 565, km: 240.10 },
+  run:   { count: 20, min: 780, km: 129.37 },
+  other: { count: 8,  min: 436, km: 31.01 },
+};
+const STRAVA_TOTAL_MIN = Object.values(STRAVA_YTD).reduce((s, v) => s + v.min, 0); // 1872
+const PLAN_TOTAL_MIN   = (124 + 240 + 142) * 32; // 16192
+
 const BADGES = [
   { id: "aluminum", name: "ALUMINUM MAN", fraction: "¼ IRONMAN", color: "#94a3b8", glowColor: "rgba(148,163,184,0.4)", thresholds: { swim: 0.95, bike: 45, run: 10.55 } },
   { id: "tin",      name: "TIN MAN",      fraction: "½ IRONMAN", color: "#7dd3fc", glowColor: "rgba(125,211,252,0.4)", thresholds: { swim: 1.9,  bike: 90,  run: 21.1  } },
@@ -101,6 +111,46 @@ function getOverallProgress(workouts) {
   const past = Object.entries(workouts).filter(([k, w]) => w.type !== "rest" && new Date(k) < today);
   const completed = past.filter(([, w]) => w.completed).length;
   return { completed, past: past.length, pct: all.length ? Math.round((completed / all.length) * 100) : 0 };
+}
+
+// ─── Plan barometer ───────────────────────────────────────────────────────────
+
+function PlanBarometer() {
+  const [hovered, setHovered] = useState(false);
+  const pct = STRAVA_TOTAL_MIN / PLAN_TOTAL_MIN;
+  const pctDisplay = Math.round(pct * 100);
+
+  return (
+    <div style={{ marginTop: 28, position: "relative" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div style={{
+        height: 6, background: "#1e293b", borderRadius: 3, overflow: "hidden", cursor: "default",
+      }}>
+        <div style={{
+          height: "100%", borderRadius: 3, width: `${pct * 100}%`,
+          background: "linear-gradient(to right, #38bdf8, #e31837)",
+          transition: "width 0.6s ease",
+        }} />
+      </div>
+      {hovered && (
+        <div style={{
+          position: "absolute", top: 12, left: `${Math.min(pct * 100, 85)}%`,
+          background: "#0d1117", border: "1px solid #334155",
+          padding: "6px 12px", whiteSpace: "nowrap", zIndex: 10,
+          fontSize: 10, letterSpacing: "0.08em", color: "#e2e8f0",
+          pointerEvents: "none",
+        }}>
+          <span style={{ color: "#e31837", fontFamily: "'Bebas Neue', sans-serif", fontSize: 14, marginRight: 8 }}>
+            {pctDisplay}%
+          </span>
+          {formatHrsMins(STRAVA_TOTAL_MIN)}
+          <span style={{ color: "#475569" }}> / {formatHrsMins(PLAN_TOTAL_MIN)}</span>
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ─── Weekly target card ───────────────────────────────────────────────────────
@@ -359,6 +409,7 @@ export default function IronmanTracker() {
               <div style={{ fontSize: 10, color: "#94a3b8", letterSpacing: "0.2em", marginTop: 4 }}>{Math.ceil(daysLeft / 7)} WEEKS REMAINING</div>
             </div>
           </div>
+          <PlanBarometer />
         </div>
       </div>
 
@@ -603,23 +654,44 @@ export default function IronmanTracker() {
 
         {/* TOTAL TRAINING VOLUME */}
         <div style={{ marginTop: 32 }}>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>TOTAL TRAINING VOLUME <span style={{ color: "#334155", letterSpacing: "0.1em", fontSize: 9 }}>· 32-WEEK PLAN</span></div>
+          <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>
+            TOTAL TRAINING VOLUME <span style={{ color: "#334155", letterSpacing: "0.1em", fontSize: 9 }}>· 32-WEEK PLAN</span>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
             {["swim", "bike", "run"].map(type => {
-              const { min, km } = PLAN_TOTALS[type];
+              const { min: planMin, km: planKm } = PLAN_TOTALS[type];
+              const { count, min: doneMin, km: doneKm } = STRAVA_YTD[type];
               const disc = DISCIPLINES[type];
+              const pct = Math.min(1, doneMin / planMin);
+              const barW = `${(pct * 100).toFixed(1)}%`;
               return (
                 <div key={type} style={{ background: "#0a0f1a", border: `1px solid ${disc.color}25`, padding: "16px 20px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                    <div style={{ width: 3, height: 16, background: disc.color, borderRadius: 2 }} />
-                    <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#94a3b8" }}>{disc.label}</div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{ width: 3, height: 16, background: disc.color, borderRadius: 2 }} />
+                      <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#94a3b8" }}>{disc.label}</div>
+                    </div>
+                    <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.06em" }}>{count} activities</div>
                   </div>
-                  <div className="ticker-number" style={{ fontSize: 28, color: disc.color, marginBottom: 4 }}>
-                    {formatHrsMins(min)}
+
+                  {/* Done vs Plan time */}
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 2 }}>
+                    <div className="ticker-number" style={{ fontSize: 28, color: disc.color, lineHeight: 1 }}>
+                      {formatHrsMins(doneMin)}
+                    </div>
+                    <div style={{ fontSize: 11, color: "#334155" }}>/ {formatHrsMins(planMin)}</div>
                   </div>
-                  <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.08em", marginBottom: 8 }}>TOTAL HOURS</div>
-                  <div style={{ fontSize: 11, color: "#64748b", letterSpacing: "0.04em" }}>
-                    {Math.round(km).toLocaleString()} km
+                  <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.08em", marginBottom: 10 }}>DONE / PLAN HRS</div>
+
+                  {/* Progress bar */}
+                  <div style={{ height: 3, background: "#1e293b", borderRadius: 2, overflow: "hidden", marginBottom: 10 }}>
+                    <div style={{ height: "100%", width: barW, background: disc.color, borderRadius: 2, transition: "width 0.6s ease" }} />
+                  </div>
+
+                  {/* Distance */}
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "#64748b", letterSpacing: "0.04em" }}>
+                    <span>{doneKm.toFixed(1)} km done</span>
+                    <span style={{ color: "#334155" }}>{Math.round(planKm).toLocaleString()} km plan</span>
                   </div>
                 </div>
               );
