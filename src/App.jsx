@@ -15,15 +15,14 @@ const DISCIPLINES = {
   swim:  { label: "SWIM",  color: "#38bdf8", bg: "#0c1a2e" },
   bike:  { label: "BIKE",  color: "#a3e635", bg: "#0f1e07" },
   run:   { label: "RUN",   color: "#fb923c", bg: "#1f0e04" },
-  brick: { label: "BRICK", color: "#c084fc", bg: "#160b21" },
   rest:  { label: "REST",  color: "#475569", bg: "#0f172a" },
 };
 
 const BADGES = [
-  { id: "aluminum", name: "ALUMINUM MAN", fraction: "¼ IRONMAN", color: "#94a3b8", glowColor: "rgba(148,163,184,0.3)", thresholds: { swim: 0.95, bike: 45, run: 10.55 } },
-  { id: "tin",      name: "TIN MAN",      fraction: "½ IRONMAN", color: "#cbd5e1", glowColor: "rgba(203,213,225,0.3)", thresholds: { swim: 1.9,  bike: 90, run: 21.1  } },
-  { id: "brass",    name: "BRASS MAN",    fraction: "¾ IRONMAN", color: "#d97706", glowColor: "rgba(217,119,6,0.3)",   thresholds: { swim: 2.85, bike: 135, run: 31.65 } },
-  { id: "iron",     name: "IRON MAN",     fraction: "FULL",      color: "#e31837", glowColor: "rgba(227,24,55,0.3)",   thresholds: { swim: 3.8,  bike: 180, run: 42.2  } },
+  { id: "aluminum", name: "ALUMINUM MAN", fraction: "¼ IRONMAN", color: "#94a3b8", glowColor: "rgba(148,163,184,0.4)", thresholds: { swim: 0.95, bike: 45, run: 10.55 } },
+  { id: "tin",      name: "TIN MAN",      fraction: "½ IRONMAN", color: "#cbd5e1", glowColor: "rgba(203,213,225,0.4)", thresholds: { swim: 1.9,  bike: 90,  run: 21.1  } },
+  { id: "brass",    name: "BRASS MAN",    fraction: "¾ IRONMAN", color: "#d97706", glowColor: "rgba(217,119,6,0.4)",   thresholds: { swim: 2.85, bike: 135, run: 31.65 } },
+  { id: "iron",     name: "IRON MAN",     fraction: "FULL",      color: "#e31837", glowColor: "rgba(227,24,55,0.4)",   thresholds: { swim: 3.8,  bike: 180, run: 42.2  } },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -72,8 +71,20 @@ function getOverallProgress(workouts) {
   return { completed, total: all.length, past: past.length, pct: all.length ? Math.round((completed / all.length) * 100) : 0 };
 }
 
-function getTotals(workouts) {
-  const totals = { swim: { km: 0, min: 0 }, bike: { km: 0, min: 0 }, run: { km: 0, min: 0 }, brick: { km: 0, min: 0 } };
+// All planned workouts (completed or not)
+function getAllTotals(workouts) {
+  const totals = { swim: { km: 0, min: 0 }, bike: { km: 0, min: 0 }, run: { km: 0, min: 0 } };
+  for (const w of Object.values(workouts)) {
+    if (!totals[w.type]) continue;
+    if (w.distanceKm) totals[w.type].km += w.distanceKm;
+    if (w.durationMin) totals[w.type].min += w.durationMin;
+  }
+  return totals;
+}
+
+// Only completed workouts (for gauges)
+function getCompletedTotals(workouts) {
+  const totals = { swim: { km: 0, min: 0 }, bike: { km: 0, min: 0 }, run: { km: 0, min: 0 } };
   for (const w of Object.values(workouts)) {
     if (!w.completed || !totals[w.type]) continue;
     if (w.distanceKm) totals[w.type].km += w.distanceKm;
@@ -82,21 +93,57 @@ function getTotals(workouts) {
   return totals;
 }
 
+// ─── Gauges ───────────────────────────────────────────────────────────────────
+
+function DisciplineGauge({ disc, color, completedMin, totalMin, completedKm, totalKm }) {
+  const r = 36;
+  const circ = 2 * Math.PI * r;
+  const pct = totalMin > 0 ? Math.min(1, completedMin / totalMin) : 0;
+  const fill = pct * circ;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+      <div style={{ position: "relative", width: 96, height: 96 }}>
+        <svg width="96" height="96" viewBox="0 0 96 96">
+          <circle cx="48" cy="48" r={r} fill="none" stroke="#1e293b" strokeWidth="7" />
+          <circle
+            cx="48" cy="48" r={r} fill="none"
+            stroke={color} strokeWidth="7"
+            strokeDasharray={`${fill} ${circ}`}
+            strokeLinecap="round"
+            transform="rotate(-90 48 48)"
+          />
+        </svg>
+        <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, color, lineHeight: 1 }}>{Math.round(pct * 100)}</div>
+          <div style={{ fontSize: 8, color: "#475569", letterSpacing: "0.1em" }}>%</div>
+        </div>
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontSize: 9, letterSpacing: "0.2em", color, marginBottom: 3 }}>{disc}</div>
+        <div style={{ fontSize: 9, color: "#64748b", letterSpacing: "0.04em" }}>
+          {formatDuration(completedMin) || "0min"} / {formatDuration(totalMin) || "0min"}
+        </div>
+        {totalKm > 0 && (
+          <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.04em", marginTop: 1 }}>
+            {completedKm.toFixed(1)} / {totalKm.toFixed(1)} km
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Badges ───────────────────────────────────────────────────────────────────
 
-function BadgeRow({ totals }) {
+function BadgeRow({ badgeCompletions, toggleBadge }) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
       {BADGES.map(badge => {
-        const isEarned =
-          totals.swim.km >= badge.thresholds.swim &&
-          totals.bike.km >= badge.thresholds.bike &&
-          totals.run.km  >= badge.thresholds.run;
-
+        const isEarned = !!badgeCompletions[badge.id];
         return (
           <div
             key={badge.id}
-            className="badge-card"
+            className={`badge-card${isEarned ? " badge-earned" : ""}`}
             style={{
               background: "#0a0f1a",
               border: isEarned ? `1px solid ${badge.color}60` : "1px solid #1e293b",
@@ -109,13 +156,13 @@ function BadgeRow({ totals }) {
           >
             {/* Medal */}
             <div style={{
-              width: 48, height: 48, borderRadius: "50%",
+              width: 52, height: 52, borderRadius: "50%",
               border: `2px solid ${badge.color}`,
               background: isEarned ? badge.color + "22" : "transparent",
               display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
             }}>
               {isEarned ? (
-                <svg viewBox="0 0 24 24" width="22" height="22">
+                <svg viewBox="0 0 24 24" width="24" height="24">
                   <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill={badge.color} />
                 </svg>
               ) : (
@@ -128,7 +175,7 @@ function BadgeRow({ totals }) {
 
             {/* Name + fraction */}
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 16, letterSpacing: "0.08em", color: badge.color, lineHeight: 1 }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 17, letterSpacing: "0.08em", color: badge.color, lineHeight: 1 }}>
                 {badge.name}
               </div>
               <div style={{ display: "inline-block", marginTop: 5, fontSize: 9, letterSpacing: "0.2em", color: badge.color, background: badge.color + "18", padding: "2px 8px" }}>
@@ -136,25 +183,31 @@ function BadgeRow({ totals }) {
               </div>
             </div>
 
-            {/* Discipline progress bars */}
-            <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 8 }}>
-              {["swim", "bike", "run"].map(disc => {
-                const pct = Math.min(100, (totals[disc].km / badge.thresholds[disc]) * 100);
-                return (
-                  <div key={disc} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{ fontSize: 8, letterSpacing: "0.12em", color: "#64748b", width: 28, flexShrink: 0 }}>
-                      {disc.toUpperCase()}
-                    </div>
-                    <div style={{ flex: 1, height: 4, background: "#1e293b", borderRadius: 2, overflow: "hidden" }}>
-                      <div style={{ height: "100%", borderRadius: 2, background: DISCIPLINES[disc].color, width: `${pct}%`, transition: "width 0.6s ease" }} />
-                    </div>
-                    <div style={{ fontSize: 8, color: "#64748b", width: 56, textAlign: "right", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
-                      {totals[disc].km.toFixed(1)}/{badge.thresholds[disc]}km
-                    </div>
-                  </div>
-                );
-              })}
+            {/* Threshold reference */}
+            <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 4 }}>
+              {["swim", "bike", "run"].map(disc => (
+                <div key={disc} style={{ display: "flex", justifyContent: "space-between", fontSize: 8, letterSpacing: "0.06em" }}>
+                  <span style={{ color: "#475569" }}>{disc.toUpperCase()}</span>
+                  <span style={{ color: "#334155" }}>{badge.thresholds[disc]} km</span>
+                </div>
+              ))}
             </div>
+
+            {/* Toggle button */}
+            <button
+              onClick={() => toggleBadge(badge.id)}
+              style={{
+                width: "100%",
+                background: isEarned ? badge.color + "18" : "transparent",
+                border: `1px solid ${isEarned ? badge.color + "60" : "#334155"}`,
+                color: isEarned ? badge.color : "#475569",
+                padding: "5px 10px", cursor: "pointer",
+                fontFamily: "'DM Mono', monospace", fontSize: 9,
+                letterSpacing: "0.1em", transition: "all 0.2s",
+              }}
+            >
+              {isEarned ? "✓ EARNED" : "MARK EARNED"}
+            </button>
           </div>
         );
       })}
@@ -167,6 +220,10 @@ function BadgeRow({ totals }) {
 export default function IronmanTracker() {
   const [completions, setCompletions] = useState(() => {
     try { return JSON.parse(localStorage.getItem("ironman-completions") || "{}"); }
+    catch { return {}; }
+  });
+  const [badgeCompletions, setBadgeCompletions] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("ironman-badges") || "{}"); }
     catch { return {}; }
   });
   const [weekOffset, setWeekOffset] = useState(0);
@@ -192,11 +249,20 @@ export default function IronmanTracker() {
     });
   }
 
+  function toggleBadge(badgeId) {
+    setBadgeCompletions(prev => {
+      const next = { ...prev, [badgeId]: !prev[badgeId] };
+      localStorage.setItem("ironman-badges", JSON.stringify(next));
+      return next;
+    });
+  }
+
   const today = getToday();
   const todayKey = today.toISOString().split("T")[0];
   const daysLeft = getDaysUntilRace();
   const progress = getOverallProgress(workouts);
-  const totals = getTotals(workouts);
+  const allTotals = getAllTotals(workouts);
+  const completedTotals = getCompletedTotals(workouts);
   const weekDays = getWeekDays(weekOffset);
   const weekDaysWithWorkouts = weekDays.map(d => ({ ...d, workout: workouts[d.key] }));
 
@@ -207,12 +273,12 @@ export default function IronmanTracker() {
     const mon = new Date(d);
     mon.setDate(d.getDate() - ((d.getDay() + 6) % 7));
     const wk = mon.toISOString().split("T")[0];
-    if (!weeklyLoad[wk]) weeklyLoad[wk] = { swim: 0, bike: 0, run: 0, brick: 0 };
+    if (!weeklyLoad[wk]) weeklyLoad[wk] = { swim: 0, bike: 0, run: 0 };
     if (w.durationMin && weeklyLoad[wk][w.type] !== undefined)
       weeklyLoad[wk][w.type] += w.durationMin;
   }
   const loadWeeks = Object.keys(weeklyLoad).sort();
-  const loadTotals = loadWeeks.map(wk => ["swim", "bike", "run", "brick"].reduce((s, t) => s + weeklyLoad[wk][t], 0));
+  const loadTotals = loadWeeks.map(wk => ["swim", "bike", "run"].reduce((s, t) => s + weeklyLoad[wk][t], 0));
   const maxLoad = Math.max(...loadTotals, 1);
   const currentWeekKey = (() => {
     const t = getToday();
@@ -248,11 +314,11 @@ export default function IronmanTracker() {
         .nav-btn { background: #1e293b; border: 1px solid #334155; color: #cbd5e1; padding: 6px 14px; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; transition: all 0.15s; }
         .nav-btn:hover { background: #334155; color: #f1f5f9; }
         .ticker-number { font-family: 'Bebas Neue', sans-serif; line-height: 1; }
-        .discipline-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; }
         .completed-check { animation: popIn 0.3s ease; }
         .completed-check:hover { opacity: 1 !important; transform: scale(1.15); }
         @keyframes popIn { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
         .badge-card { transition: border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease, filter 0.4s ease; }
+        .badge-card:hover { filter: none !important; opacity: 1 !important; }
       `}</style>
 
       {/* HEADER */}
@@ -301,8 +367,7 @@ export default function IronmanTracker() {
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "#94a3b8", marginBottom: 6 }}>THIS WEEK</div>
             <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-              {["swim", "bike", "run", "brick"].map(type => {
-                const thisWeekKey = (() => { const t = getToday(); t.setDate(t.getDate() - ((t.getDay() + 6) % 7)); return t.toISOString().split("T")[0]; })();
+              {["swim", "bike", "run"].map(type => {
                 const mins = weekDaysWithWorkouts.filter(({ workout: w }) => w?.type === type).reduce((s, { workout: w }) => s + (w.durationMin || 0), 0);
                 if (!mins) return null;
                 return (
@@ -367,7 +432,25 @@ export default function IronmanTracker() {
       {/* BADGES */}
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 40px 0" }}>
         <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>LESSER METALS</div>
-        <BadgeRow totals={totals} />
+        <BadgeRow badgeCompletions={badgeCompletions} toggleBadge={toggleBadge} />
+      </div>
+
+      {/* DISCIPLINE GAUGES */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 40px 0" }}>
+        <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 20 }}>TRAINING PROGRESS</div>
+        <div style={{ background: "#0a0f1a", border: "1px solid #1e293b", padding: "28px 40px", display: "flex", justifyContent: "space-around", alignItems: "flex-start" }}>
+          {["swim", "bike", "run"].map(type => (
+            <DisciplineGauge
+              key={type}
+              disc={DISCIPLINES[type].label}
+              color={DISCIPLINES[type].color}
+              completedMin={completedTotals[type].min}
+              totalMin={allTotals[type].min}
+              completedKm={completedTotals[type].km}
+              totalKm={allTotals[type].km}
+            />
+          ))}
+        </div>
       </div>
 
       {/* CALENDAR */}
@@ -450,45 +533,52 @@ export default function IronmanTracker() {
 
         {/* Selected day detail */}
         {selectedDay && workouts[selectedDay] && (
-          <div style={{ marginTop: 16, background: "#0d1117", border: `1px solid ${DISCIPLINES[workouts[selectedDay].type]?.color || "#334155"}40`, padding: "20px 24px", display: "flex", gap: 32, alignItems: "flex-start", flexWrap: "wrap" }}>
-            <div>
-              <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>SESSION</div>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: DISCIPLINES[workouts[selectedDay].type]?.color || "#e2e8f0" }}>
-                {workouts[selectedDay].label}
-              </div>
-              {workouts[selectedDay].durationMin && (
-                <div style={{ fontSize: 11, color: "#cbd5e1", marginTop: 6, letterSpacing: "0.05em" }}>
-                  {formatDuration(workouts[selectedDay].durationMin)}
-                  {workouts[selectedDay].distanceKm ? ` · ${workouts[selectedDay].distanceKm.toFixed(2)} km` : ""}
+          <div style={{ marginTop: 16, background: "#0d1117", border: `1px solid ${DISCIPLINES[workouts[selectedDay].type]?.color || "#334155"}40`, padding: "24px 28px" }}>
+            <div style={{ display: "flex", gap: 48, alignItems: "flex-start", flexWrap: "wrap", marginBottom: workouts[selectedDay].description ? 16 : 0 }}>
+              <div>
+                <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>SESSION</div>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: DISCIPLINES[workouts[selectedDay].type]?.color || "#e2e8f0" }}>
+                  {workouts[selectedDay].label}
                 </div>
-              )}
-              {workouts[selectedDay].description && (
-                <div style={{ fontSize: 10, color: "#64748b", marginTop: 10, lineHeight: 1.6, maxWidth: 480 }}>
-                  {workouts[selectedDay].description}
-                </div>
-              )}
-            </div>
-            <div>
-              <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>STATUS</div>
-              <div style={{ fontSize: 11, color: workouts[selectedDay].completed ? "#4ade80" : "#f59e0b", letterSpacing: "0.1em", marginBottom: 10 }}>
-                {workouts[selectedDay].completed ? "✓ COMPLETED" : "… UPCOMING"}
+                {workouts[selectedDay].durationMin && (
+                  <div style={{ fontSize: 11, color: "#cbd5e1", marginTop: 6, letterSpacing: "0.05em" }}>
+                    {formatDuration(workouts[selectedDay].durationMin)}
+                    {workouts[selectedDay].distanceKm ? ` · ${workouts[selectedDay].distanceKm.toFixed(2)} km` : ""}
+                  </div>
+                )}
               </div>
-              {workouts[selectedDay].type !== "rest" && (
-                <button
-                  onClick={() => toggleCompletion(selectedDay)}
-                  style={{
-                    background: "transparent",
-                    border: `1px solid ${workouts[selectedDay].completed ? "#4ade8040" : "#4ade80"}`,
-                    color: workouts[selectedDay].completed ? "#64748b" : "#4ade80",
-                    padding: "5px 12px", cursor: "pointer",
-                    fontFamily: "'DM Mono', monospace", fontSize: 10,
-                    letterSpacing: "0.1em", transition: "all 0.2s",
-                  }}
-                >
-                  {workouts[selectedDay].completed ? "MARK INCOMPLETE" : "MARK COMPLETE"}
-                </button>
-              )}
+              <div>
+                <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>STATUS</div>
+                <div style={{ fontSize: 11, color: workouts[selectedDay].completed ? "#4ade80" : "#f59e0b", letterSpacing: "0.1em", marginBottom: 10 }}>
+                  {workouts[selectedDay].completed ? "✓ COMPLETED" : "… UPCOMING"}
+                </div>
+                {workouts[selectedDay].type !== "rest" && (
+                  <button
+                    onClick={() => toggleCompletion(selectedDay)}
+                    style={{
+                      background: "transparent",
+                      border: `1px solid ${workouts[selectedDay].completed ? "#4ade8040" : "#4ade80"}`,
+                      color: workouts[selectedDay].completed ? "#64748b" : "#4ade80",
+                      padding: "5px 12px", cursor: "pointer",
+                      fontFamily: "'DM Mono', monospace", fontSize: 10,
+                      letterSpacing: "0.1em", transition: "all 0.2s",
+                    }}
+                  >
+                    {workouts[selectedDay].completed ? "MARK INCOMPLETE" : "MARK COMPLETE"}
+                  </button>
+                )}
+              </div>
             </div>
+            {workouts[selectedDay].description && (
+              <div style={{ borderTop: "1px solid #1e293b", paddingTop: 16, marginTop: 4 }}>
+                <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 8 }}>WORKOUT DETAILS</div>
+                <div style={{ fontSize: 10, color: "#94a3b8", lineHeight: 1.8, letterSpacing: "0.02em" }}>
+                  {workouts[selectedDay].description.split(" · ").map((part, i) => (
+                    <div key={i} style={{ marginBottom: 2 }}>{part}</div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -504,12 +594,11 @@ export default function IronmanTracker() {
                 const total = loadTotals[i];
                 const isCurrent = wk === currentWeekKey;
                 const isPast = wk < currentWeekKey;
-                const barH = Math.max(2, Math.round((total / maxLoad) * 80));
                 return (
                   <div key={wk} title={`${new Date(wk + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })} — ${(total / 60).toFixed(1)}h`}
                     style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "stretch", cursor: "default" }}>
                     <div style={{ display: "flex", flexDirection: "column-reverse", height: 80 }}>
-                      {["run", "bike", "swim", "brick"].map(type => {
+                      {["run", "bike", "swim"].map(type => {
                         if (!load[type]) return null;
                         const segH = Math.max(1, Math.round((load[type] / maxLoad) * 80));
                         return (
@@ -537,7 +626,7 @@ export default function IronmanTracker() {
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
               <div style={{ fontSize: 9, color: "#1e293b" }}>0h</div>
               <div style={{ display: "flex", gap: 10 }}>
-                {["swim", "bike", "run", "brick"].map(t => (
+                {["swim", "bike", "run"].map(t => (
                   <div key={t} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 8, color: "#475569", letterSpacing: "0.05em" }}>
                     <div style={{ width: 6, height: 6, background: DISCIPLINES[t].color, opacity: 0.7 }} />
                     {DISCIPLINES[t].label}
@@ -585,9 +674,10 @@ export default function IronmanTracker() {
 
         {/* All-time totals */}
         <div style={{ marginTop: 32 }}>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>COMPLETED TOTALS</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-            {Object.entries(totals).map(([type, { km, min }]) => {
+          <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>TOTAL TRAINING VOLUME</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            {["swim", "bike", "run"].map(type => {
+              const { km, min } = allTotals[type];
               const disc = DISCIPLINES[type];
               const hasData = km > 0 || min > 0;
               return (
