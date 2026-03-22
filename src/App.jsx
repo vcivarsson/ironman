@@ -20,7 +20,7 @@ const DISCIPLINES = {
 
 const BADGES = [
   { id: "aluminum", name: "ALUMINUM MAN", fraction: "¼ IRONMAN", color: "#94a3b8", glowColor: "rgba(148,163,184,0.4)", thresholds: { swim: 0.95, bike: 45, run: 10.55 } },
-  { id: "tin",      name: "TIN MAN",      fraction: "½ IRONMAN", color: "#cbd5e1", glowColor: "rgba(203,213,225,0.4)", thresholds: { swim: 1.9,  bike: 90,  run: 21.1  } },
+  { id: "tin",      name: "TIN MAN",      fraction: "½ IRONMAN", color: "#7dd3fc", glowColor: "rgba(125,211,252,0.4)", thresholds: { swim: 1.9,  bike: 90,  run: 21.1  } },
   { id: "brass",    name: "BRASS MAN",    fraction: "¾ IRONMAN", color: "#d97706", glowColor: "rgba(217,119,6,0.4)",   thresholds: { swim: 2.85, bike: 135, run: 31.65 } },
   { id: "iron",     name: "IRON MAN",     fraction: "FULL",      color: "#e31837", glowColor: "rgba(227,24,55,0.4)",   thresholds: { swim: 3.8,  bike: 180, run: 42.2  } },
 ];
@@ -71,7 +71,6 @@ function getOverallProgress(workouts) {
   return { completed, total: all.length, past: past.length, pct: all.length ? Math.round((completed / all.length) * 100) : 0 };
 }
 
-// All planned workouts (completed or not)
 function getAllTotals(workouts) {
   const totals = { swim: { km: 0, min: 0 }, bike: { km: 0, min: 0 }, run: { km: 0, min: 0 } };
   for (const w of Object.values(workouts)) {
@@ -82,50 +81,34 @@ function getAllTotals(workouts) {
   return totals;
 }
 
-// Only completed workouts (for gauges)
-function getCompletedTotals(workouts) {
-  const totals = { swim: { km: 0, min: 0 }, bike: { km: 0, min: 0 }, run: { km: 0, min: 0 } };
-  for (const w of Object.values(workouts)) {
-    if (!w.completed || !totals[w.type]) continue;
-    if (w.distanceKm) totals[w.type].km += w.distanceKm;
-    if (w.durationMin) totals[w.type].min += w.durationMin;
-  }
-  return totals;
-}
+// ─── Small gauge for stats bar ─────────────────────────────────────────────
 
-// ─── Gauges ───────────────────────────────────────────────────────────────────
-
-function DisciplineGauge({ disc, color, completedMin, totalMin, completedKm, totalKm }) {
-  const r = 36;
+function SmallGauge({ color, pct, label, plannedMin, completedMin }) {
+  const r = 18;
   const circ = 2 * Math.PI * r;
-  const pct = totalMin > 0 ? Math.min(1, completedMin / totalMin) : 0;
-  const fill = pct * circ;
+  const clamped = Math.min(1, Math.max(0, pct));
+  const fill = clamped * circ;
+  const pctDisplay = Math.round(clamped * 100);
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
-      <div style={{ position: "relative", width: 96, height: 96 }}>
-        <svg width="96" height="96" viewBox="0 0 96 96">
-          <circle cx="48" cy="48" r={r} fill="none" stroke="#1e293b" strokeWidth="7" />
-          <circle
-            cx="48" cy="48" r={r} fill="none"
-            stroke={color} strokeWidth="7"
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+      <div style={{ position: "relative", width: 44, height: 44 }}>
+        <svg width="44" height="44" viewBox="0 0 44 44">
+          <circle cx="22" cy="22" r={r} fill="none" stroke="#1e293b" strokeWidth="4" />
+          <circle cx="22" cy="22" r={r} fill="none" stroke={color} strokeWidth="4"
             strokeDasharray={`${fill} ${circ}`}
             strokeLinecap="round"
-            transform="rotate(-90 48 48)"
+            transform="rotate(-90 22 22)"
           />
         </svg>
-        <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, color, lineHeight: 1 }}>{Math.round(pct * 100)}</div>
-          <div style={{ fontSize: 8, color: "#475569", letterSpacing: "0.1em" }}>%</div>
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 11, color, lineHeight: 1 }}>{pctDisplay}%</span>
         </div>
       </div>
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 9, letterSpacing: "0.2em", color, marginBottom: 3 }}>{disc}</div>
-        <div style={{ fontSize: 9, color: "#64748b", letterSpacing: "0.04em" }}>
-          {formatDuration(completedMin) || "0min"} / {formatDuration(totalMin) || "0min"}
-        </div>
-        {totalKm > 0 && (
-          <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.04em", marginTop: 1 }}>
-            {completedKm.toFixed(1)} / {totalKm.toFixed(1)} km
+        <div style={{ fontSize: 7, letterSpacing: "0.15em", color: "#64748b" }}>{label}</div>
+        {plannedMin > 0 && (
+          <div style={{ fontSize: 7, color: "#334155", letterSpacing: "0.02em", marginTop: 1 }}>
+            {formatDuration(completedMin) || "0min"}/{formatDuration(plannedMin)}
           </div>
         )}
       </div>
@@ -136,22 +119,29 @@ function DisciplineGauge({ disc, color, completedMin, totalMin, completedKm, tot
 // ─── Badges ───────────────────────────────────────────────────────────────────
 
 function BadgeRow({ badgeCompletions, toggleBadge }) {
+  const [hoveredBadge, setHoveredBadge] = useState(null);
+
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
       {BADGES.map(badge => {
         const isEarned = !!badgeCompletions[badge.id];
+        const isHovered = hoveredBadge === badge.id;
+        const isActive = isEarned || isHovered;
+
         return (
           <div
             key={badge.id}
-            className={`badge-card${isEarned ? " badge-earned" : ""}`}
+            onMouseEnter={() => setHoveredBadge(badge.id)}
+            onMouseLeave={() => setHoveredBadge(null)}
             style={{
               background: "#0a0f1a",
-              border: isEarned ? `1px solid ${badge.color}60` : "1px solid #1e293b",
-              boxShadow: isEarned ? `0 0 0 1px ${badge.glowColor}, 0 0 28px ${badge.glowColor}` : "none",
+              border: `1px solid ${isActive ? badge.color + "60" : "#1e293b"}`,
+              boxShadow: isActive ? `0 0 0 1px ${badge.glowColor}, 0 0 28px ${badge.glowColor}` : "none",
               padding: "20px 16px 18px",
               display: "flex", flexDirection: "column", alignItems: "center", gap: 14,
-              filter: isEarned ? "none" : "grayscale(1)",
-              opacity: isEarned ? 1 : 0.45,
+              filter: isActive ? "none" : "grayscale(1)",
+              opacity: isActive ? 1 : 0.45,
+              transition: "filter 0.3s ease, opacity 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
             }}
           >
             {/* Medal */}
@@ -160,6 +150,7 @@ function BadgeRow({ badgeCompletions, toggleBadge }) {
               border: `2px solid ${badge.color}`,
               background: isEarned ? badge.color + "22" : "transparent",
               display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+              transition: "background 0.3s",
             }}>
               {isEarned ? (
                 <svg viewBox="0 0 24 24" width="24" height="24">
@@ -183,17 +174,31 @@ function BadgeRow({ badgeCompletions, toggleBadge }) {
               </div>
             </div>
 
-            {/* Threshold reference */}
-            <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 4 }}>
-              {["swim", "bike", "run"].map(disc => (
-                <div key={disc} style={{ display: "flex", justifyContent: "space-between", fontSize: 8, letterSpacing: "0.06em" }}>
-                  <span style={{ color: "#475569" }}>{disc.toUpperCase()}</span>
-                  <span style={{ color: "#334155" }}>{badge.thresholds[disc]} km</span>
-                </div>
-              ))}
+            {/* Discipline bars */}
+            <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 7 }}>
+              {["swim", "bike", "run"].map(disc => {
+                const discColor = DISCIPLINES[disc].color;
+                return (
+                  <div key={disc} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ fontSize: 8, letterSpacing: "0.12em", color: isActive ? discColor : "#475569", width: 28, flexShrink: 0, transition: "color 0.3s" }}>
+                      {disc.toUpperCase()}
+                    </div>
+                    <div style={{ flex: 1, height: 3, background: "#1e293b", borderRadius: 2, overflow: "hidden" }}>
+                      <div style={{
+                        height: "100%", borderRadius: 2, background: discColor,
+                        width: isEarned ? "100%" : "0%",
+                        transition: "width 0.8s ease",
+                      }} />
+                    </div>
+                    <div style={{ fontSize: 8, color: isActive ? "#64748b" : "#334155", width: 48, textAlign: "right", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.02em", transition: "color 0.3s" }}>
+                      {badge.thresholds[disc]}km
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Toggle button */}
+            {/* Toggle */}
             <button
               onClick={() => toggleBadge(badge.id)}
               style={{
@@ -262,9 +267,19 @@ export default function IronmanTracker() {
   const daysLeft = getDaysUntilRace();
   const progress = getOverallProgress(workouts);
   const allTotals = getAllTotals(workouts);
-  const completedTotals = getCompletedTotals(workouts);
   const weekDays = getWeekDays(weekOffset);
   const weekDaysWithWorkouts = weekDays.map(d => ({ ...d, workout: workouts[d.key] }));
+
+  // Current week (always offset=0) for the stats bar gauges
+  const currentWeekDays = getWeekDays(0).map(d => ({ ...d, workout: workouts[d.key] }));
+  const thisWeekStats = {};
+  for (const type of ["swim", "bike", "run"]) {
+    const days = currentWeekDays.filter(({ workout: w }) => w?.type === type);
+    const planned = days.reduce((s, { workout: w }) => s + (w?.durationMin || 0), 0);
+    const done = days.filter(({ workout: w }) => w?.completed).reduce((s, { workout: w }) => s + (w?.durationMin || 0), 0);
+    thisWeekStats[type] = { planned, done };
+  }
+  const hasThisWeek = Object.values(thisWeekStats).some(s => s.planned > 0);
 
   // Weekly load chart data
   const weeklyLoad = {};
@@ -317,8 +332,6 @@ export default function IronmanTracker() {
         .completed-check { animation: popIn 0.3s ease; }
         .completed-check:hover { opacity: 1 !important; transform: scale(1.15); }
         @keyframes popIn { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        .badge-card { transition: border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease, filter 0.4s ease; }
-        .badge-card:hover { filter: none !important; opacity: 1 !important; }
       `}</style>
 
       {/* HEADER */}
@@ -346,7 +359,8 @@ export default function IronmanTracker() {
 
       {/* STATS ROW */}
       <div style={{ borderBottom: "1px solid #1e293b", background: "#0a0f1a" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 40px", display: "flex", gap: 40, alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 40px", display: "flex", gap: 32, alignItems: "center", flexWrap: "wrap" }}>
+          {/* Completed workouts */}
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "#94a3b8", marginBottom: 6 }}>COMPLETED WORKOUTS</div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -362,28 +376,34 @@ export default function IronmanTracker() {
             </div>
           </div>
 
-          <div style={{ width: 1, height: 40, background: "#1e293b" }} />
+          <div style={{ width: 1, height: 48, background: "#1e293b", flexShrink: 0 }} />
 
+          {/* This week gauges */}
           <div>
-            <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "#94a3b8", marginBottom: 6 }}>THIS WEEK</div>
-            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-              {["swim", "bike", "run"].map(type => {
-                const mins = weekDaysWithWorkouts.filter(({ workout: w }) => w?.type === type).reduce((s, { workout: w }) => s + (w.durationMin || 0), 0);
-                if (!mins) return null;
-                return (
-                  <div key={type} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#cbd5e1", letterSpacing: "0.05em" }}>
-                    <span style={{ display: "inline-block", width: 6, height: 6, background: DISCIPLINES[type].color, borderRadius: 1 }} />
-                    {formatDuration(mins)}
-                  </div>
-                );
-              })}
-              {weekDaysWithWorkouts.every(({ workout: w }) => !w || w.type === "rest" || !w.durationMin) && (
-                <div style={{ fontSize: 10, color: "#334155", letterSpacing: "0.05em" }}>No sessions planned</div>
-              )}
-            </div>
+            <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "#94a3b8", marginBottom: 10 }}>THIS WEEK</div>
+            {hasThisWeek ? (
+              <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                {["swim", "bike", "run"].map(type => {
+                  const { planned, done } = thisWeekStats[type];
+                  if (!planned) return null;
+                  return (
+                    <SmallGauge
+                      key={type}
+                      color={DISCIPLINES[type].color}
+                      pct={done / planned}
+                      label={DISCIPLINES[type].label}
+                      plannedMin={planned}
+                      completedMin={done}
+                    />
+                  );
+                })}
+              </div>
+            ) : (
+              <div style={{ fontSize: 10, color: "#334155", letterSpacing: "0.05em" }}>No sessions planned</div>
+            )}
           </div>
 
-          <div style={{ width: 1, height: 40, background: "#1e293b" }} />
+          <div style={{ width: 1, height: 48, background: "#1e293b", flexShrink: 0 }} />
 
           <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#4ade80" }}>✓ {Object.keys(workouts).length} SESSIONS LOADED</div>
         </div>
@@ -428,30 +448,6 @@ export default function IronmanTracker() {
           </div>
         );
       })()}
-
-      {/* BADGES */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 40px 0" }}>
-        <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>LESSER METALS</div>
-        <BadgeRow badgeCompletions={badgeCompletions} toggleBadge={toggleBadge} />
-      </div>
-
-      {/* DISCIPLINE GAUGES */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 40px 0" }}>
-        <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 20 }}>TRAINING PROGRESS</div>
-        <div style={{ background: "#0a0f1a", border: "1px solid #1e293b", padding: "28px 40px", display: "flex", justifyContent: "space-around", alignItems: "flex-start" }}>
-          {["swim", "bike", "run"].map(type => (
-            <DisciplineGauge
-              key={type}
-              disc={DISCIPLINES[type].label}
-              color={DISCIPLINES[type].color}
-              completedMin={completedTotals[type].min}
-              totalMin={allTotals[type].min}
-              completedKm={completedTotals[type].km}
-              totalKm={allTotals[type].km}
-            />
-          ))}
-        </div>
-      </div>
 
       {/* CALENDAR */}
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 40px" }}>
@@ -534,7 +530,7 @@ export default function IronmanTracker() {
         {/* Selected day detail */}
         {selectedDay && workouts[selectedDay] && (
           <div style={{ marginTop: 16, background: "#0d1117", border: `1px solid ${DISCIPLINES[workouts[selectedDay].type]?.color || "#334155"}40`, padding: "24px 28px" }}>
-            <div style={{ display: "flex", gap: 48, alignItems: "flex-start", flexWrap: "wrap", marginBottom: workouts[selectedDay].description ? 16 : 0 }}>
+            <div style={{ display: "flex", gap: 48, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 16 }}>
               <div>
                 <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>SESSION</div>
                 <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: DISCIPLINES[workouts[selectedDay].type]?.color || "#e2e8f0" }}>
@@ -570,17 +566,26 @@ export default function IronmanTracker() {
               </div>
             </div>
             {workouts[selectedDay].description && (
-              <div style={{ borderTop: "1px solid #1e293b", paddingTop: 16, marginTop: 4 }}>
-                <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 8 }}>WORKOUT DETAILS</div>
-                <div style={{ fontSize: 10, color: "#94a3b8", lineHeight: 1.8, letterSpacing: "0.02em" }}>
-                  {workouts[selectedDay].description.split(" · ").map((part, i) => (
-                    <div key={i} style={{ marginBottom: 2 }}>{part}</div>
-                  ))}
-                </div>
+              <div style={{ borderTop: "1px solid #1e293b", paddingTop: 16 }}>
+                <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 10 }}>WORKOUT DETAILS</div>
+                <pre style={{
+                  fontFamily: "'DM Mono', 'Courier New', monospace",
+                  fontSize: 10, color: "#94a3b8", lineHeight: 1.8,
+                  letterSpacing: "0.02em", whiteSpace: "pre-wrap",
+                  wordBreak: "break-word", margin: 0,
+                }}>
+                  {workouts[selectedDay].description}
+                </pre>
               </div>
             )}
           </div>
         )}
+
+        {/* LESSER METALS */}
+        <div style={{ marginTop: 32 }}>
+          <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>LESSER METALS</div>
+          <BadgeRow badgeCompletions={badgeCompletions} toggleBadge={toggleBadge} />
+        </div>
 
         {/* TRAINING LOAD + UPCOMING */}
         <div style={{ marginTop: 32, display: "grid", gridTemplateColumns: "1fr 280px", gap: 12 }}>
@@ -603,8 +608,7 @@ export default function IronmanTracker() {
                         const segH = Math.max(1, Math.round((load[type] / maxLoad) * 80));
                         return (
                           <div key={type} style={{
-                            height: segH,
-                            background: DISCIPLINES[type].color,
+                            height: segH, background: DISCIPLINES[type].color,
                             opacity: isPast ? 0.35 : isCurrent ? 1 : 0.7,
                           }} />
                         );

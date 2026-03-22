@@ -46,12 +46,12 @@ function cleanDescription(raw) {
     .replace(/\\,/g, ",")
     .split("\n")
     .map(l => l.trim())
-    .filter(l => l && !l.startsWith("http") && !l.startsWith("https") &&
+    .filter(l => !l.startsWith("http") && !l.startsWith("https") &&
       !l.startsWith("Next Step") && !l.startsWith("Watch this") &&
       !l.startsWith("QUICK STEPS") && !l.startsWith("✅"))
-    .slice(0, 4)
-    .join(" · ")
-    .substring(0, 220);
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 function eventsToWorkouts(events) {
