@@ -113,6 +113,57 @@ function getOverallProgress(workouts) {
   return { completed, past: past.length, pct: all.length ? Math.round((completed / all.length) * 100) : 0 };
 }
 
+// ─── Cozumel course map ───────────────────────────────────────────────────────
+
+function CozumelCourseMap() {
+  // Abstract SVG of Ironman Cozumel — island oriented N↑, west coast left
+  // Swim: 2 loops off west coast (Chankanaab Park)
+  // Bike: 3 anti-clockwise laps around the island perimeter
+  // Run:  3 out-and-back laps along San Miguel waterfront
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flexShrink: 0 }}>
+      <div style={{ fontSize: 8, letterSpacing: "0.25em", color: "#334155" }}>COURSE MAP</div>
+      <svg width="168" height="120" viewBox="0 0 168 120" style={{ display: "block" }}>
+        {/* Island silhouette */}
+        <path
+          d="M 84 7 L 110 19 L 117 60 L 105 101 L 84 110 L 63 101 L 55 60 L 68 19 Z"
+          fill="#0d1117" stroke="#1e293b" strokeWidth="1.5"
+        />
+
+        {/* Bike — 3 laps around the island (amber, outermost brightest) */}
+        <path d="M 84 7 L 110 19 L 117 60 L 105 101 L 84 110 L 63 101 L 55 60 L 68 19 Z"
+          fill="none" stroke="#f59e0b" strokeWidth="2" strokeOpacity="0.8" />
+        <path d="M 84 12 L 107 23 L 113 60 L 102 98 L 84 106 L 66 98 L 59 60 L 71 23 Z"
+          fill="none" stroke="#f59e0b" strokeWidth="1.5" strokeOpacity="0.45" />
+        <path d="M 84 17 L 104 27 L 109 60 L 99 95 L 84 102 L 69 95 L 63 60 L 74 27 Z"
+          fill="none" stroke="#f59e0b" strokeWidth="1" strokeOpacity="0.2" />
+
+        {/* Swim — 2 ovals off the west coast (Chankanaab, center-south of city) */}
+        <ellipse cx="40" cy="68" rx="9" ry="13" fill="none" stroke="#38bdf8" strokeWidth="1.5" strokeOpacity="0.9" />
+        <ellipse cx="39" cy="89" rx="8" ry="11" fill="none" stroke="#38bdf8" strokeWidth="1.5" strokeOpacity="0.75" />
+        <line x1="40" y1="81" x2="39" y2="78" stroke="#38bdf8" strokeWidth="1" strokeOpacity="0.5" />
+
+        {/* Run — 3 out-and-back laps along San Miguel waterfront */}
+        <path d="M 64 30 L 60 60" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" fill="none" strokeOpacity="0.85" />
+        <path d="M 60 60 L 56 30" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" fill="none" strokeOpacity="0.55" />
+        <path d="M 56 30 L 52 60" stroke="#4ade80" strokeWidth="1" strokeLinecap="round" fill="none" strokeOpacity="0.3" />
+
+        {/* T1 / Start-Finish dot */}
+        <circle cx="65" cy="28" r="3.5" fill="#e31837" />
+        <circle cx="65" cy="28" r="6.5" fill="none" stroke="#e31837" strokeWidth="0.5" strokeOpacity="0.35" />
+
+        {/* Discipline labels */}
+        <text x="19" y="63" fontSize="5.5" fill="#38bdf8" fontFamily="'DM Mono',monospace" letterSpacing="0.06em">SWIM</text>
+        <text x="122" y="64" fontSize="5.5" fill="#f59e0b" fontFamily="'DM Mono',monospace" letterSpacing="0.06em">BIKE</text>
+        <text x="37" y="52" fontSize="5.5" fill="#4ade80" fontFamily="'DM Mono',monospace" letterSpacing="0.06em">RUN</text>
+
+        {/* Footer label */}
+        <text x="84" y="118" textAnchor="middle" fontSize="5" fill="#334155" fontFamily="'DM Mono',monospace" letterSpacing="0.2em">COZUMEL · 2026</text>
+      </svg>
+    </div>
+  );
+}
+
 // ─── Plan barometer ───────────────────────────────────────────────────────────
 
 function PlanBarometer() {
@@ -412,7 +463,7 @@ export default function IronmanTracker() {
       {/* HEADER */}
       <div style={{ background: "linear-gradient(180deg, #0d1117 0%, #080c14 100%)", borderBottom: "1px solid #1e293b", padding: "32px 40px 28px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 24 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 24 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
               <MDotLogo size={64} />
               <div>
@@ -423,6 +474,7 @@ export default function IronmanTracker() {
                 </div>
               </div>
             </div>
+            <CozumelCourseMap />
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 4 }}>DAYS UNTIL RACE</div>
               <div className="ticker-number" style={{ fontSize: 72, color: "#f59e0b", lineHeight: 1 }}>{daysLeft}</div>
