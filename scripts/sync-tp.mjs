@@ -74,18 +74,26 @@ function eventsToWorkouts(events) {
     const colonIdx = summary.indexOf(":");
     const label = colonIdx >= 0 ? summary.slice(colonIdx + 1).trim() : summary;
 
-    const statsLines = description
-      .replace(/\\n/g, "\n")
-      .split("\n")
-      .filter(l => l.match(/^(Actual|Planned|Distance|Speed|Pace)/));
+    const desc = description.replace(/\\n/g, "\n").replace(/\\,/g, ",");
 
-    const detail = statsLines.length > 0
-      ? statsLines.slice(0, 3).join(" · ")
-      : cleanDescription(description);
+    // Parse duration: "Actual Time: 1:30" or "Planned Time: 0:42" → minutes
+    const timeMatch = desc.match(/(?:Actual|Planned) Time:\s*(\d+):(\d+)/);
+    const durationMin = timeMatch
+      ? parseInt(timeMatch[1]) * 60 + parseInt(timeMatch[2])
+      : null;
+
+    // Parse distance: "Actual Distance: 7.01 km" or "Distance Planned: 2166 m"
+    const distKmMatch = desc.match(/(?:Actual Distance|Distance Planned):\s*([\d.]+)\s*km/);
+    const distMMatch  = desc.match(/(?:Actual Distance|Distance Planned):\s*([\d.]+)\s*m\b/);
+    const distanceKm = distKmMatch
+      ? parseFloat(distKmMatch[1])
+      : distMMatch
+        ? Math.round(parseFloat(distMMatch[1])) / 1000
+        : null;
 
     const completed = description.includes("Actual Time:");
 
-    workouts[dateKey] = { type, label, detail, completed };
+    workouts[dateKey] = { type, label, durationMin, distanceKm, completed };
   }
   return workouts;
 }
