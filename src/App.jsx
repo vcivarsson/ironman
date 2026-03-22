@@ -1,21 +1,18 @@
 import { useState, useMemo } from "react";
 import cachedWorkouts from "./workouts-cache.json";
+import ironmanLogo from "./assets/images.jpeg";
 
 const RACE_DATE = new Date("2026-11-22");
 
 function MDotLogo({ size = 64 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-      {/* Black circular background */}
-      <circle cx="30" cy="30" r="29" fill="#0d0d0d" />
-      {/* M shape — outer legs splay, deep inner V */}
-      <polygon
-        points="5,54 11,22 18,22 30,40 42,22 49,22 55,54 46,54 45,37 30,49 15,37 14,54"
-        fill="#e31837"
-      />
-      {/* M-dot (head) */}
-      <circle cx="30" cy="13" r="7.5" fill="#e31837" />
-    </svg>
+    <img
+      src={ironmanLogo}
+      width={size}
+      height={size}
+      alt="IRONMAN"
+      style={{ display: "block", mixBlendMode: "screen", borderRadius: "50%" }}
+    />
   );
 }
 
