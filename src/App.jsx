@@ -622,7 +622,7 @@ export default function IronmanTracker() {
                   </div>
                   <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.08em", marginBottom: 8 }}>TOTAL HOURS</div>
                   <div style={{ fontSize: 11, color: "#64748b", letterSpacing: "0.04em" }}>
-                    {km >= 1000 ? `${(km / 1000).toFixed(1)}k km` : `${Math.round(km)} km`}
+                    {Math.round(km).toLocaleString()} km
                   </div>
                 </div>
               );
