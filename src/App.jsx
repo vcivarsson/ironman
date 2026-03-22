@@ -4,13 +4,20 @@ import cachedWorkouts from "./workouts-cache.json";
 const RACE_DATE = new Date("2026-11-22");
 
 const DISCIPLINES = {
-  swim: { label: "SWIM", color: "#38bdf8", bg: "#0c1a2e" },
-  bike: { label: "BIKE", color: "#a3e635", bg: "#0f1e07" },
-  run:  { label: "RUN",  color: "#fb923c", bg: "#1f0e04" },
-  brick:{ label: "BRICK",color: "#c084fc", bg: "#160b21" },
-  rest: { label: "REST", color: "#475569", bg: "#0f172a" },
+  swim:  { label: "SWIM",  color: "#38bdf8", bg: "#0c1a2e" },
+  bike:  { label: "BIKE",  color: "#a3e635", bg: "#0f1e07" },
+  run:   { label: "RUN",   color: "#fb923c", bg: "#1f0e04" },
+  brick: { label: "BRICK", color: "#c084fc", bg: "#160b21" },
+  rest:  { label: "REST",  color: "#475569", bg: "#0f172a" },
 };
 
+// Training phases defined as weeks-remaining thresholds (from race)
+const PHASES = [
+  { name: "TAPER", color: "#ef4444", weeks: 3 },
+  { name: "PEAK",  color: "#f97316", weeks: 12 },
+  { name: "BUILD", color: "#eab308", weeks: 26 },
+  { name: "BASE",  color: "#22c55e", weeks: Infinity },
+];
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
 
@@ -43,26 +50,74 @@ function getWeekDays(weekOffset) {
 }
 
 function getOverallProgress(workouts) {
-  const all = Object.values(workouts).filter(w => w.type !== "rest");
   const today = getToday();
+  const all = Object.values(workouts).filter(w => w.type !== "rest");
   const past = Object.entries(workouts).filter(([k, w]) => w.type !== "rest" && new Date(k) < today);
   const completed = past.filter(([, w]) => w.completed).length;
   return { completed, total: all.length, past: past.length, pct: all.length ? Math.round((completed / all.length) * 100) : 0 };
 }
 
+function getCurrentPhase(weeksLeft) {
+  return PHASES.find(p => weeksLeft <= p.weeks) || PHASES[PHASES.length - 1];
+}
+
+function getPhaseProgress(weeksLeft) {
+  const idx = PHASES.findIndex(p => weeksLeft <= p.weeks);
+  if (idx === -1) return { phase: PHASES[PHASES.length - 1], pct: 0 };
+  const phase = PHASES[idx];
+  const prevMax = idx > 0 ? PHASES[idx - 1].weeks : 0;
+  const phaseMax = Math.min(phase.weeks, 52); // cap BASE at 52
+  const weeksIntoPhase = phaseMax - weeksLeft;
+  const phaseDuration = phaseMax - prevMax;
+  return { phase, pct: Math.round((weeksIntoPhase / phaseDuration) * 100) };
+}
+
+// Compute load score for a given week offset (count non-rest workouts)
+function getWeekLoad(workouts, weekOffset) {
+  const days = getWeekDays(weekOffset);
+  return days.reduce((sum, { key }) => {
+    const w = workouts[key];
+    return sum + (w && w.type !== "rest" ? 1 : 0);
+  }, 0);
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
+function loadCompletionsFromStorage() {
+  try {
+    const raw = localStorage.getItem("ironman-completions");
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveCompletionsToStorage(completions) {
+  try {
+    localStorage.setItem("ironman-completions", JSON.stringify(completions));
+  } catch {}
+}
+
 export default function IronmanTracker() {
-  const [workouts] = useState(cachedWorkouts);
+  // Merge cached workouts with any locally-toggled completions
+  const [completions, setCompletions] = useState(loadCompletionsFromStorage);
   const [weekOffset, setWeekOffset] = useState(0);
   const [selectedDay, setSelectedDay] = useState(null);
+
+  const workouts = { ...cachedWorkouts };
+  // Apply local completion overrides
+  Object.entries(completions).forEach(([key, done]) => {
+    if (workouts[key]) workouts[key] = { ...workouts[key], completed: done };
+  });
 
   const today = getToday();
   const todayKey = today.toISOString().split("T")[0];
   const daysLeft = getDaysUntilRace();
+  const weeksLeft = Math.ceil(daysLeft / 7);
   const progress = getOverallProgress(workouts);
   const weekDays = getWeekDays(weekOffset);
   const weekDaysWithWorkouts = weekDays.map(d => ({ ...d, workout: workouts[d.key] }));
+  const { phase: currentPhase, pct: phasePct } = getPhaseProgress(weeksLeft);
 
   const weeklyStats = { swim: 0, bike: 0, run: 0, brick: 0 };
   weekDaysWithWorkouts.forEach(({ workout: w }) => {
@@ -73,6 +128,20 @@ export default function IronmanTracker() {
   const weekSunday = weekDays[6].date;
   const weekLabel = `${weekMonday.toLocaleDateString("en-US", { month: "short", day: "numeric" })} → ${weekSunday.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
   const dayLabels = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+
+  // Load trend: upcoming 10 weeks from current view
+  const loadTrend = Array.from({ length: 10 }, (_, i) => ({
+    offset: weekOffset + i,
+    load: getWeekLoad(workouts, weekOffset + i),
+  }));
+  const maxLoad = Math.max(...loadTrend.map(w => w.load), 1);
+
+  function toggleCompletion(key) {
+    const current = workouts[key]?.completed ?? false;
+    const next = { ...completions, [key]: !current };
+    setCompletions(next);
+    saveCompletionsToStorage(next);
+  }
 
   return (
     <div style={{ minHeight: "100vh", background: "#080c14", color: "#e2e8f0", fontFamily: "'DM Mono', 'Courier New', monospace" }}>
@@ -93,6 +162,9 @@ export default function IronmanTracker() {
         .ticker-number { font-family: 'Bebas Neue', sans-serif; line-height: 1; }
         .discipline-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; }
         .completed-check { animation: popIn 0.3s ease; }
+        .complete-btn { border: none; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; padding: 7px 16px; transition: all 0.2s; }
+        .complete-btn:hover { filter: brightness(1.15); }
+        .load-bar { transition: height 0.4s ease; border-radius: 2px 2px 0 0; }
         @keyframes popIn { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
       `}</style>
 
@@ -100,17 +172,34 @@ export default function IronmanTracker() {
       <div style={{ background: "linear-gradient(180deg, #0d1117 0%, #080c14 100%)", borderBottom: "1px solid #1e293b", padding: "32px 40px 28px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 24 }}>
+            {/* Left: title */}
             <div>
               <div style={{ fontSize: 11, letterSpacing: "0.3em", color: "#475569", marginBottom: 8 }}>IRONMAN TRAINING TRACKER</div>
               <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 52, letterSpacing: "0.04em", lineHeight: 1, color: "#f1f5f9" }}>ROAD TO IRON</div>
               <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#64748b", marginTop: 6 }}>
                 {RACE_DATE.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }).toUpperCase()} · FULL IRONMAN
               </div>
+              {/* Phase badge */}
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 16 }}>
+                <div style={{ fontSize: 9, letterSpacing: "0.25em", color: "#475569" }}>PHASE</div>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: currentPhase.color + "18", border: `1px solid ${currentPhase.color}50`, padding: "4px 12px" }}>
+                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: currentPhase.color }} />
+                  <span style={{ fontSize: 10, letterSpacing: "0.2em", color: currentPhase.color }}>{currentPhase.name}</span>
+                </div>
+                <div style={{ width: 80 }}>
+                  <div className="phase-bar">
+                    <div className="phase-bar-fill" style={{ width: `${phasePct}%`, background: currentPhase.color }} />
+                  </div>
+                  <div style={{ fontSize: 9, color: "#475569", marginTop: 3 }}>{phasePct}% through phase</div>
+                </div>
+              </div>
             </div>
+
+            {/* Right: countdown */}
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#475569", marginBottom: 4 }}>DAYS UNTIL RACE</div>
               <div className="ticker-number" style={{ fontSize: 72, color: "#f59e0b", lineHeight: 1 }}>{daysLeft}</div>
-              <div style={{ fontSize: 10, color: "#475569", letterSpacing: "0.2em", marginTop: 4 }}>{Math.ceil(daysLeft / 7)} WEEKS REMAINING</div>
+              <div style={{ fontSize: 10, color: "#475569", letterSpacing: "0.2em", marginTop: 4 }}>{weeksLeft} WEEKS REMAINING</div>
             </div>
           </div>
         </div>
@@ -120,16 +209,18 @@ export default function IronmanTracker() {
       <div style={{ borderBottom: "1px solid #1e293b", background: "#0a0f1a" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 40px", display: "flex", gap: 40, alignItems: "center", flexWrap: "wrap" }}>
           <div>
-            <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "#475569", marginBottom: 6 }}>COMPLETED WORKOUTS</div>
+            <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "#475569", marginBottom: 6 }}>PAST SESSIONS COMPLETED</div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div className="ticker-number" style={{ fontSize: 32, color: "#e2e8f0" }}>
-                {progress.pct}<span style={{ fontSize: 16, color: "#475569" }}>%</span>
+                {progress.completed}<span style={{ fontSize: 14, color: "#475569" }}>/{progress.past}</span>
               </div>
               <div style={{ flex: 1, minWidth: 120 }}>
                 <div className="phase-bar" style={{ height: 8 }}>
-                  <div className="phase-bar-fill" style={{ width: `${progress.pct}%`, background: "linear-gradient(to right, #3b82f6, #a855f7)" }} />
+                  <div className="phase-bar-fill" style={{ width: `${progress.past ? Math.round((progress.completed / progress.past) * 100) : 0}%`, background: "linear-gradient(to right, #3b82f6, #a855f7)" }} />
                 </div>
-                <div style={{ fontSize: 10, color: "#475569", marginTop: 4 }}>{progress.completed} / {progress.past} past sessions</div>
+                <div style={{ fontSize: 10, color: "#475569", marginTop: 4 }}>
+                  {progress.past ? Math.round((progress.completed / progress.past) * 100) : 0}% adherence
+                </div>
               </div>
             </div>
           </div>
@@ -160,7 +251,7 @@ export default function IronmanTracker() {
           </div>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <button className="nav-btn" onClick={() => setWeekOffset(w => w - 1)}>← PREV</button>
-            <button className="nav-btn" onClick={() => setWeekOffset(0)} style={{ color: "#f59e0b", borderColor: "#f59e0b40" }}>TODAY</button>
+            <button className="nav-btn" onClick={() => { setWeekOffset(0); setSelectedDay(null); }} style={{ color: "#f59e0b", borderColor: "#f59e0b40" }}>TODAY</button>
             <button className="nav-btn" onClick={() => setWeekOffset(w => w + 1)}>NEXT →</button>
           </div>
         </div>
@@ -184,7 +275,7 @@ export default function IronmanTracker() {
                   padding: "14px 12px",
                   minHeight: 140,
                   position: "relative",
-                  opacity: isPast && workout && !workout.completed && workout.type !== "rest" ? 0.5 : 1,
+                  opacity: isPast && workout && !workout.completed && workout.type !== "rest" ? 0.55 : 1,
                 }}
               >
                 <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#475569", marginBottom: 4 }}>{label}</div>
@@ -212,21 +303,38 @@ export default function IronmanTracker() {
 
         {/* Selected day detail */}
         {selectedDay && workouts[selectedDay] && (
-          <div style={{ marginTop: 16, background: "#0d1117", border: `1px solid ${DISCIPLINES[workouts[selectedDay].type]?.color || "#334155"}40`, padding: "20px 24px", display: "flex", gap: 32, alignItems: "flex-start", flexWrap: "wrap" }}>
-            <div>
-              <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#475569", marginBottom: 6 }}>SESSION</div>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: DISCIPLINES[workouts[selectedDay].type]?.color || "#e2e8f0" }}>
-                {workouts[selectedDay].label}
+          <div style={{ marginTop: 16, background: "#0d1117", border: `1px solid ${DISCIPLINES[workouts[selectedDay].type]?.color || "#334155"}40`, padding: "20px 24px" }}>
+            <div style={{ display: "flex", gap: 32, alignItems: "flex-start", flexWrap: "wrap" }}>
+              <div>
+                <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#475569", marginBottom: 6 }}>SESSION</div>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: DISCIPLINES[workouts[selectedDay].type]?.color || "#e2e8f0" }}>
+                  {workouts[selectedDay].label}
+                </div>
+                <div style={{ fontSize: 10, color: "#475569", marginTop: 4, letterSpacing: "0.1em" }}>{selectedDay}</div>
               </div>
-            </div>
-            <div style={{ flex: 1, minWidth: 200 }}>
-              <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#475569", marginBottom: 6 }}>DETAILS</div>
-              <div style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.6 }}>{workouts[selectedDay].detail}</div>
-            </div>
-            <div>
-              <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#475569", marginBottom: 6 }}>STATUS</div>
-              <div style={{ fontSize: 11, color: workouts[selectedDay].completed ? "#4ade80" : "#f59e0b", letterSpacing: "0.1em" }}>
-                {workouts[selectedDay].completed ? "✓ COMPLETED" : "… UPCOMING"}
+              <div style={{ flex: 1, minWidth: 200 }}>
+                <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#475569", marginBottom: 6 }}>DETAILS</div>
+                <div style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.6 }}>{workouts[selectedDay].detail || "—"}</div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 12 }}>
+                <div>
+                  <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#475569", marginBottom: 6 }}>STATUS</div>
+                  <div style={{ fontSize: 11, color: workouts[selectedDay].completed ? "#4ade80" : "#f59e0b", letterSpacing: "0.1em" }}>
+                    {workouts[selectedDay].completed ? "✓ COMPLETED" : "… UPCOMING"}
+                  </div>
+                </div>
+                {workouts[selectedDay].type !== "rest" && (
+                  <button
+                    className="complete-btn"
+                    onClick={e => { e.stopPropagation(); toggleCompletion(selectedDay); }}
+                    style={{
+                      background: workouts[selectedDay].completed ? "#1e293b" : DISCIPLINES[workouts[selectedDay].type]?.color || "#3b82f6",
+                      color: workouts[selectedDay].completed ? "#64748b" : "#000",
+                    }}
+                  >
+                    {workouts[selectedDay].completed ? "MARK INCOMPLETE" : "MARK COMPLETE"}
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -249,11 +357,47 @@ export default function IronmanTracker() {
             );
           })}
         </div>
+
+        {/* LOAD TREND */}
+        <div style={{ marginTop: 40, background: "#0a0f1a", border: "1px solid #1e293b", padding: "20px 24px" }}>
+          <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#475569", marginBottom: 20 }}>UPCOMING LOAD · NEXT 10 WEEKS</div>
+          <div style={{ display: "flex", gap: 6, alignItems: "flex-end", height: 64 }}>
+            {loadTrend.map(({ offset, load }) => {
+              const isCurrentWeek = offset === weekOffset;
+              const barColor = isCurrentWeek ? "#60a5fa" : "#334155";
+              const heightPct = load / maxLoad;
+              return (
+                <div
+                  key={offset}
+                  style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer" }}
+                  onClick={() => { setWeekOffset(offset); setSelectedDay(null); }}
+                >
+                  <div style={{ fontSize: 9, color: load > 0 ? "#64748b" : "#1e293b", letterSpacing: "0.05em" }}>{load}</div>
+                  <div style={{ width: "100%", display: "flex", alignItems: "flex-end", height: 40 }}>
+                    <div
+                      className="load-bar"
+                      style={{
+                        width: "100%",
+                        height: load === 0 ? 2 : `${Math.max(heightPct * 100, 8)}%`,
+                        background: isCurrentWeek ? "#3b82f6" : load === 0 ? "#1e293b" : "#1e3a5f",
+                        border: isCurrentWeek ? "1px solid #60a5fa" : "none",
+                      }}
+                    />
+                  </div>
+                  <div style={{ fontSize: 8, color: isCurrentWeek ? "#60a5fa" : "#334155", letterSpacing: "0.05em" }}>
+                    W{offset >= 0 ? `+${offset}` : offset}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ marginTop: 12, fontSize: 9, color: "#334155", letterSpacing: "0.1em" }}>CLICK A BAR TO JUMP TO THAT WEEK</div>
+        </div>
       </div>
 
       {/* FOOTER */}
       <div style={{ borderTop: "1px solid #1e293b", padding: "20px 40px", textAlign: "center" }}>
-        <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#1e293b" }}>IRONMAN 2026 · {daysLeft} DAYS OUT</div>
+        <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#1e293b" }}>IRONMAN 2026 · {daysLeft} DAYS OUT · {currentPhase.name} PHASE</div>
       </div>
     </div>
   );
