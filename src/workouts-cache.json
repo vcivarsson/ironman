@@ -4,111 +4,127 @@
     "label": "Running",
     "durationMin": 38,
     "distanceKm": 7.01,
-    "completed": true
+    "completed": true,
+    "description": "Workout type: Run · Actual Time: 0:38 · Actual Distance: 7.01 km · Speed: 10.94 km/h"
   },
   "2026-03-21": {
     "type": "run",
     "label": "Running",
     "durationMin": 35,
     "distanceKm": 5.1,
-    "completed": true
+    "completed": true,
+    "description": "Workout type: Run · Actual Time: 0:35 · Actual Distance: 5.1 km · Speed: 8.63 km/h"
   },
   "2026-03-23": {
     "type": "swim",
     "label": "Fitness Test: Critical Swim Speed (CSS)",
     "durationMin": 42,
     "distanceKm": 2.166,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Swim · Use the results from this test to personalise your planned swim sessions. · Warm up: · 6 x (50 Steady, 20s rests),"
   },
   "2026-03-24": {
     "type": "bike",
     "label": "Fitness Test: FTP and Threshold HR",
     "durationMin": 42,
     "distanceKm": null,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Bike · Use the results from this test to calculate your thresholds, zones, and personalise your training. · Warm Up: · 12 mins Steady"
   },
   "2026-03-25": {
     "type": "rest",
     "label": "Rest Day",
     "durationMin": null,
     "distanceKm": null,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Day Off · Allows for recovery whilst promoting adaptation to previous training stresses. Helps you get faster and keep injuries at bay."
   },
   "2026-03-26": {
     "type": "run",
     "label": "Fitness Test: Threshold Pace and HR",
     "durationMin": 44,
     "distanceKm": null,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Run · Use the results from this test to calculate your thresholds and personalise your training. · Warm Up: · 5 mins Steady,"
   },
   "2026-03-27": {
     "type": "swim",
     "label": "Pool Swim: Speed Endurance",
     "durationMin": 34,
     "distanceKm": 1.8,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Swim · These swims involve effort at or above race pace, with regular recoveries. They will build your sustainable speed for race day. · Warm Up: · 1 x (100 FS in Z2 + 100 Kick in Z2 + 20 secs rest),"
   },
   "2026-03-28": {
     "type": "bike",
     "label": "Aerobic Endurance Ride",
     "durationMin": 90,
     "distanceKm": null,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Bike · Ride at an easy/steady intensity, mainly in Z2 today. You should be able to chat at this intensity. This ride will improve your efficiency for using fat for fuel and increase your ability to transpor"
   },
   "2026-03-29": {
     "type": "run",
     "label": "Aerobic Endurance Run",
     "durationMin": 45,
     "distanceKm": null,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Run · A steady run, mainly in Z1-Z2. You should be able to chat at this intensity. This is your long run for the week and it will progress in duration. They will gradually build your endurance. · Phil's Tra"
   },
   "2026-03-30": {
     "type": "swim",
     "label": "Pool Swim: Aerobic Endurance",
     "durationMin": 37,
     "distanceKm": 2,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Swim · These sessions will be done at lower intensities, and will progress in duration. The goal is to build your endurance ensuring you can easily swim the distance on race day and still have lots of energ"
   },
   "2026-03-31": {
     "type": "bike",
     "label": "Speed Workout Bike",
     "durationMin": 48,
     "distanceKm": null,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Bike · Warm Up: · 5 mins in low Z2, · 5 mins in mid Z2,"
   },
   "2026-04-01": {
     "type": "run",
     "label": "Speed Workout Run",
     "durationMin": 43,
     "distanceKm": null,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Run · Warm Up: · 15 mins in Z2. · Main Set:"
   },
   "2026-04-02": {
     "type": "swim",
     "label": "Pool Swim: Speed Endurance",
     "durationMin": 37,
     "distanceKm": 2,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Swim · Warm Up: · 1 x (100 FS in Z2 + 100 Drill* in Z2 + 20 secs rest), · 2 x (50 Pull in Z2 + 50 Pull in Z4 + 20 sec rests)."
   },
   "2026-04-03": {
     "type": "rest",
     "label": "Rest Day",
     "durationMin": null,
     "distanceKm": null,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Day Off"
   },
   "2026-04-04": {
     "type": "bike",
     "label": "Aerobic Endurance Ride",
     "durationMin": 105,
     "distanceKm": null,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Bike · Ride mainly in Z2 today. · Phil’s Training Tip: · Don't feel you need to do all your workouts alone. If you enjoy doing club or group workouts, you can still incorporate these into your training plan"
   },
   "2026-04-05": {
     "type": "run",
     "label": "Aerobic Endurance Run",
     "durationMin": 50,
     "distanceKm": null,
-    "completed": false
+    "completed": false,
+    "description": "Workout type: Run · A nice steady run, mainly in Z1-Z2. · Phil’s Training Tip: · Don't panic if you cannot complete 100% of your workouts. Do your best to stick to your plan, while accepting that occasionally life gets i"
   }
 }

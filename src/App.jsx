@@ -2,7 +2,14 @@ import { useState, useMemo } from "react";
 import cachedWorkouts from "./workouts-cache.json";
 
 const RACE_DATE = new Date("2026-11-22");
-const IRONMAN_LOGO = "https://www.ironman.com/sites/default/files/styles/logo/public/2024-11/IRONMAN%20M-Dot%C2%AEv2-02.png?itok=zE3r9TX3";
+function MDotLogo({ size = 64 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="30,1 59,30 30,59 1,30" fill="#e31837" />
+      <circle cx="43" cy="17" r="6.5" fill="white" />
+    </svg>
+  );
+}
 
 const DISCIPLINES = {
   swim:  { label: "SWIM",  color: "#38bdf8", bg: "#0c1a2e" },
@@ -49,8 +56,6 @@ function formatDuration(minutes) {
   const m = minutes % 60;
   return m > 0 ? `${h}h ${m}min` : `${h}h`;
 }
-
-const RACE_TARGETS = { swim: 3.8, bike: 180, run: 42.2 };
 
 function getOverallProgress(workouts) {
   const all = Object.values(workouts).filter(w => w.type !== "rest");
@@ -167,11 +172,7 @@ export default function IronmanTracker() {
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 24 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-              <img
-                src={IRONMAN_LOGO}
-                alt="IRONMAN"
-                style={{ height: 64, width: "auto", objectFit: "contain" }}
-              />
+              <MDotLogo size={64} />
               <div>
                 <div style={{ fontSize: 11, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>TRAINING TRACKER</div>
                 <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 44, letterSpacing: "0.04em", lineHeight: 1, color: "#f1f5f9" }}>ROAD TO IRON</div>
@@ -367,6 +368,11 @@ export default function IronmanTracker() {
                   {workouts[selectedDay].distanceKm ? ` · ${workouts[selectedDay].distanceKm.toFixed(2)} km` : ""}
                 </div>
               )}
+              {workouts[selectedDay].description && (
+                <div style={{ fontSize: 10, color: "#64748b", marginTop: 10, lineHeight: 1.6, maxWidth: 480 }}>
+                  {workouts[selectedDay].description}
+                </div>
+              )}
             </div>
             <div>
               <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>STATUS</div>
@@ -490,8 +496,6 @@ export default function IronmanTracker() {
             {Object.entries(totals).map(([type, { km, min }]) => {
               const disc = DISCIPLINES[type];
               const hasData = km > 0 || min > 0;
-              const target = RACE_TARGETS[type] ?? null;
-              const kmPct = target && km > 0 ? Math.min(100, Math.round((km / target) * 100)) : 0;
               return (
                 <div key={type} style={{ background: "#0a0f1a", border: `1px solid ${hasData ? disc.color + "30" : "#1e293b"}`, padding: "16px 20px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
@@ -505,22 +509,11 @@ export default function IronmanTracker() {
                   ) : (
                     <div className="ticker-number" style={{ fontSize: 24, color: "#334155" }}>—</div>
                   )}
-                  {target ? (
-                    <div style={{ marginTop: 8 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#64748b", letterSpacing: "0.05em", marginBottom: 4 }}>
-                        <span>{km > 0 ? `${km.toFixed(1)} km` : "0 km"}</span>
-                        <span style={{ color: "#334155" }}>{target} km</span>
-                      </div>
-                      <div className="phase-bar">
-                        <div className="phase-bar-fill" style={{ width: `${kmPct}%`, background: disc.color }} />
-                      </div>
-                      <div style={{ fontSize: 9, color: kmPct > 0 ? disc.color : "#334155", marginTop: 3, letterSpacing: "0.05em" }}>
-                        {kmPct}% OF RACE DIST
-                      </div>
+                  {km > 0 && (
+                    <div style={{ fontSize: 10, color: "#64748b", letterSpacing: "0.05em", marginTop: 4 }}>
+                      {km.toFixed(1)} km
                     </div>
-                  ) : km > 0 ? (
-                    <div style={{ fontSize: 10, color: "#cbd5e1", letterSpacing: "0.05em" }}>{km.toFixed(1)} km</div>
-                  ) : null}
+                  )}
                 </div>
               );
             })}

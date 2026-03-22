@@ -93,7 +93,7 @@ function eventsToWorkouts(events) {
 
     const completed = description.includes("Actual Time:");
 
-    workouts[dateKey] = { type, label, durationMin, distanceKm, completed };
+    workouts[dateKey] = { type, label, durationMin, distanceKm, completed, description: cleanDescription(description) };
   }
   return workouts;
 }
