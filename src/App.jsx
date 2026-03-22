@@ -149,6 +149,23 @@ function PlanBarometer() {
           <span style={{ color: "#475569" }}> / {formatHrsMins(PLAN_TOTAL_MIN)}</span>
         </div>
       )}
+
+      {/* Legend */}
+      <div style={{ display: "flex", gap: 24, marginTop: 10, flexWrap: "wrap" }}>
+        <div style={{ fontSize: 9, letterSpacing: "0.12em", color: "#475569" }}>
+          TOTAL DURATION <span style={{ color: "#94a3b8", marginLeft: 6 }}>{formatHrsMins(STRAVA_TOTAL_MIN)}</span>
+        </div>
+        {[
+          { label: "SWIM", color: DISCIPLINES.swim.color, min: STRAVA_YTD.swim.min },
+          { label: "RUN",  color: DISCIPLINES.run.color,  min: STRAVA_YTD.run.min  },
+          { label: "BIKE", color: DISCIPLINES.bike.color, min: STRAVA_YTD.bike.min },
+        ].map(({ label, color, min }) => (
+          <div key={label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 9, letterSpacing: "0.12em", color: "#475569" }}>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
+            {label} <span style={{ color, marginLeft: 4 }}>{formatHrsMins(min)}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
