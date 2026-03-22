@@ -151,7 +151,7 @@ function PlanBarometer() {
       )}
 
       {/* Legend */}
-      <div style={{ display: "flex", gap: 24, marginTop: 10, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 24, marginTop: 10, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ fontSize: 9, letterSpacing: "0.12em", color: "#475569" }}>
           TOTAL DURATION <span style={{ color: "#94a3b8", marginLeft: 6 }}>{formatHrsMins(STRAVA_TOTAL_MIN)}</span>
         </div>
@@ -165,6 +165,9 @@ function PlanBarometer() {
             {label} <span style={{ color, marginLeft: 4 }}>{formatHrsMins(min)}</span>
           </div>
         ))}
+        <div style={{ fontSize: 9, letterSpacing: "0.12em", color: "#334155", marginLeft: "auto" }}>
+          GOAL <span style={{ color: "#475569", marginLeft: 6 }}>{formatHrsMins(PLAN_TOTAL_MIN)}</span>
+        </div>
       </div>
     </div>
   );
