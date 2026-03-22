@@ -1,0 +1,98 @@
+{
+  "2026-03-18": {
+    "type": "run",
+    "label": "Running",
+    "detail": "Actual Time: 0:38 · Actual Distance: 7.01 km · Speed: 10.94 km/h",
+    "completed": true
+  },
+  "2026-03-21": {
+    "type": "run",
+    "label": "Running",
+    "detail": "Actual Time: 0:35 · Actual Distance: 5.1 km · Speed: 8.63 km/h",
+    "completed": true
+  },
+  "2026-03-23": {
+    "type": "swim",
+    "label": "Fitness Test: Critical Swim Speed (CSS)",
+    "detail": "Speed · Planned Time: 0:42 · Distance Planned: 2166 m",
+    "completed": false
+  },
+  "2026-03-24": {
+    "type": "bike",
+    "label": "Fitness Test: FTP and Threshold HR",
+    "detail": "Planned Time: 0:42",
+    "completed": false
+  },
+  "2026-03-25": {
+    "type": "rest",
+    "label": "Rest Day",
+    "detail": "Workout type: Day Off · Allows for recovery whilst promoting adaptation to previous training stresses. Helps you get faster and keep injuries at bay.",
+    "completed": false
+  },
+  "2026-03-26": {
+    "type": "run",
+    "label": "Fitness Test: Threshold Pace and HR",
+    "detail": "Planned Time: 0:44",
+    "completed": false
+  },
+  "2026-03-27": {
+    "type": "swim",
+    "label": "Pool Swim: Speed Endurance",
+    "detail": "Planned Time: 0:34 · Distance Planned: 1800 m",
+    "completed": false
+  },
+  "2026-03-28": {
+    "type": "bike",
+    "label": "Aerobic Endurance Ride",
+    "detail": "Planned Time: 1:30",
+    "completed": false
+  },
+  "2026-03-29": {
+    "type": "run",
+    "label": "Aerobic Endurance Run",
+    "detail": "Planned Time: 0:45",
+    "completed": false
+  },
+  "2026-03-30": {
+    "type": "swim",
+    "label": "Pool Swim: Aerobic Endurance",
+    "detail": "Planned Time: 0:37 · Distance Planned: 2000 m",
+    "completed": false
+  },
+  "2026-03-31": {
+    "type": "bike",
+    "label": "Speed Workout Bike",
+    "detail": "Speed workouts will develop your power\\, economy and skill. Over time\\, they will prepare your body for the demands of pedalling harder and faster. · Planned Time: 0:48",
+    "completed": false
+  },
+  "2026-04-01": {
+    "type": "run",
+    "label": "Speed Workout Run",
+    "detail": "Speed workouts will develop your leg speed and running economy. Over time\\, they will teach your body to cope with the demands of running faster. · Planned Time: 0:43",
+    "completed": false
+  },
+  "2026-04-02": {
+    "type": "swim",
+    "label": "Pool Swim: Speed Endurance",
+    "detail": "Planned Time: 0:37 · Distance Planned: 2000 m",
+    "completed": false
+  },
+  "2026-04-03": {
+    "type": "rest",
+    "label": "Rest Day",
+    "detail": "Workout type: Day Off",
+    "completed": false
+  },
+  "2026-04-04": {
+    "type": "bike",
+    "label": "Aerobic Endurance Ride",
+    "detail": "Planned Time: 1:45",
+    "completed": false
+  },
+  "2026-04-05": {
+    "type": "run",
+    "label": "Aerobic Endurance Run",
+    "detail": "Planned Time: 0:50",
+    "completed": false
+  }
+}
