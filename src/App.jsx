@@ -19,6 +19,13 @@ const DISCIPLINES = {
   rest:  { label: "REST",  color: "#475569", bg: "#0f172a" },
 };
 
+const BADGES = [
+  { id: "aluminum", name: "ALUMINUM MAN", fraction: "¼ IRONMAN", color: "#94a3b8", glowColor: "rgba(148,163,184,0.3)", thresholds: { swim: 0.95, bike: 45, run: 10.55 } },
+  { id: "tin",      name: "TIN MAN",      fraction: "½ IRONMAN", color: "#cbd5e1", glowColor: "rgba(203,213,225,0.3)", thresholds: { swim: 1.9,  bike: 90, run: 21.1  } },
+  { id: "brass",    name: "BRASS MAN",    fraction: "¾ IRONMAN", color: "#d97706", glowColor: "rgba(217,119,6,0.3)",   thresholds: { swim: 2.85, bike: 135, run: 31.65 } },
+  { id: "iron",     name: "IRON MAN",     fraction: "FULL",      color: "#e31837", glowColor: "rgba(227,24,55,0.3)",   thresholds: { swim: 3.8,  bike: 180, run: 42.2  } },
+];
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getToday() {
@@ -73,6 +80,86 @@ function getTotals(workouts) {
     if (w.durationMin) totals[w.type].min += w.durationMin;
   }
   return totals;
+}
+
+// ─── Badges ───────────────────────────────────────────────────────────────────
+
+function BadgeRow({ totals }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+      {BADGES.map(badge => {
+        const isEarned =
+          totals.swim.km >= badge.thresholds.swim &&
+          totals.bike.km >= badge.thresholds.bike &&
+          totals.run.km  >= badge.thresholds.run;
+
+        return (
+          <div
+            key={badge.id}
+            className="badge-card"
+            style={{
+              background: "#0a0f1a",
+              border: isEarned ? `1px solid ${badge.color}60` : "1px solid #1e293b",
+              boxShadow: isEarned ? `0 0 0 1px ${badge.glowColor}, 0 0 28px ${badge.glowColor}` : "none",
+              padding: "20px 16px 18px",
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 14,
+              filter: isEarned ? "none" : "grayscale(1)",
+              opacity: isEarned ? 1 : 0.45,
+            }}
+          >
+            {/* Medal */}
+            <div style={{
+              width: 48, height: 48, borderRadius: "50%",
+              border: `2px solid ${badge.color}`,
+              background: isEarned ? badge.color + "22" : "transparent",
+              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+            }}>
+              {isEarned ? (
+                <svg viewBox="0 0 24 24" width="22" height="22">
+                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill={badge.color} />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" width="18" height="18">
+                  <rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="#334155" strokeWidth="1.5" />
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4" fill="none" stroke="#334155" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              )}
+            </div>
+
+            {/* Name + fraction */}
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 16, letterSpacing: "0.08em", color: badge.color, lineHeight: 1 }}>
+                {badge.name}
+              </div>
+              <div style={{ display: "inline-block", marginTop: 5, fontSize: 9, letterSpacing: "0.2em", color: badge.color, background: badge.color + "18", padding: "2px 8px" }}>
+                {badge.fraction}
+              </div>
+            </div>
+
+            {/* Discipline progress bars */}
+            <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 8 }}>
+              {["swim", "bike", "run"].map(disc => {
+                const pct = Math.min(100, (totals[disc].km / badge.thresholds[disc]) * 100);
+                return (
+                  <div key={disc} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ fontSize: 8, letterSpacing: "0.12em", color: "#64748b", width: 28, flexShrink: 0 }}>
+                      {disc.toUpperCase()}
+                    </div>
+                    <div style={{ flex: 1, height: 4, background: "#1e293b", borderRadius: 2, overflow: "hidden" }}>
+                      <div style={{ height: "100%", borderRadius: 2, background: DISCIPLINES[disc].color, width: `${pct}%`, transition: "width 0.6s ease" }} />
+                    </div>
+                    <div style={{ fontSize: 8, color: "#64748b", width: 56, textAlign: "right", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
+                      {totals[disc].km.toFixed(1)}/{badge.thresholds[disc]}km
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -165,6 +252,7 @@ export default function IronmanTracker() {
         .completed-check { animation: popIn 0.3s ease; }
         .completed-check:hover { opacity: 1 !important; transform: scale(1.15); }
         @keyframes popIn { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .badge-card { transition: border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease, filter 0.4s ease; }
       `}</style>
 
       {/* HEADER */}
@@ -275,6 +363,12 @@ export default function IronmanTracker() {
           </div>
         );
       })()}
+
+      {/* BADGES */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 40px 0" }}>
+        <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>LESSER METALS</div>
+        <BadgeRow totals={totals} />
+      </div>
 
       {/* CALENDAR */}
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 40px" }}>
