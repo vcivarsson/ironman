@@ -6,8 +6,15 @@ const RACE_DATE = new Date("2026-11-22");
 function MDotLogo({ size = 64 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="30,1 59,30 30,59 1,30" fill="#e31837" />
-      <circle cx="43" cy="17" r="6.5" fill="white" />
+      {/* Black circular background */}
+      <circle cx="30" cy="30" r="29" fill="#0d0d0d" />
+      {/* M shape — outer legs splay, deep inner V */}
+      <polygon
+        points="5,54 11,22 18,22 30,40 42,22 49,22 55,54 46,54 45,37 30,49 15,37 14,54"
+        fill="#e31837"
+      />
+      {/* M-dot (head) */}
+      <circle cx="30" cy="13" r="7.5" fill="#e31837" />
     </svg>
   );
 }
@@ -99,43 +106,11 @@ function getOverallProgress(workouts) {
   return { completed, past: past.length, pct: all.length ? Math.round((completed / all.length) * 100) : 0 };
 }
 
-// ─── Small ring gauge ─────────────────────────────────────────────────────────
-
-function SmallGauge({ color, pct, label, completedMin, plannedMin }) {
-  const r = 18;
-  const circ = 2 * Math.PI * r;
-  const fill = Math.min(1, Math.max(0, pct)) * circ;
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-      <div style={{ position: "relative", width: 44, height: 44 }}>
-        <svg width="44" height="44" viewBox="0 0 44 44">
-          <circle cx="22" cy="22" r={r} fill="none" stroke="#1e293b" strokeWidth="4" />
-          <circle cx="22" cy="22" r={r} fill="none" stroke={color} strokeWidth="4"
-            strokeDasharray={`${fill} ${circ}`} strokeLinecap="round"
-            transform="rotate(-90 22 22)" />
-        </svg>
-        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 11, color, lineHeight: 1 }}>
-            {Math.round(Math.min(1, pct) * 100)}%
-          </span>
-        </div>
-      </div>
-      <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 7, letterSpacing: "0.15em", color: "#64748b" }}>{label}</div>
-        {plannedMin > 0 && (
-          <div style={{ fontSize: 7, color: "#334155", marginTop: 1 }}>
-            {formatDuration(completedMin) || "0min"}/{formatDuration(plannedMin)}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 // ─── Weekly target card ───────────────────────────────────────────────────────
 
-function WeeklyTargetCard({ disc, color, targetMin, targetKm, doneMin }) {
-  const r = 30;
+function WeeklyTargetCard({ disc, color, targetMin, targetKm, doneMin, compact = false }) {
+  const r = compact ? 22 : 30;
+  const sz = compact ? 56 : 76;
   const circ = 2 * Math.PI * r;
   const pct = targetMin > 0 ? Math.min(1, doneMin / targetMin) : 0;
   const fill = pct * circ;
@@ -150,35 +125,36 @@ function WeeklyTargetCard({ disc, color, targetMin, targetKm, doneMin }) {
       background: "#0a0f1a",
       border: "1px solid #1e293b",
       borderTop: `2px solid ${color}`,
-      padding: "22px 24px",
+      padding: compact ? "14px 18px" : "22px 24px",
       display: "flex", justifyContent: "space-between", alignItems: "center",
+      flex: compact ? 1 : undefined,
     }}>
       <div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: compact ? 6 : 10 }}>
           <div style={{ width: 7, height: 7, borderRadius: "50%", background: color, flexShrink: 0 }} />
           <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#94a3b8" }}>{disc}</div>
         </div>
-        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 48, color: "#f1f5f9", lineHeight: 1, letterSpacing: "0.02em" }}>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: compact ? 36 : 48, color: "#f1f5f9", lineHeight: 1, letterSpacing: "0.02em" }}>
           {formatHrsMins(targetMin)}
         </div>
-        <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.12em", marginTop: 3 }}>HRS/WK</div>
-        <div style={{ fontSize: 12, color: "#64748b", marginTop: 10, letterSpacing: "0.04em" }}>{distLabel}</div>
+        <div style={{ fontSize: 8, color: "#475569", letterSpacing: "0.12em", marginTop: 2 }}>HRS/WK</div>
+        <div style={{ fontSize: compact ? 10 : 12, color: "#64748b", marginTop: compact ? 6 : 10, letterSpacing: "0.04em" }}>{distLabel}</div>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-        <div style={{ position: "relative", width: 76, height: 76 }}>
-          <svg width="76" height="76" viewBox="0 0 76 76">
-            <circle cx="38" cy="38" r={r} fill="none" stroke="#1e293b" strokeWidth="6" />
-            <circle cx="38" cy="38" r={r} fill="none" stroke={color} strokeWidth="6"
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: compact ? 4 : 8 }}>
+        <div style={{ position: "relative", width: sz, height: sz }}>
+          <svg width={sz} height={sz} viewBox={`0 0 ${sz} ${sz}`}>
+            <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke="#1e293b" strokeWidth="5" />
+            <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={color} strokeWidth="5"
               strokeDasharray={`${fill} ${circ}`} strokeLinecap="round"
-              transform="rotate(-90 38 38)" />
+              transform={`rotate(-90 ${sz/2} ${sz/2})`} />
           </svg>
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color, lineHeight: 1 }}>{Math.round(pct * 100)}%</div>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: compact ? 14 : 20, color, lineHeight: 1 }}>{Math.round(pct * 100)}%</div>
             <div style={{ fontSize: 7, color: "#475569", letterSpacing: "0.08em" }}>DONE</div>
           </div>
         </div>
-        <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.04em" }}>
-          {formatDuration(doneMin) || "0min"} done
+        <div style={{ fontSize: 8, color: "#475569", letterSpacing: "0.04em" }}>
+          {formatDuration(doneMin) || "—"} done
         </div>
       </div>
     </div>
@@ -333,8 +309,6 @@ export default function IronmanTracker() {
     const done = days.filter(({ workout: w }) => w?.completed).reduce((s, { workout: w }) => s + (w?.durationMin || 0), 0);
     thisWeekStats[type] = { planned, done };
   }
-  const hasThisWeek = Object.values(thisWeekStats).some(s => s.planned > 0);
-
   // Upcoming sessions
   const upcomingSessions = Object.entries(workouts)
     .filter(([k, w]) => !w.completed && w.type !== "rest" && new Date(k) >= today)
@@ -409,30 +383,24 @@ export default function IronmanTracker() {
             </div>
           </div>
 
-          <div style={{ width: 1, height: 48, background: "#1e293b", flexShrink: 0 }} />
+          <div style={{ width: 1, height: 72, background: "#1e293b", flexShrink: 0 }} />
 
-          <div>
-            <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "#94a3b8", marginBottom: 10 }}>THIS WEEK</div>
-            {hasThisWeek ? (
-              <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                {["swim", "bike", "run"].map(type => {
-                  const { planned, done } = thisWeekStats[type];
-                  if (!planned) return null;
-                  return (
-                    <SmallGauge key={type} color={DISCIPLINES[type].color}
-                      pct={done / planned} label={DISCIPLINES[type].label}
-                      completedMin={done} plannedMin={planned} />
-                  );
-                })}
-              </div>
-            ) : (
-              <div style={{ fontSize: 10, color: "#334155" }}>No sessions planned</div>
-            )}
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "#94a3b8", marginBottom: 10 }}>WEEKLY TARGETS</div>
+            <div style={{ display: "flex", gap: 10 }}>
+              {["swim", "bike", "run"].map(type => (
+                <WeeklyTargetCard
+                  key={type}
+                  compact
+                  disc={DISCIPLINES[type].label}
+                  color={DISCIPLINES[type].color}
+                  targetMin={WEEKLY_TARGETS[type].min}
+                  targetKm={WEEKLY_TARGETS[type].km}
+                  doneMin={thisWeekStats[type]?.done || 0}
+                />
+              ))}
+            </div>
           </div>
-
-          <div style={{ width: 1, height: 48, background: "#1e293b", flexShrink: 0 }} />
-
-          <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#4ade80" }}>✓ {Object.keys(workouts).length} SESSIONS LOADED</div>
         </div>
       </div>
 
@@ -599,23 +567,6 @@ export default function IronmanTracker() {
         <div style={{ marginTop: 32 }}>
           <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>LESSER METALS</div>
           <BadgeRow badgeCompletions={badgeCompletions} toggleBadge={toggleBadge} />
-        </div>
-
-        {/* WEEKLY TARGETS */}
-        <div style={{ marginTop: 32 }}>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>WEEKLY TARGETS</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
-            {["swim", "bike", "run"].map(type => (
-              <WeeklyTargetCard
-                key={type}
-                disc={DISCIPLINES[type].label}
-                color={DISCIPLINES[type].color}
-                targetMin={WEEKLY_TARGETS[type].min}
-                targetKm={WEEKLY_TARGETS[type].km}
-                doneMin={thisWeekStats[type]?.done || 0}
-              />
-            ))}
-          </div>
         </div>
 
         {/* NEXT UP */}
