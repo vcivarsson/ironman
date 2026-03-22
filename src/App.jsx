@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import cachedWorkouts from "./workouts-cache.json";
 
 const RACE_DATE = new Date("2026-11-22");
+
 function MDotLogo({ size = 64 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
@@ -12,10 +13,24 @@ function MDotLogo({ size = 64 }) {
 }
 
 const DISCIPLINES = {
-  swim:  { label: "SWIM",  color: "#38bdf8", bg: "#0c1a2e" },
-  bike:  { label: "BIKE",  color: "#a3e635", bg: "#0f1e07" },
-  run:   { label: "RUN",   color: "#fb923c", bg: "#1f0e04" },
+  swim:  { label: "SWIM",  color: "#38bdf8", bg: "#0d1117" },
+  bike:  { label: "BIKE",  color: "#f59e0b", bg: "#0d1117" },
+  run:   { label: "RUN",   color: "#4ade80", bg: "#0d1117" },
   rest:  { label: "REST",  color: "#475569", bg: "#0f172a" },
+};
+
+// Fixed weekly targets from training plan averages
+const WEEKLY_TARGETS = {
+  swim: { min: 124, km: 4.931 },   // 2:04 hrs/wk, 4,931 m/wk
+  bike: { min: 240, km: 112 },     // 4:00 hrs/wk, 112 km/wk
+  run:  { min: 142, km: 25.8 },    // 2:22 hrs/wk, 25.8 km/wk
+};
+
+// 32-week plan totals from weekly averages
+const PLAN_TOTALS = {
+  swim: { min: 124 * 32, km: 4.931 * 32 },
+  bike: { min: 240 * 32, km: 112  * 32 },
+  run:  { min: 142 * 32, km: 25.8 * 32 },
 };
 
 const BADGES = [
@@ -39,9 +54,8 @@ function getDaysUntilRace() {
 
 function getWeekStart(offset) {
   const today = getToday();
-  const dow = today.getDay();
   const monday = new Date(today);
-  monday.setDate(today.getDate() - ((dow + 6) % 7) + offset * 7);
+  monday.setDate(today.getDate() - ((today.getDay() + 6) % 7) + offset * 7);
   return monday;
 }
 
@@ -50,8 +64,7 @@ function getWeekDays(weekOffset) {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
-    const key = d.toISOString().split("T")[0];
-    return { date: d, key };
+    return { date: d, key: d.toISOString().split("T")[0] };
   });
 }
 
@@ -63,54 +76,110 @@ function formatDuration(minutes) {
   return m > 0 ? `${h}h ${m}min` : `${h}h`;
 }
 
+function formatHrsMins(minutes) {
+  const h = Math.floor(minutes / 60);
+  const m = Math.round(minutes % 60);
+  return `${h}:${String(m).padStart(2, "0")}`;
+}
+
+// Estimate distance where TP doesn't provide it
+function getEffectiveKm(w) {
+  if (w.distanceKm) return w.distanceKm;
+  if (!w.durationMin) return 0;
+  if (w.type === "bike") return (w.durationMin / 60) * 28;     // 28 km/h avg
+  if (w.type === "run")  return w.durationMin / 5.75;           // 5:45 min/km avg
+  return 0;
+}
+
 function getOverallProgress(workouts) {
   const all = Object.values(workouts).filter(w => w.type !== "rest");
   const today = getToday();
   const past = Object.entries(workouts).filter(([k, w]) => w.type !== "rest" && new Date(k) < today);
   const completed = past.filter(([, w]) => w.completed).length;
-  return { completed, total: all.length, past: past.length, pct: all.length ? Math.round((completed / all.length) * 100) : 0 };
+  return { completed, past: past.length, pct: all.length ? Math.round((completed / all.length) * 100) : 0 };
 }
 
-function getAllTotals(workouts) {
-  const totals = { swim: { km: 0, min: 0 }, bike: { km: 0, min: 0 }, run: { km: 0, min: 0 } };
-  for (const w of Object.values(workouts)) {
-    if (!totals[w.type]) continue;
-    if (w.distanceKm) totals[w.type].km += w.distanceKm;
-    if (w.durationMin) totals[w.type].min += w.durationMin;
-  }
-  return totals;
-}
+// ─── Small ring gauge ─────────────────────────────────────────────────────────
 
-// ─── Small gauge for stats bar ─────────────────────────────────────────────
-
-function SmallGauge({ color, pct, label, plannedMin, completedMin }) {
+function SmallGauge({ color, pct, label, completedMin, plannedMin }) {
   const r = 18;
   const circ = 2 * Math.PI * r;
-  const clamped = Math.min(1, Math.max(0, pct));
-  const fill = clamped * circ;
-  const pctDisplay = Math.round(clamped * 100);
+  const fill = Math.min(1, Math.max(0, pct)) * circ;
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
       <div style={{ position: "relative", width: 44, height: 44 }}>
         <svg width="44" height="44" viewBox="0 0 44 44">
           <circle cx="22" cy="22" r={r} fill="none" stroke="#1e293b" strokeWidth="4" />
           <circle cx="22" cy="22" r={r} fill="none" stroke={color} strokeWidth="4"
-            strokeDasharray={`${fill} ${circ}`}
-            strokeLinecap="round"
-            transform="rotate(-90 22 22)"
-          />
+            strokeDasharray={`${fill} ${circ}`} strokeLinecap="round"
+            transform="rotate(-90 22 22)" />
         </svg>
         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 11, color, lineHeight: 1 }}>{pctDisplay}%</span>
+          <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 11, color, lineHeight: 1 }}>
+            {Math.round(Math.min(1, pct) * 100)}%
+          </span>
         </div>
       </div>
       <div style={{ textAlign: "center" }}>
         <div style={{ fontSize: 7, letterSpacing: "0.15em", color: "#64748b" }}>{label}</div>
         {plannedMin > 0 && (
-          <div style={{ fontSize: 7, color: "#334155", letterSpacing: "0.02em", marginTop: 1 }}>
+          <div style={{ fontSize: 7, color: "#334155", marginTop: 1 }}>
             {formatDuration(completedMin) || "0min"}/{formatDuration(plannedMin)}
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Weekly target card ───────────────────────────────────────────────────────
+
+function WeeklyTargetCard({ disc, color, targetMin, targetKm, doneMin }) {
+  const r = 30;
+  const circ = 2 * Math.PI * r;
+  const pct = targetMin > 0 ? Math.min(1, doneMin / targetMin) : 0;
+  const fill = pct * circ;
+  const distLabel = targetKm >= 10
+    ? `${Math.round(targetKm)} km/wk`
+    : targetKm >= 1
+      ? `${targetKm.toFixed(1)} km/wk`
+      : `${Math.round(targetKm * 1000)} m/wk`;
+
+  return (
+    <div style={{
+      background: "#0a0f1a",
+      border: "1px solid #1e293b",
+      borderTop: `2px solid ${color}`,
+      padding: "22px 24px",
+      display: "flex", justifyContent: "space-between", alignItems: "center",
+    }}>
+      <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+          <div style={{ width: 7, height: 7, borderRadius: "50%", background: color, flexShrink: 0 }} />
+          <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#94a3b8" }}>{disc}</div>
+        </div>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 48, color: "#f1f5f9", lineHeight: 1, letterSpacing: "0.02em" }}>
+          {formatHrsMins(targetMin)}
+        </div>
+        <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.12em", marginTop: 3 }}>HRS/WK</div>
+        <div style={{ fontSize: 12, color: "#64748b", marginTop: 10, letterSpacing: "0.04em" }}>{distLabel}</div>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+        <div style={{ position: "relative", width: 76, height: 76 }}>
+          <svg width="76" height="76" viewBox="0 0 76 76">
+            <circle cx="38" cy="38" r={r} fill="none" stroke="#1e293b" strokeWidth="6" />
+            <circle cx="38" cy="38" r={r} fill="none" stroke={color} strokeWidth="6"
+              strokeDasharray={`${fill} ${circ}`} strokeLinecap="round"
+              transform="rotate(-90 38 38)" />
+          </svg>
+          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color, lineHeight: 1 }}>{Math.round(pct * 100)}%</div>
+            <div style={{ fontSize: 7, color: "#475569", letterSpacing: "0.08em" }}>DONE</div>
+          </div>
+        </div>
+        <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.04em" }}>
+          {formatDuration(doneMin) || "0min"} done
+        </div>
       </div>
     </div>
   );
@@ -144,12 +213,11 @@ function BadgeRow({ badgeCompletions, toggleBadge }) {
               transition: "filter 0.3s ease, opacity 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
             }}
           >
-            {/* Medal */}
             <div style={{
               width: 52, height: 52, borderRadius: "50%",
               border: `2px solid ${badge.color}`,
               background: isEarned ? badge.color + "22" : "transparent",
-              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+              display: "flex", alignItems: "center", justifyContent: "center",
               transition: "background 0.3s",
             }}>
               {isEarned ? (
@@ -164,7 +232,6 @@ function BadgeRow({ badgeCompletions, toggleBadge }) {
               )}
             </div>
 
-            {/* Name + fraction */}
             <div style={{ textAlign: "center" }}>
               <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 17, letterSpacing: "0.08em", color: badge.color, lineHeight: 1 }}>
                 {badge.name}
@@ -174,31 +241,22 @@ function BadgeRow({ badgeCompletions, toggleBadge }) {
               </div>
             </div>
 
-            {/* Discipline bars */}
             <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 7 }}>
-              {["swim", "bike", "run"].map(disc => {
-                const discColor = DISCIPLINES[disc].color;
-                return (
-                  <div key={disc} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{ fontSize: 8, letterSpacing: "0.12em", color: isActive ? discColor : "#475569", width: 28, flexShrink: 0, transition: "color 0.3s" }}>
-                      {disc.toUpperCase()}
-                    </div>
-                    <div style={{ flex: 1, height: 3, background: "#1e293b", borderRadius: 2, overflow: "hidden" }}>
-                      <div style={{
-                        height: "100%", borderRadius: 2, background: discColor,
-                        width: isEarned ? "100%" : "0%",
-                        transition: "width 0.8s ease",
-                      }} />
-                    </div>
-                    <div style={{ fontSize: 8, color: isActive ? "#64748b" : "#334155", width: 48, textAlign: "right", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.02em", transition: "color 0.3s" }}>
-                      {badge.thresholds[disc]}km
-                    </div>
+              {["swim", "bike", "run"].map(disc => (
+                <div key={disc} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ fontSize: 8, letterSpacing: "0.12em", color: isActive ? DISCIPLINES[disc].color : "#475569", width: 28, flexShrink: 0, transition: "color 0.3s" }}>
+                    {disc.toUpperCase()}
                   </div>
-                );
-              })}
+                  <div style={{ flex: 1, height: 3, background: "#1e293b", borderRadius: 2, overflow: "hidden" }}>
+                    <div style={{ height: "100%", borderRadius: 2, background: DISCIPLINES[disc].color, width: isEarned ? "100%" : "0%", transition: "width 0.8s ease" }} />
+                  </div>
+                  <div style={{ fontSize: 8, color: isActive ? "#64748b" : "#334155", width: 48, textAlign: "right", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.02em", transition: "color 0.3s" }}>
+                    {badge.thresholds[disc]}km
+                  </div>
+                </div>
+              ))}
             </div>
 
-            {/* Toggle */}
             <button
               onClick={() => toggleBadge(badge.id)}
               style={{
@@ -237,10 +295,7 @@ export default function IronmanTracker() {
   const workouts = useMemo(() => {
     const merged = {};
     for (const [key, w] of Object.entries(cachedWorkouts)) {
-      merged[key] = {
-        ...w,
-        completed: completions[key] !== undefined ? completions[key] : w.completed,
-      };
+      merged[key] = { ...w, completed: completions[key] !== undefined ? completions[key] : w.completed };
     }
     return merged;
   }, [completions]);
@@ -266,11 +321,10 @@ export default function IronmanTracker() {
   const todayKey = today.toISOString().split("T")[0];
   const daysLeft = getDaysUntilRace();
   const progress = getOverallProgress(workouts);
-  const allTotals = getAllTotals(workouts);
   const weekDays = getWeekDays(weekOffset);
   const weekDaysWithWorkouts = weekDays.map(d => ({ ...d, workout: workouts[d.key] }));
 
-  // Current week (always offset=0) for the stats bar gauges
+  // Current week stats (always offset=0) for gauges and targets
   const currentWeekDays = getWeekDays(0).map(d => ({ ...d, workout: workouts[d.key] }));
   const thisWeekStats = {};
   for (const type of ["swim", "bike", "run"]) {
@@ -280,26 +334,6 @@ export default function IronmanTracker() {
     thisWeekStats[type] = { planned, done };
   }
   const hasThisWeek = Object.values(thisWeekStats).some(s => s.planned > 0);
-
-  // Weekly load chart data
-  const weeklyLoad = {};
-  for (const [key, w] of Object.entries(workouts)) {
-    const d = new Date(key);
-    const mon = new Date(d);
-    mon.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-    const wk = mon.toISOString().split("T")[0];
-    if (!weeklyLoad[wk]) weeklyLoad[wk] = { swim: 0, bike: 0, run: 0 };
-    if (w.durationMin && weeklyLoad[wk][w.type] !== undefined)
-      weeklyLoad[wk][w.type] += w.durationMin;
-  }
-  const loadWeeks = Object.keys(weeklyLoad).sort();
-  const loadTotals = loadWeeks.map(wk => ["swim", "bike", "run"].reduce((s, t) => s + weeklyLoad[wk][t], 0));
-  const maxLoad = Math.max(...loadTotals, 1);
-  const currentWeekKey = (() => {
-    const t = getToday();
-    t.setDate(t.getDate() - ((t.getDay() + 6) % 7));
-    return t.toISOString().split("T")[0];
-  })();
 
   // Upcoming sessions
   const upcomingSessions = Object.entries(workouts)
@@ -360,7 +394,6 @@ export default function IronmanTracker() {
       {/* STATS ROW */}
       <div style={{ borderBottom: "1px solid #1e293b", background: "#0a0f1a" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 40px", display: "flex", gap: 32, alignItems: "center", flexWrap: "wrap" }}>
-          {/* Completed workouts */}
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "#94a3b8", marginBottom: 6 }}>COMPLETED WORKOUTS</div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -378,7 +411,6 @@ export default function IronmanTracker() {
 
           <div style={{ width: 1, height: 48, background: "#1e293b", flexShrink: 0 }} />
 
-          {/* This week gauges */}
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "#94a3b8", marginBottom: 10 }}>THIS WEEK</div>
             {hasThisWeek ? (
@@ -387,19 +419,14 @@ export default function IronmanTracker() {
                   const { planned, done } = thisWeekStats[type];
                   if (!planned) return null;
                   return (
-                    <SmallGauge
-                      key={type}
-                      color={DISCIPLINES[type].color}
-                      pct={done / planned}
-                      label={DISCIPLINES[type].label}
-                      plannedMin={planned}
-                      completedMin={done}
-                    />
+                    <SmallGauge key={type} color={DISCIPLINES[type].color}
+                      pct={done / planned} label={DISCIPLINES[type].label}
+                      completedMin={done} plannedMin={planned} />
                   );
                 })}
               </div>
             ) : (
-              <div style={{ fontSize: 10, color: "#334155", letterSpacing: "0.05em" }}>No sessions planned</div>
+              <div style={{ fontSize: 10, color: "#334155" }}>No sessions planned</div>
             )}
           </div>
 
@@ -414,7 +441,7 @@ export default function IronmanTracker() {
         const w = workouts[todayKey];
         const disc = DISCIPLINES[w.type];
         return (
-          <div style={{ borderBottom: "1px solid #1e293b", background: disc.bg }}>
+          <div style={{ borderBottom: "1px solid #1e293b", background: disc.color + "12" }}>
             <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 40px", display: "flex", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <div style={{ width: 3, height: 48, background: disc.color, borderRadius: 2, flexShrink: 0 }} />
@@ -427,22 +454,19 @@ export default function IronmanTracker() {
                   </div>
                 </div>
               </div>
-              <div style={{ display: "inline-block", fontSize: 8, letterSpacing: "0.15em", color: disc.color, background: disc.color + "18", padding: "3px 8px" }}>{disc.label}</div>
+              <div style={{ display: "inline-block", fontSize: 8, letterSpacing: "0.15em", color: disc.color, background: disc.color + "20", padding: "3px 8px" }}>{disc.label}</div>
               <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 12 }}>
                 <div style={{ fontSize: 11, color: w.completed ? "#4ade80" : "#f59e0b", letterSpacing: "0.15em" }}>
                   {w.completed ? "✓ DONE" : "● TO DO"}
                 </div>
-                <button
-                  onClick={() => toggleCompletion(todayKey)}
-                  style={{
-                    background: w.completed ? "#1e293b" : disc.color + "22",
-                    border: `1px solid ${w.completed ? "#334155" : disc.color}`,
-                    color: w.completed ? "#64748b" : disc.color,
-                    padding: "6px 14px", cursor: "pointer",
-                    fontFamily: "'DM Mono', monospace", fontSize: 10,
-                    letterSpacing: "0.1em", transition: "all 0.2s",
-                  }}
-                >{w.completed ? "MARK INCOMPLETE" : "MARK COMPLETE"}</button>
+                <button onClick={() => toggleCompletion(todayKey)} style={{
+                  background: w.completed ? "#1e293b" : disc.color + "22",
+                  border: `1px solid ${w.completed ? "#334155" : disc.color}`,
+                  color: w.completed ? "#64748b" : disc.color,
+                  padding: "6px 14px", cursor: "pointer",
+                  fontFamily: "'DM Mono', monospace", fontSize: 10,
+                  letterSpacing: "0.1em", transition: "all 0.2s",
+                }}>{w.completed ? "MARK INCOMPLETE" : "MARK COMPLETE"}</button>
               </div>
             </div>
           </div>
@@ -456,7 +480,7 @@ export default function IronmanTracker() {
             <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 4 }}>WEEK VIEW</div>
             <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, letterSpacing: "0.08em", color: "#e2e8f0" }}>{weekLabel}</div>
           </div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <div style={{ display: "flex", gap: 8 }}>
             <button className="nav-btn" onClick={() => setWeekOffset(w => w - 1)}>← PREV</button>
             <button className="nav-btn" onClick={() => setWeekOffset(0)} style={{ color: "#f59e0b", borderColor: "#f59e0b40" }}>TODAY</button>
             <button className="nav-btn" onClick={() => setWeekOffset(w => w + 1)}>NEXT →</button>
@@ -471,40 +495,37 @@ export default function IronmanTracker() {
             const isSelected = selectedDay === key;
             const disc = workout ? DISCIPLINES[workout.type] : DISCIPLINES.rest;
             const isPast = date < today;
+            // Uniform dark bg for all days; rest gets slightly different shade
+            const cardBg = disc.bg;
 
             return (
-              <div
-                key={key}
+              <div key={key}
                 className={`day-card${isToday ? " today" : ""}${isSelected ? " selected" : ""}`}
                 onClick={() => setSelectedDay(isSelected ? null : key)}
                 style={{
-                  background: disc.bg,
-                  padding: "14px 12px",
-                  minHeight: 140,
+                  background: cardBg, padding: "14px 12px", minHeight: 140,
                   position: "relative",
                   opacity: isPast && workout && !workout.completed && workout.type !== "rest" ? 0.5 : 1,
                 }}
               >
-                <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#94a3b8", marginBottom: 4 }}>{label}</div>
-                <div style={{ fontSize: 16, fontFamily: "'Bebas Neue', sans-serif", color: isToday ? "#f59e0b" : "#94a3b8", marginBottom: 10 }}>{date.getDate()}</div>
+                <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#64748b", marginBottom: 4 }}>{label}</div>
+                <div style={{ fontSize: 16, fontFamily: "'Bebas Neue', sans-serif", color: isToday ? "#f59e0b" : "#64748b", marginBottom: 10 }}>{date.getDate()}</div>
 
                 {workout && workout.type !== "rest" ? (
                   <>
-                    <div style={{ display: "inline-block", fontSize: 8, letterSpacing: "0.15em", color: disc.color, background: disc.color + "18", padding: "2px 6px", marginBottom: 8 }}>
+                    <div style={{ display: "inline-block", fontSize: 8, letterSpacing: "0.15em", color: disc.color, background: disc.color + "20", border: `1px solid ${disc.color}30`, padding: "2px 6px", marginBottom: 8, borderRadius: 2 }}>
                       {disc.label}
                     </div>
                     <div style={{ fontSize: 10, color: "#e2e8f0", lineHeight: 1.4, letterSpacing: "0.02em", marginBottom: workout.durationMin ? 4 : 0 }}>
                       {workout.label}
                     </div>
                     {workout.durationMin && (
-                      <div style={{ fontSize: 9, color: "#94a3b8", letterSpacing: "0.05em" }}>
+                      <div style={{ fontSize: 9, color: "#64748b", letterSpacing: "0.05em" }}>
                         {formatDuration(workout.durationMin)}
                         {workout.distanceKm ? ` · ${workout.distanceKm.toFixed(1)}km` : ""}
                       </div>
                     )}
-                    <div
-                      className="completed-check"
-                      onClick={e => { e.stopPropagation(); toggleCompletion(key); }}
+                    <div className="completed-check" onClick={e => { e.stopPropagation(); toggleCompletion(key); }}
                       title={workout.completed ? "Mark incomplete" : "Mark complete"}
                       style={{
                         position: "absolute", top: 10, right: 10, width: 16, height: 16,
@@ -512,15 +533,14 @@ export default function IronmanTracker() {
                         border: `1px solid ${disc.color}`,
                         borderRadius: "50%", display: "flex", alignItems: "center",
                         justifyContent: "center", fontSize: 9, color: "#000",
-                        cursor: "pointer", opacity: workout.completed ? 1 : 0.4,
-                        transition: "all 0.2s",
+                        cursor: "pointer", opacity: workout.completed ? 1 : 0.4, transition: "all 0.2s",
                       }}
                     >{workout.completed ? "✓" : ""}</div>
                   </>
                 ) : workout?.type === "rest" ? (
-                  <div style={{ fontSize: 10, color: "#64748b", letterSpacing: "0.05em" }}>REST</div>
+                  <div style={{ fontSize: 10, color: "#475569", letterSpacing: "0.05em" }}>REST</div>
                 ) : (
-                  <div style={{ fontSize: 10, color: "#1e293b", letterSpacing: "0.05em" }}>—</div>
+                  <div style={{ fontSize: 10, color: "#1e293b" }}>—</div>
                 )}
               </div>
             );
@@ -529,7 +549,7 @@ export default function IronmanTracker() {
 
         {/* Selected day detail */}
         {selectedDay && workouts[selectedDay] && (
-          <div style={{ marginTop: 16, background: "#0d1117", border: `1px solid ${DISCIPLINES[workouts[selectedDay].type]?.color || "#334155"}40`, padding: "24px 28px" }}>
+          <div style={{ marginTop: 16, background: "#0d1117", border: `1px solid ${DISCIPLINES[workouts[selectedDay].type]?.color || "#334155"}30`, padding: "24px 28px" }}>
             <div style={{ display: "flex", gap: 48, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 16 }}>
               <div>
                 <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>SESSION</div>
@@ -549,17 +569,14 @@ export default function IronmanTracker() {
                   {workouts[selectedDay].completed ? "✓ COMPLETED" : "… UPCOMING"}
                 </div>
                 {workouts[selectedDay].type !== "rest" && (
-                  <button
-                    onClick={() => toggleCompletion(selectedDay)}
-                    style={{
-                      background: "transparent",
-                      border: `1px solid ${workouts[selectedDay].completed ? "#4ade8040" : "#4ade80"}`,
-                      color: workouts[selectedDay].completed ? "#64748b" : "#4ade80",
-                      padding: "5px 12px", cursor: "pointer",
-                      fontFamily: "'DM Mono', monospace", fontSize: 10,
-                      letterSpacing: "0.1em", transition: "all 0.2s",
-                    }}
-                  >
+                  <button onClick={() => toggleCompletion(selectedDay)} style={{
+                    background: "transparent",
+                    border: `1px solid ${workouts[selectedDay].completed ? "#4ade8040" : "#4ade80"}`,
+                    color: workouts[selectedDay].completed ? "#64748b" : "#4ade80",
+                    padding: "5px 12px", cursor: "pointer",
+                    fontFamily: "'DM Mono', monospace", fontSize: 10,
+                    letterSpacing: "0.1em", transition: "all 0.2s",
+                  }}>
                     {workouts[selectedDay].completed ? "MARK INCOMPLETE" : "MARK COMPLETE"}
                   </button>
                 )}
@@ -571,11 +588,8 @@ export default function IronmanTracker() {
                 <pre style={{
                   fontFamily: "'DM Mono', 'Courier New', monospace",
                   fontSize: 10, color: "#94a3b8", lineHeight: 1.8,
-                  letterSpacing: "0.02em", whiteSpace: "pre-wrap",
-                  wordBreak: "break-word", margin: 0,
-                }}>
-                  {workouts[selectedDay].description}
-                </pre>
+                  whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0,
+                }}>{workouts[selectedDay].description}</pre>
               </div>
             )}
           </div>
@@ -587,121 +601,78 @@ export default function IronmanTracker() {
           <BadgeRow badgeCompletions={badgeCompletions} toggleBadge={toggleBadge} />
         </div>
 
-        {/* TRAINING LOAD + UPCOMING */}
-        <div style={{ marginTop: 32, display: "grid", gridTemplateColumns: "1fr 280px", gap: 12 }}>
+        {/* WEEKLY TARGETS */}
+        <div style={{ marginTop: 32 }}>
+          <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>WEEKLY TARGETS</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            {["swim", "bike", "run"].map(type => (
+              <WeeklyTargetCard
+                key={type}
+                disc={DISCIPLINES[type].label}
+                color={DISCIPLINES[type].color}
+                targetMin={WEEKLY_TARGETS[type].min}
+                targetKm={WEEKLY_TARGETS[type].km}
+                doneMin={thisWeekStats[type]?.done || 0}
+              />
+            ))}
+          </div>
+        </div>
 
-          {/* Weekly load chart */}
-          <div style={{ background: "#0a0f1a", border: "1px solid #1e293b", padding: "20px 24px" }}>
-            <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 20 }}>WEEKLY TRAINING LOAD</div>
-            <div style={{ display: "flex", gap: 3, alignItems: "flex-end", height: 100 }}>
-              {loadWeeks.map((wk, i) => {
-                const load = weeklyLoad[wk];
-                const total = loadTotals[i];
-                const isCurrent = wk === currentWeekKey;
-                const isPast = wk < currentWeekKey;
+        {/* NEXT UP */}
+        <div style={{ marginTop: 32 }}>
+          <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>NEXT UP</div>
+          {upcomingSessions.length === 0 ? (
+            <div style={{ fontSize: 11, color: "#334155" }}>No upcoming sessions</div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10 }}>
+              {upcomingSessions.map(([key, w], idx) => {
+                const disc = DISCIPLINES[w.type];
+                const diff = Math.round((new Date(key) - today) / 864e5);
+                const dayLabel = diff === 0 ? "TODAY" : diff === 1 ? "TOMORROW"
+                  : new Date(key + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }).toUpperCase();
                 return (
-                  <div key={wk} title={`${new Date(wk + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })} — ${(total / 60).toFixed(1)}h`}
-                    style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "stretch", cursor: "default" }}>
-                    <div style={{ display: "flex", flexDirection: "column-reverse", height: 80 }}>
-                      {["run", "bike", "swim"].map(type => {
-                        if (!load[type]) return null;
-                        const segH = Math.max(1, Math.round((load[type] / maxLoad) * 80));
-                        return (
-                          <div key={type} style={{
-                            height: segH, background: DISCIPLINES[type].color,
-                            opacity: isPast ? 0.35 : isCurrent ? 1 : 0.7,
-                          }} />
-                        );
-                      })}
-                      {total === 0 && <div style={{ height: 2, background: "#1e293b", borderRadius: 1, marginTop: "auto" }} />}
+                  <div key={key} style={{
+                    background: "#0a0f1a", border: "1px solid #1e293b",
+                    borderTop: `2px solid ${disc.color}`,
+                    padding: "14px 16px", opacity: idx === 0 ? 1 : 0.6,
+                  }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                      <div style={{ fontSize: 8, letterSpacing: "0.15em", color: disc.color }}>{disc.label}</div>
+                      <div style={{ fontSize: 8, color: "#475569", letterSpacing: "0.04em" }}>{dayLabel}</div>
                     </div>
-                    <div style={{
-                      fontSize: 7, textAlign: "center", marginTop: 5, letterSpacing: "0.04em",
-                      color: isCurrent ? "#f59e0b" : "#334155",
-                      borderTop: isCurrent ? "1px solid #f59e0b50" : "1px solid transparent",
-                      paddingTop: 3,
-                    }}>
-                      {new Date(wk + "T12:00:00").toLocaleDateString("en-US", { month: "numeric", day: "numeric" })}
-                    </div>
+                    <div style={{ fontSize: 10, color: "#cbd5e1", lineHeight: 1.4, letterSpacing: "0.02em", marginBottom: 6 }}>{w.label}</div>
+                    {w.durationMin && (
+                      <div style={{ fontSize: 9, color: "#64748b", letterSpacing: "0.04em" }}>
+                        {formatDuration(w.durationMin)}{w.distanceKm ? ` · ${w.distanceKm.toFixed(1)} km` : ""}
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
-              <div style={{ fontSize: 9, color: "#1e293b" }}>0h</div>
-              <div style={{ display: "flex", gap: 10 }}>
-                {["swim", "bike", "run"].map(t => (
-                  <div key={t} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 8, color: "#475569", letterSpacing: "0.05em" }}>
-                    <div style={{ width: 6, height: 6, background: DISCIPLINES[t].color, opacity: 0.7 }} />
-                    {DISCIPLINES[t].label}
-                  </div>
-                ))}
-              </div>
-              <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.05em" }}>{(maxLoad / 60).toFixed(1)}h peak</div>
-            </div>
-          </div>
-
-          {/* Next up */}
-          <div style={{ background: "#0a0f1a", border: "1px solid #1e293b", padding: "20px 24px" }}>
-            <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>NEXT UP</div>
-            {upcomingSessions.length === 0 ? (
-              <div style={{ fontSize: 11, color: "#334155", letterSpacing: "0.05em" }}>No upcoming sessions</div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                {upcomingSessions.map(([key, w], idx) => {
-                  const disc = DISCIPLINES[w.type];
-                  const diff = Math.round((new Date(key) - today) / 864e5);
-                  const dayLabel = diff === 0 ? "TODAY" : diff === 1 ? "TOMORROW"
-                    : new Date(key + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }).toUpperCase();
-                  return (
-                    <div key={key} style={{ display: "flex", gap: 10, opacity: idx === 0 ? 1 : 0.55 }}>
-                      <div style={{ width: 2, background: disc.color, borderRadius: 1, flexShrink: 0, alignSelf: "stretch" }} />
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
-                          <div style={{ fontSize: 8, letterSpacing: "0.15em", color: disc.color }}>{disc.label}</div>
-                          <div style={{ fontSize: 8, color: idx === 0 ? "#94a3b8" : "#475569", letterSpacing: "0.04em" }}>{dayLabel}</div>
-                        </div>
-                        <div style={{ fontSize: 10, color: "#cbd5e1", letterSpacing: "0.02em", lineHeight: 1.35, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{w.label}</div>
-                        {w.durationMin && (
-                          <div style={{ fontSize: 9, color: "#64748b", marginTop: 2, letterSpacing: "0.04em" }}>
-                            {formatDuration(w.durationMin)}{w.distanceKm ? ` · ${w.distanceKm.toFixed(1)} km` : ""}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+          )}
         </div>
 
-        {/* All-time totals */}
+        {/* TOTAL TRAINING VOLUME */}
         <div style={{ marginTop: 32 }}>
-          <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>TOTAL TRAINING VOLUME</div>
+          <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 16 }}>TOTAL TRAINING VOLUME <span style={{ color: "#334155", letterSpacing: "0.1em", fontSize: 9 }}>· 32-WEEK PLAN</span></div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
             {["swim", "bike", "run"].map(type => {
-              const { km, min } = allTotals[type];
+              const { min, km } = PLAN_TOTALS[type];
               const disc = DISCIPLINES[type];
-              const hasData = km > 0 || min > 0;
               return (
-                <div key={type} style={{ background: "#0a0f1a", border: `1px solid ${hasData ? disc.color + "30" : "#1e293b"}`, padding: "16px 20px" }}>
+                <div key={type} style={{ background: "#0a0f1a", border: `1px solid ${disc.color}25`, padding: "16px 20px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                     <div style={{ width: 3, height: 16, background: disc.color, borderRadius: 2 }} />
                     <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#94a3b8" }}>{disc.label}</div>
                   </div>
-                  {min > 0 ? (
-                    <div className="ticker-number" style={{ fontSize: 24, color: disc.color, marginBottom: 4 }}>
-                      {formatDuration(min)}
-                    </div>
-                  ) : (
-                    <div className="ticker-number" style={{ fontSize: 24, color: "#334155" }}>—</div>
-                  )}
-                  {km > 0 && (
-                    <div style={{ fontSize: 10, color: "#64748b", letterSpacing: "0.05em", marginTop: 4 }}>
-                      {km.toFixed(1)} km
-                    </div>
-                  )}
+                  <div className="ticker-number" style={{ fontSize: 28, color: disc.color, marginBottom: 4 }}>
+                    {formatHrsMins(min)}
+                  </div>
+                  <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.08em", marginBottom: 8 }}>TOTAL HOURS</div>
+                  <div style={{ fontSize: 11, color: "#64748b", letterSpacing: "0.04em" }}>
+                    {km >= 1000 ? `${(km / 1000).toFixed(1)}k km` : `${Math.round(km)} km`}
+                  </div>
                 </div>
               );
             })}
