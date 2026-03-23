@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 // Fetches YTD activities from Strava API and writes src/strava-actuals.json
+// Stores both aggregate totals (for barometer/volume cards) and per-date
+// activities (so the app can mark calendar days as completed automatically).
 
 import { writeFileSync } from "fs";
 import { fileURLToPath } from "url";
@@ -17,7 +19,7 @@ if (!CLIENT_ID || !CLIENT_SECRET || !REFRESH_TOKEN) {
   process.exit(1);
 }
 
-// ── 1. Get a fresh access token ──────────────────────────────────────────────
+// ── 1. Fresh access token ────────────────────────────────────────────────────
 const tokenRes = await fetch("https://www.strava.com/oauth/token", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
@@ -48,40 +50,60 @@ while (true) {
 }
 console.log(`✓ Fetched ${activities.length} activities since Jan 1 2026`);
 
-// ── 3. Bucket by discipline ──────────────────────────────────────────────────
-const buckets = {
+// ── 3. Classify discipline ───────────────────────────────────────────────────
+function classify(sportType) {
+  const t = (sportType || "").toLowerCase();
+  if (t === "swim") return "swim";
+  if (["ride", "virtualride", "ebikeride", "cycling"].includes(t)) return "bike";
+  if (["run", "virtualrun", "trailrun"].includes(t)) return "run";
+  return "other";
+}
+
+// ── 4. Aggregate YTD totals ──────────────────────────────────────────────────
+const ytd = {
   swim:  { count: 0, min: 0, km: 0 },
   bike:  { count: 0, min: 0, km: 0 },
   run:   { count: 0, min: 0, km: 0 },
   other: { count: 0, min: 0, km: 0 },
 };
 
+// ── 5. Per-date activity log (array per date, all disciplines) ───────────────
+const byDate = {};
+
 for (const a of activities) {
-  const type = (a.sport_type || a.type || "").toLowerCase();
-  const min  = Math.round((a.moving_time || 0) / 60);
-  const km   = (a.distance || 0) / 1000;
+  const disc  = classify(a.sport_type || a.type);
+  const min   = Math.round((a.moving_time || 0) / 60);
+  const km    = Math.round((a.distance   || 0) / 100) / 10;
 
-  let bucket = "other";
-  if (type === "swim")                                          bucket = "swim";
-  else if (["ride", "virtualride", "ebikeride"].includes(type)) bucket = "bike";
-  else if (["run", "virtualrun", "trailrun"].includes(type))    bucket = "run";
+  // Aggregate
+  ytd[disc].count++;
+  ytd[disc].min += min;
+  ytd[disc].km  += km;
 
-  buckets[bucket].count++;
-  buckets[bucket].min += min;
-  buckets[bucket].km  += km;
+  // Per-date (use start_date_local — Strava stores athlete local time here)
+  const dateKey = (a.start_date_local || "").split("T")[0];
+  if (!dateKey) continue;
+  if (!byDate[dateKey]) byDate[dateKey] = [];
+  byDate[dateKey].push({
+    type:        disc,
+    label:       a.name,
+    durationMin: min,
+    distanceKm:  km,
+    stravaId:    a.id,
+  });
 }
 
-// Round km to 2dp
-for (const v of Object.values(buckets)) v.km = Math.round(v.km * 100) / 100;
+// Round km totals
+for (const v of Object.values(ytd)) v.km = Math.round(v.km * 100) / 100;
 
-// ── 4. Write output ──────────────────────────────────────────────────────────
-const out = { updatedAt: new Date().toISOString(), ytd: buckets };
+// ── 6. Write output ──────────────────────────────────────────────────────────
+const out = { updatedAt: new Date().toISOString(), ytd, byDate };
 writeFileSync(OUT_PATH, JSON.stringify(out, null, 2));
 
-const total = Object.values(buckets).reduce((s, v) => s + v.min, 0);
+const total = Object.values(ytd).reduce((s, v) => s + v.min, 0);
 console.log(`✓ Written to strava-actuals.json`);
-console.log(`  Swim  ${buckets.swim.count} acts  ${buckets.swim.min} min  ${buckets.swim.km} km`);
-console.log(`  Bike  ${buckets.bike.count} acts  ${buckets.bike.min} min  ${buckets.bike.km} km`);
-console.log(`  Run   ${buckets.run.count} acts  ${buckets.run.min} min  ${buckets.run.km} km`);
-console.log(`  Other ${buckets.other.count} acts  ${buckets.other.min} min`);
-console.log(`  Total ${total} min`);
+console.log(`  Swim  ${ytd.swim.count} acts  ${ytd.swim.min} min  ${ytd.swim.km} km`);
+console.log(`  Bike  ${ytd.bike.count} acts  ${ytd.bike.min} min  ${ytd.bike.km} km`);
+console.log(`  Run   ${ytd.run.count} acts  ${ytd.run.min} min  ${ytd.run.km} km`);
+console.log(`  Other ${ytd.other.count} acts  ${ytd.other.min} min`);
+console.log(`  Total ${total} min across ${Object.keys(byDate).length} active days`);

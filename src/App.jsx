@@ -371,10 +371,6 @@ function BadgeRow({ badgeCompletions, toggleBadge }) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function IronmanTracker() {
-  const [completions, setCompletions] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("ironman-completions") || "{}"); }
-    catch { return {}; }
-  });
   const [badgeCompletions, setBadgeCompletions] = useState(() => {
     try { return JSON.parse(localStorage.getItem("ironman-badges") || "{}"); }
     catch { return {}; }
@@ -382,22 +378,32 @@ export default function IronmanTracker() {
   const [weekOffset, setWeekOffset] = useState(0);
   const [selectedDay, setSelectedDay] = useState(null);
 
+  // Strava is source of truth for completions
+  const stravaByDate = stravaActuals.byDate || {};
+
   const workouts = useMemo(() => {
     const merged = {};
+    // TP plan entries
     for (const [key, w] of Object.entries(cachedWorkouts)) {
-      merged[key] = { ...w, completed: completions[key] !== undefined ? completions[key] : w.completed };
+      const stravaDay = stravaByDate[key] || [];
+      // Match a Strava activity to the planned discipline, or take any non-other
+      const match = stravaDay.find(a => a.type === w.type)
+        || stravaDay.find(a => a.type !== "other");
+      merged[key] = {
+        ...w,
+        completed: !!match,
+        actual: match || null, // actual Strava stats for this day
+      };
+    }
+    // Strava activities on days with no TP plan
+    for (const [key, acts] of Object.entries(stravaByDate)) {
+      if (merged[key]) continue;
+      const primary = acts.find(a => a.type !== "other") || acts[0];
+      if (!primary) continue;
+      merged[key] = { ...primary, completed: true, actual: primary };
     }
     return merged;
-  }, [completions]);
-
-  function toggleCompletion(dateKey) {
-    setCompletions(prev => {
-      const current = prev[dateKey] !== undefined ? prev[dateKey] : (cachedWorkouts[dateKey]?.completed ?? false);
-      const next = { ...prev, [dateKey]: !current };
-      localStorage.setItem("ironman-completions", JSON.stringify(next));
-      return next;
-    });
-  }
+  }, []);
 
   function toggleBadge(badgeId) {
     setBadgeCompletions(prev => {
@@ -420,7 +426,9 @@ export default function IronmanTracker() {
   for (const type of ["swim", "bike", "run"]) {
     const days = currentWeekDays.filter(({ workout: w }) => w?.type === type);
     const planned = days.reduce((s, { workout: w }) => s + (w?.durationMin || 0), 0);
-    const done = days.filter(({ workout: w }) => w?.completed).reduce((s, { workout: w }) => s + (w?.durationMin || 0), 0);
+    const done = days
+      .filter(({ workout: w }) => w?.completed)
+      .reduce((s, { workout: w }) => s + (w?.actual?.durationMin || w?.durationMin || 0), 0);
     thisWeekStats[type] = { planned, done };
   }
   // Upcoming sessions
@@ -541,16 +549,14 @@ export default function IronmanTracker() {
               <div style={{ display: "inline-block", fontSize: 8, letterSpacing: "0.15em", color: disc.color, background: disc.color + "20", padding: "3px 8px" }}>{disc.label}</div>
               <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 12 }}>
                 <div style={{ fontSize: 11, color: w.completed ? "#4ade80" : "#f59e0b", letterSpacing: "0.15em" }}>
-                  {w.completed ? "✓ DONE" : "● TO DO"}
+                  {w.completed ? "✓ DONE VIA STRAVA" : "● TO DO"}
                 </div>
-                <button onClick={() => toggleCompletion(todayKey)} style={{
-                  background: w.completed ? "#1e293b" : disc.color + "22",
-                  border: `1px solid ${w.completed ? "#334155" : disc.color}`,
-                  color: w.completed ? "#64748b" : disc.color,
-                  padding: "6px 14px", cursor: "pointer",
-                  fontFamily: "'DM Mono', monospace", fontSize: 10,
-                  letterSpacing: "0.1em", transition: "all 0.2s",
-                }}>{w.completed ? "MARK INCOMPLETE" : "MARK COMPLETE"}</button>
+                {w.actual && (
+                  <div style={{ fontSize: 10, color: disc.color, letterSpacing: "0.08em" }}>
+                    {formatDuration(w.actual.durationMin)}
+                    {w.actual.distanceKm ? ` · ${w.actual.distanceKm.toFixed(1)} km` : ""}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -600,24 +606,29 @@ export default function IronmanTracker() {
                     <div style={{ display: "inline-block", fontSize: 8, letterSpacing: "0.15em", color: disc.color, background: disc.color + "20", border: `1px solid ${disc.color}30`, padding: "2px 6px", marginBottom: 8, borderRadius: 2 }}>
                       {disc.label}
                     </div>
-                    <div style={{ fontSize: 10, color: "#e2e8f0", lineHeight: 1.4, letterSpacing: "0.02em", marginBottom: workout.durationMin ? 4 : 0 }}>
+                    <div style={{ fontSize: 10, color: "#e2e8f0", lineHeight: 1.4, letterSpacing: "0.02em", marginBottom: 4 }}>
                       {workout.label}
                     </div>
-                    {workout.durationMin && (
+                    {/* Show actual Strava stats if completed, else planned */}
+                    {workout.completed && workout.actual ? (
+                      <div style={{ fontSize: 9, color: disc.color, letterSpacing: "0.05em" }}>
+                        {formatDuration(workout.actual.durationMin)}
+                        {workout.actual.distanceKm ? ` · ${workout.actual.distanceKm.toFixed(1)}km` : ""}
+                      </div>
+                    ) : workout.durationMin ? (
                       <div style={{ fontSize: 9, color: "#64748b", letterSpacing: "0.05em" }}>
                         {formatDuration(workout.durationMin)}
                         {workout.distanceKm ? ` · ${workout.distanceKm.toFixed(1)}km` : ""}
                       </div>
-                    )}
-                    <div className="completed-check" onClick={e => { e.stopPropagation(); toggleCompletion(key); }}
-                      title={workout.completed ? "Mark incomplete" : "Mark complete"}
-                      style={{
+                    ) : null}
+                    {/* Strava completion indicator — read-only */}
+                    <div style={{
                         position: "absolute", top: 10, right: 10, width: 16, height: 16,
                         background: workout.completed ? disc.color : "transparent",
                         border: `1px solid ${disc.color}`,
                         borderRadius: "50%", display: "flex", alignItems: "center",
                         justifyContent: "center", fontSize: 9, color: "#000",
-                        cursor: "pointer", opacity: workout.completed ? 1 : 0.4, transition: "all 0.2s",
+                        opacity: workout.completed ? 1 : 0.3,
                       }}
                     >{workout.completed ? "✓" : ""}</div>
                   </>
@@ -636,12 +647,12 @@ export default function IronmanTracker() {
           <div style={{ marginTop: 16, background: "#0d1117", border: `1px solid ${DISCIPLINES[workouts[selectedDay].type]?.color || "#334155"}30`, padding: "24px 28px" }}>
             <div style={{ display: "flex", gap: 48, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 16 }}>
               <div>
-                <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>SESSION</div>
+                <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>PLANNED SESSION</div>
                 <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: DISCIPLINES[workouts[selectedDay].type]?.color || "#e2e8f0" }}>
                   {workouts[selectedDay].label}
                 </div>
                 {workouts[selectedDay].durationMin && (
-                  <div style={{ fontSize: 11, color: "#cbd5e1", marginTop: 6, letterSpacing: "0.05em" }}>
+                  <div style={{ fontSize: 11, color: "#475569", marginTop: 6, letterSpacing: "0.05em" }}>
                     {formatDuration(workouts[selectedDay].durationMin)}
                     {workouts[selectedDay].distanceKm ? ` · ${workouts[selectedDay].distanceKm.toFixed(2)} km` : ""}
                   </div>
@@ -649,22 +660,22 @@ export default function IronmanTracker() {
               </div>
               <div>
                 <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>STATUS</div>
-                <div style={{ fontSize: 11, color: workouts[selectedDay].completed ? "#4ade80" : "#f59e0b", letterSpacing: "0.1em", marginBottom: 10 }}>
-                  {workouts[selectedDay].completed ? "✓ COMPLETED" : "… UPCOMING"}
+                <div style={{ fontSize: 11, color: workouts[selectedDay].completed ? "#4ade80" : "#f59e0b", letterSpacing: "0.1em" }}>
+                  {workouts[selectedDay].completed ? "✓ COMPLETED VIA STRAVA" : "… UPCOMING"}
                 </div>
-                {workouts[selectedDay].type !== "rest" && (
-                  <button onClick={() => toggleCompletion(selectedDay)} style={{
-                    background: "transparent",
-                    border: `1px solid ${workouts[selectedDay].completed ? "#4ade8040" : "#4ade80"}`,
-                    color: workouts[selectedDay].completed ? "#64748b" : "#4ade80",
-                    padding: "5px 12px", cursor: "pointer",
-                    fontFamily: "'DM Mono', monospace", fontSize: 10,
-                    letterSpacing: "0.1em", transition: "all 0.2s",
-                  }}>
-                    {workouts[selectedDay].completed ? "MARK INCOMPLETE" : "MARK COMPLETE"}
-                  </button>
-                )}
               </div>
+              {workouts[selectedDay].actual && (
+                <div>
+                  <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>STRAVA ACTUAL</div>
+                  <div style={{ fontSize: 11, color: "#e2e8f0", letterSpacing: "0.05em", marginBottom: 4 }}>
+                    {workouts[selectedDay].actual.label}
+                  </div>
+                  <div style={{ fontSize: 13, color: DISCIPLINES[workouts[selectedDay].type]?.color || "#e2e8f0", letterSpacing: "0.05em" }}>
+                    {formatDuration(workouts[selectedDay].actual.durationMin)}
+                    {workouts[selectedDay].actual.distanceKm ? ` · ${workouts[selectedDay].actual.distanceKm.toFixed(2)} km` : ""}
+                  </div>
+                </div>
+              )}
             </div>
             {workouts[selectedDay].description && (
               <div style={{ borderTop: "1px solid #1e293b", paddingTop: 16 }}>
