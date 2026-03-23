@@ -418,7 +418,25 @@ export default function IronmanTracker() {
   const NAV = [
     { id: "dashboard", label: "Dashboard", icon: "⬡" },
     { id: "activities", label: "Latest Activities", icon: "↯" },
+    { id: "top", label: "Top Results", icon: "◈" },
   ];
+
+  // Top 3 per discipline by distance (then duration as tiebreak)
+  const topResults = useMemo(() => {
+    const byType = { swim: [], bike: [], run: [] };
+    for (const [date, acts] of Object.entries(stravaActuals.byDate || {})) {
+      for (const a of acts) {
+        if (byType[a.type]) byType[a.type].push({ ...a, date });
+      }
+    }
+    const result = {};
+    for (const [type, acts] of Object.entries(byType)) {
+      result[type] = [...acts]
+        .sort((a, b) => (b.distanceKm || 0) - (a.distanceKm || 0) || (b.durationMin || 0) - (a.durationMin || 0))
+        .slice(0, 3);
+    }
+    return result;
+  }, []);
 
   const FILTERS = ["all", "swim", "bike", "run", "other"];
 
@@ -593,6 +611,95 @@ export default function IronmanTracker() {
               <div style={{ fontSize: 11, color: "#334155", padding: "32px 0" }}>No activities found.</div>
             )}
           </div>
+        </div>
+      )}
+
+      {activeView === "top" && (
+        <div style={{ padding: "32px 40px" }}>
+          <div style={{ marginBottom: 32 }}>
+            <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 4 }}>PERSONAL BESTS</div>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, letterSpacing: "0.08em", color: "#e2e8f0" }}>TOP RESULTS</div>
+          </div>
+          {["swim", "bike", "run"].map(type => {
+            const disc = DISCIPLINES[type];
+            const entries = topResults[type] || [];
+            const medals = ["#f59e0b", "#94a3b8", "#d97706"];
+            const medalLabels = ["01", "02", "03"];
+            return (
+              <div key={type} style={{ marginBottom: 32 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: `1px solid ${disc.color}20` }}>
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: disc.color }} />
+                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, color: disc.color, letterSpacing: "0.12em" }}>{disc.label}</div>
+                  <div style={{ fontSize: 9, color: "#334155", letterSpacing: "0.1em" }}>{entries.length} RECORDED</div>
+                </div>
+                {entries.length === 0 && (
+                  <div style={{ fontSize: 11, color: "#334155", letterSpacing: "0.08em" }}>No activities yet.</div>
+                )}
+                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {entries.map((a, i) => {
+                    const dateObj = new Date(a.date + "T12:00:00");
+                    const dateLabel = dateObj.toLocaleDateString("en-US", { month: "short", day: "numeric" }).toUpperCase();
+                    const isGold = i === 0;
+                    return (
+                      <div key={a.stravaId || i} style={{
+                        display: "flex", alignItems: "center", gap: 16,
+                        padding: "14px 20px",
+                        background: isGold ? disc.color + "0a" : "#0a0f1a",
+                        borderLeft: `3px solid ${isGold ? medals[0] : "#1e293b"}`,
+                        transition: "background 0.15s",
+                      }}
+                        onMouseEnter={e => e.currentTarget.style.background = disc.color + "12"}
+                        onMouseLeave={e => e.currentTarget.style.background = isGold ? disc.color + "0a" : "#0a0f1a"}
+                      >
+                        {/* Rank */}
+                        <div style={{
+                          fontFamily: "'Bebas Neue', sans-serif",
+                          fontSize: 22, lineHeight: 1,
+                          color: medals[i] || "#334155",
+                          width: 28, flexShrink: 0, textAlign: "center",
+                        }}>{medalLabels[i]}</div>
+                        {/* Distance — hero stat */}
+                        <div style={{ width: 80, flexShrink: 0 }}>
+                          {a.distanceKm ? (
+                            <>
+                              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 28, color: isGold ? disc.color : "#e2e8f0", lineHeight: 1 }}>
+                                {a.distanceKm.toFixed(1)}
+                              </div>
+                              <div style={{ fontSize: 8, color: "#475569", letterSpacing: "0.12em" }}>KM</div>
+                            </>
+                          ) : (
+                            <>
+                              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 28, color: isGold ? disc.color : "#e2e8f0", lineHeight: 1 }}>
+                                {formatHrsMins(a.durationMin)}
+                              </div>
+                              <div style={{ fontSize: 8, color: "#475569", letterSpacing: "0.12em" }}>DURATION</div>
+                            </>
+                          )}
+                        </div>
+                        {/* Label + meta */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 11, color: "#cbd5e1", letterSpacing: "0.02em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.label}</div>
+                          <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
+                            <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.04em" }}>{dateLabel}</div>
+                            {a.durationMin && <div style={{ fontSize: 9, color: "#475569", letterSpacing: "0.04em" }}>{formatDuration(a.durationMin)}</div>}
+                            {a.distanceKm && a.durationMin && (
+                              <div style={{ fontSize: 9, color: "#334155", letterSpacing: "0.04em" }}>
+                                {type === "run"
+                                  ? `${(a.durationMin / a.distanceKm).toFixed(1)} min/km`
+                                  : type === "bike"
+                                    ? `${((a.distanceKm / a.durationMin) * 60).toFixed(1)} km/h`
+                                    : `${(a.durationMin / (a.distanceKm * 1000) * 100).toFixed(1)} min/100m`}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
