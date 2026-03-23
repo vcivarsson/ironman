@@ -101,12 +101,17 @@ function getEffectiveKm(w) {
   return 0;
 }
 
+const PLAN_START = new Date("2026-03-23");
+const CORE_TYPES = new Set(["swim", "bike", "run"]);
+
 function getOverallProgress(workouts) {
-  const all = Object.values(workouts).filter(w => w.type !== "rest");
   const today = getToday();
-  const past = Object.entries(workouts).filter(([k, w]) => w.type !== "rest" && new Date(k) < today);
+  const entries = Object.entries(workouts).filter(([k, w]) =>
+    CORE_TYPES.has(w.type) && new Date(k) >= PLAN_START
+  );
+  const past = entries.filter(([k]) => new Date(k) < today);
   const completed = past.filter(([, w]) => w.completed).length;
-  return { completed, past: past.length, pct: all.length ? Math.round((completed / all.length) * 100) : 0 };
+  return { completed, past: past.length, pct: past.length ? Math.round((completed / past.length) * 100) : 0 };
 }
 
 // ─── Cozumel course map ───────────────────────────────────────────────────────
@@ -480,35 +485,29 @@ export default function IronmanTracker() {
         </div>
       </div>
 
-      {/* TODAY'S WORKOUT SPOTLIGHT */}
+      {/* TODAY'S SESSION — compact bar */}
       {workouts[todayKey] && workouts[todayKey].type !== "rest" && (() => {
         const w = workouts[todayKey];
         const disc = DISCIPLINES[w.type] || DISCIPLINES.rest;
         return (
-          <div style={{ borderBottom: "1px solid #1e293b", background: disc.color + "12" }}>
-            <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 40px", display: "flex", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 3, height: 48, background: disc.color, borderRadius: 2, flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontSize: 9, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 2 }}>TODAY'S SESSION</div>
-                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 28, letterSpacing: "0.06em", color: disc.color, lineHeight: 1 }}>{w.label}</div>
-                  <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 4, letterSpacing: "0.05em" }}>
-                    {w.durationMin ? formatDuration(w.durationMin) : ""}
-                    {w.distanceKm ? ` · ${w.distanceKm.toFixed(1)} km` : ""}
-                  </div>
+          <div style={{ borderBottom: "1px solid #1e293b", borderLeft: `3px solid ${disc.color}`, background: disc.color + "08" }}>
+            <div style={{ maxWidth: 1100, margin: "0 auto", padding: "10px 40px", display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ fontSize: 8, letterSpacing: "0.2em", color: "#475569", flexShrink: 0 }}>TODAY</div>
+              <div style={{ display: "inline-block", fontSize: 7, letterSpacing: "0.15em", color: disc.color, background: disc.color + "20", padding: "2px 6px", flexShrink: 0 }}>{disc.label}</div>
+              <div style={{ fontSize: 11, color: "#e2e8f0", letterSpacing: "0.02em", fontFamily: "'Bebas Neue', sans-serif" }}>{w.label}</div>
+              {(w.durationMin || w.distanceKm) && (
+                <div style={{ fontSize: 10, color: "#475569", letterSpacing: "0.04em" }}>
+                  {w.durationMin ? formatDuration(w.durationMin) : ""}
+                  {w.distanceKm ? ` · ${w.distanceKm.toFixed(1)} km` : ""}
                 </div>
-              </div>
-              <div style={{ display: "inline-block", fontSize: 8, letterSpacing: "0.15em", color: disc.color, background: disc.color + "20", padding: "3px 8px" }}>{disc.label}</div>
-              <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ fontSize: 11, color: w.completed ? "#4ade80" : "#f59e0b", letterSpacing: "0.15em" }}>
-                  {w.completed ? "✓ DONE VIA STRAVA" : "● TO DO"}
-                </div>
+              )}
+              <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
                 {w.actual && (
-                  <div style={{ fontSize: 10, color: disc.color, letterSpacing: "0.08em" }}>
-                    {formatDuration(w.actual.durationMin)}
-                    {w.actual.distanceKm ? ` · ${w.actual.distanceKm.toFixed(1)} km` : ""}
+                  <div style={{ fontSize: 10, color: disc.color, letterSpacing: "0.04em" }}>
+                    ✓ {formatDuration(w.actual.durationMin)}{w.actual.distanceKm ? ` · ${w.actual.distanceKm.toFixed(1)} km` : ""}
                   </div>
                 )}
+                {!w.completed && <div style={{ fontSize: 9, color: "#f59e0b", letterSpacing: "0.1em" }}>● TO DO</div>}
               </div>
             </div>
           </div>
