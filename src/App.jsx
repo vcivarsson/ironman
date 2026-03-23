@@ -395,10 +395,10 @@ export default function IronmanTracker() {
         actual: match || null, // actual Strava stats for this day
       };
     }
-    // Strava activities on days with no TP plan
+    // Strava activities on days with no TP plan (skip "other" types)
     for (const [key, acts] of Object.entries(stravaByDate)) {
       if (merged[key]) continue;
-      const primary = acts.find(a => a.type !== "other") || acts[0];
+      const primary = acts.find(a => a.type !== "other");
       if (!primary) continue;
       merged[key] = { ...primary, completed: true, actual: primary };
     }
@@ -583,7 +583,7 @@ export default function IronmanTracker() {
             const { date, key, workout } = weekDaysWithWorkouts[i];
             const isToday = key === todayKey;
             const isSelected = selectedDay === key;
-            const disc = workout ? DISCIPLINES[workout.type] : DISCIPLINES.rest;
+            const disc = (workout && DISCIPLINES[workout.type]) ? DISCIPLINES[workout.type] : DISCIPLINES.rest;
             const isPast = date < today;
             // Uniform dark bg for all days; rest gets slightly different shade
             const cardBg = disc.bg;
