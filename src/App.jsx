@@ -118,9 +118,9 @@ function getOverallProgress(workouts) {
 
 // ─── Plan barometer ───────────────────────────────────────────────────────────
 
-function PlanBarometer() {
+function PlanBarometer({ totalMin }) {
   const [hovered, setHovered] = useState(false);
-  const pct = STRAVA_TOTAL_MIN / PLAN_TOTAL_MIN;
+  const pct = totalMin / PLAN_TOTAL_MIN;
   const pctDisplay = Math.round(pct * 100);
 
   return (
@@ -132,7 +132,7 @@ function PlanBarometer() {
         height: 6, background: "#1e293b", borderRadius: 3, overflow: "hidden", cursor: "default",
       }}>
         <div style={{
-          height: "100%", borderRadius: 3, width: `${pct * 100}%`,
+          height: "100%", borderRadius: 3, width: `${Math.min(pct * 100, 100)}%`,
           background: "linear-gradient(to right, #38bdf8, #e31837)",
           transition: "width 0.6s ease",
         }} />
@@ -148,7 +148,7 @@ function PlanBarometer() {
           <span style={{ color: "#e31837", fontFamily: "'Bebas Neue', sans-serif", fontSize: 14, marginRight: 8 }}>
             {pctDisplay}%
           </span>
-          {formatHrsMins(STRAVA_TOTAL_MIN)}
+          {formatHrsMins(totalMin)}
           <span style={{ color: "#475569" }}> / {formatHrsMins(PLAN_TOTAL_MIN)}</span>
         </div>
       )}
@@ -156,7 +156,7 @@ function PlanBarometer() {
       {/* Legend */}
       <div style={{ display: "flex", gap: 24, marginTop: 10, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ fontSize: 9, letterSpacing: "0.12em", color: "#475569" }}>
-          TOTAL DURATION <span style={{ color: "#94a3b8", marginLeft: 6 }}>{formatHrsMins(STRAVA_TOTAL_MIN)}</span>
+          TOTAL DURATION <span style={{ color: "#94a3b8", marginLeft: 6 }}>{formatHrsMins(totalMin)}</span>
         </div>
         {[
           { label: "SWIM", color: DISCIPLINES.swim.color, min: STRAVA_YTD.swim.min },
@@ -336,8 +336,19 @@ export default function IronmanTracker() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeView, setActiveView] = useState("dashboard");
   const [activityFilter, setActivityFilter] = useState("all");
+  const [manualCompletions, setManualCompletions] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("ironman-manual") || "{}"); }
+    catch { return {}; }
+  });
 
-  // Strava is source of truth for completions
+  function toggleCompletion(key) {
+    setManualCompletions(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      localStorage.setItem("ironman-manual", JSON.stringify(next));
+      return next;
+    });
+  }
+
   const stravaByDate = stravaActuals.byDate || {};
 
   const workouts = useMemo(() => {
@@ -345,13 +356,14 @@ export default function IronmanTracker() {
     // TP plan entries
     for (const [key, w] of Object.entries(cachedWorkouts)) {
       const stravaDay = stravaByDate[key] || [];
-      // Match a Strava activity to the planned discipline, or take any non-other
       const match = stravaDay.find(a => a.type === w.type)
         || stravaDay.find(a => a.type !== "other");
+      const isManual = !match && !!manualCompletions[key];
       merged[key] = {
         ...w,
-        completed: !!match,
-        actual: match || null, // actual Strava stats for this day
+        completed: !!match || isManual,
+        completedVia: match ? "strava" : isManual ? "manual" : null,
+        actual: match || (isManual ? { durationMin: w.durationMin, distanceKm: getEffectiveKm(w) } : null),
       };
     }
     // Strava activities on days with no TP plan (include all, even "other")
@@ -359,10 +371,10 @@ export default function IronmanTracker() {
       if (merged[key]) continue;
       const primary = acts.find(a => a.type !== "other") || acts[0];
       if (!primary) continue;
-      merged[key] = { ...primary, completed: true, actual: primary };
+      merged[key] = { ...primary, completed: true, completedVia: "strava", actual: primary };
     }
     return merged;
-  }, []);
+  }, [manualCompletions]);
 
   function toggleBadge(badgeId) {
     setBadgeCompletions(prev => {
@@ -376,6 +388,13 @@ export default function IronmanTracker() {
   const todayKey = today.toISOString().split("T")[0];
   const daysLeft = getDaysUntilRace();
   const progress = getOverallProgress(workouts);
+
+  // Add manually-completed planned durations on top of Strava YTD total
+  const manualExtraMin = Object.values(workouts)
+    .filter(w => w.completedVia === "manual")
+    .reduce((s, w) => s + (w.durationMin || 0), 0);
+  const effectiveTotalMin = STRAVA_TOTAL_MIN + manualExtraMin;
+
   const weekDays = getWeekDays(weekOffset);
   const weekDaysWithWorkouts = weekDays.map(d => ({ ...d, workout: workouts[d.key] }));
 
@@ -532,7 +551,7 @@ export default function IronmanTracker() {
               <div style={{ fontSize: 10, color: "#94a3b8", letterSpacing: "0.2em", marginTop: 4 }}>{Math.ceil(daysLeft / 7)} WEEKS REMAINING</div>
             </div>
           </div>
-          <PlanBarometer />
+          <PlanBarometer totalMin={effectiveTotalMin} />
         </div>
       </div>
 
@@ -792,14 +811,17 @@ export default function IronmanTracker() {
                         {workout.distanceKm ? ` · ${workout.distanceKm.toFixed(1)}km` : ""}
                       </div>
                     ) : null}
-                    {/* Strava completion indicator — read-only */}
-                    <div style={{
+                    {/* Completion indicator — Strava (solid) or manual (dashed) or unchecked */}
+                    <div
+                      onClick={e => { e.stopPropagation(); if (workout.completedVia !== "strava") toggleCompletion(key); }}
+                      style={{
                         position: "absolute", top: 10, right: 10, width: 16, height: 16,
                         background: workout.completed ? disc.color : "transparent",
-                        border: `1px solid ${disc.color}`,
+                        border: workout.completedVia === "manual" ? `1.5px dashed ${disc.color}` : `1px solid ${disc.color}`,
                         borderRadius: "50%", display: "flex", alignItems: "center",
                         justifyContent: "center", fontSize: 9, color: "#000",
                         opacity: workout.completed ? 1 : 0.3,
+                        cursor: workout.completedVia === "strava" ? "default" : "pointer",
                       }}
                     >{workout.completed ? "✓" : ""}</div>
                   </>
