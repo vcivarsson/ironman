@@ -531,7 +531,7 @@ export default function IronmanTracker() {
       {/* TODAY'S WORKOUT SPOTLIGHT */}
       {workouts[todayKey] && workouts[todayKey].type !== "rest" && (() => {
         const w = workouts[todayKey];
-        const disc = DISCIPLINES[w.type];
+        const disc = DISCIPLINES[w.type] || DISCIPLINES.rest;
         return (
           <div style={{ borderBottom: "1px solid #1e293b", background: disc.color + "12" }}>
             <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 40px", display: "flex", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
@@ -718,7 +718,7 @@ export default function IronmanTracker() {
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10 }}>
               {upcomingSessions.map(([key, w], idx) => {
-                const disc = DISCIPLINES[w.type];
+                const disc = DISCIPLINES[w.type] || DISCIPLINES.rest;
                 const diff = Math.round((new Date(key) - today) / 864e5);
                 const dayLabel = diff === 0 ? "TODAY" : diff === 1 ? "TOMORROW"
                   : new Date(key + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }).toUpperCase();
