@@ -333,6 +333,9 @@ export default function IronmanTracker() {
   });
   const [weekOffset, setWeekOffset] = useState(0);
   const [selectedDay, setSelectedDay] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeView, setActiveView] = useState("dashboard");
+  const [activityFilter, setActivityFilter] = useState("all");
 
   // Strava is source of truth for completions
   const stravaByDate = stravaActuals.byDate || {};
@@ -398,6 +401,27 @@ export default function IronmanTracker() {
   const weekLabel = `${weekMonday.toLocaleDateString("en-US", { month: "short", day: "numeric" })} → ${weekSunday.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
   const dayLabels = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
+  // Flatten Strava activities for the activities view
+  const allActivities = Object.entries(stravaActuals.byDate || {})
+    .flatMap(([date, acts]) => acts.map(a => ({ ...a, date })))
+    .sort((a, b) => b.date.localeCompare(a.date));
+
+  const filteredActivities = activityFilter === "all"
+    ? allActivities
+    : allActivities.filter(a => a.type === activityFilter);
+
+  function navigate(view) {
+    setActiveView(view);
+    setSidebarOpen(false);
+  }
+
+  const NAV = [
+    { id: "dashboard", label: "Dashboard", icon: "⬡" },
+    { id: "activities", label: "Latest Activities", icon: "↯" },
+  ];
+
+  const FILTERS = ["all", "swim", "bike", "run", "other"];
+
   return (
     <div style={{ minHeight: "100vh", background: "#080c14", color: "#e2e8f0", fontFamily: "'DM Mono', 'Courier New', monospace" }}>
       <style>{`
@@ -406,6 +430,16 @@ export default function IronmanTracker() {
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+        .sidebar { position: fixed; top: 0; left: 0; height: 100vh; width: 240px; background: #0a0f1a; border-right: 1px solid #1e293b; z-index: 100; transform: translateX(-100%); transition: transform 0.25s ease; display: flex; flex-direction: column; }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+        .sidebar-overlay.open { opacity: 1; pointer-events: all; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; cursor: pointer; font-size: 11px; letter-spacing: 0.12em; color: #475569; transition: all 0.15s; border-left: 2px solid transparent; }
+        .nav-item:hover { color: #e2e8f0; background: #0d1117; }
+        .nav-item.active { color: #e2e8f0; border-left-color: #e31837; background: #0d1117; }
+        .filter-btn { background: transparent; border: 1px solid #1e293b; color: #475569; padding: 4px 12px; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.12em; transition: all 0.15s; }
+        .filter-btn:hover { border-color: #334155; color: #94a3b8; }
+        .filter-btn.active { border-color: #e31837; color: #e2e8f0; background: #e3183715; }
         .day-card { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; border: 1px solid #1e293b; }
         .day-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.5); border-color: #475569; }
         .day-card.today { border-color: #f59e0b !important; box-shadow: 0 0 0 1px #f59e0b40; }
@@ -420,11 +454,49 @@ export default function IronmanTracker() {
         @keyframes popIn { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
       `}</style>
 
+      {/* SIDEBAR */}
+      <div className={`sidebar-overlay${sidebarOpen ? " open" : ""}`} onClick={() => setSidebarOpen(false)} />
+      <div className={`sidebar${sidebarOpen ? " open" : ""}`}>
+        <div style={{ padding: "24px 20px 16px", borderBottom: "1px solid #1e293b" }}>
+          <div style={{ fontSize: 8, letterSpacing: "0.3em", color: "#334155", marginBottom: 4 }}>IRONMAN TRACKER</div>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, color: "#e2e8f0", letterSpacing: "0.08em" }}>ROAD TO COZUMEL 🇲🇽</div>
+        </div>
+        <nav style={{ flex: 1, paddingTop: 8 }}>
+          {NAV.map(item => (
+            <div key={item.id} className={`nav-item${activeView === item.id ? " active" : ""}`} onClick={() => navigate(item.id)}>
+              <span style={{ fontSize: 14, lineHeight: 1 }}>{item.icon}</span>
+              {item.label}
+            </div>
+          ))}
+          {activeView === "activities" && (
+            <div style={{ paddingLeft: 44, paddingTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+              {FILTERS.map(f => (
+                <div key={f} onClick={() => setActivityFilter(f)}
+                  style={{ fontSize: 10, letterSpacing: "0.1em", color: activityFilter === f ? "#e2e8f0" : "#334155", cursor: "pointer", padding: "5px 0", transition: "color 0.15s",
+                    borderLeft: activityFilter === f ? `2px solid ${f === "all" ? "#e31837" : (DISCIPLINES[f]?.color || "#64748b")}` : "2px solid transparent",
+                    paddingLeft: 8,
+                  }}>
+                  {f.toUpperCase()}
+                </div>
+              ))}
+            </div>
+          )}
+        </nav>
+        <div style={{ padding: "16px 20px", borderTop: "1px solid #1e293b", fontSize: 8, letterSpacing: "0.15em", color: "#1e293b" }}>
+          SYNCED {new Date(stravaActuals.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }).toUpperCase()}
+        </div>
+      </div>
+
       {/* HEADER */}
       <div style={{ background: "linear-gradient(180deg, #0d1117 0%, #080c14 100%)", borderBottom: "1px solid #1e293b", padding: "32px 40px 28px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 24 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+              <button onClick={() => setSidebarOpen(o => !o)} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, display: "flex", flexDirection: "column", gap: 5, flexShrink: 0 }}>
+                <div style={{ width: 22, height: 1.5, background: "#475569", borderRadius: 1 }} />
+                <div style={{ width: 16, height: 1.5, background: "#475569", borderRadius: 1 }} />
+                <div style={{ width: 22, height: 1.5, background: "#475569", borderRadius: 1 }} />
+              </button>
               <MDotLogo size={64} />
               <div>
                 <div style={{ fontSize: 11, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 6 }}>TRAINING TRACKER</div>
@@ -484,6 +556,47 @@ export default function IronmanTracker() {
           </div>
         </div>
       </div>
+
+      {activeView === "activities" && (
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 40px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, letterSpacing: "0.08em", color: "#e2e8f0" }}>LATEST ACTIVITIES</div>
+            <div style={{ fontSize: 9, color: "#334155", letterSpacing: "0.1em" }}>{filteredActivities.length} ACTIVITIES</div>
+            <div style={{ display: "flex", gap: 6, marginLeft: "auto", flexWrap: "wrap" }}>
+              {FILTERS.map(f => (
+                <button key={f} className={`filter-btn${activityFilter === f ? " active" : ""}`} onClick={() => setActivityFilter(f)}>
+                  {f.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {filteredActivities.map((a, i) => {
+              const disc = DISCIPLINES[a.type] || DISCIPLINES.rest;
+              const dateObj = new Date(a.date + "T12:00:00");
+              const dateLabel = dateObj.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }).toUpperCase();
+              return (
+                <div key={`${a.date}-${i}`} style={{ display: "flex", alignItems: "center", gap: 16, padding: "12px 16px", background: "#0a0f1a", borderLeft: `2px solid ${disc.color}`, transition: "background 0.15s" }}
+                  onMouseEnter={e => e.currentTarget.style.background = "#0d1117"}
+                  onMouseLeave={e => e.currentTarget.style.background = "#0a0f1a"}>
+                  <div style={{ fontSize: 9, color: "#334155", letterSpacing: "0.06em", width: 90, flexShrink: 0 }}>{dateLabel}</div>
+                  <div style={{ fontSize: 7, letterSpacing: "0.15em", color: disc.color, background: disc.color + "18", padding: "2px 6px", flexShrink: 0 }}>{a.type.toUpperCase()}</div>
+                  <div style={{ fontSize: 11, color: "#cbd5e1", flex: 1, letterSpacing: "0.02em" }}>{a.label}</div>
+                  <div style={{ fontSize: 10, color: "#475569", letterSpacing: "0.04em", flexShrink: 0 }}>
+                    {formatDuration(a.durationMin)}
+                    {a.distanceKm ? ` · ${a.distanceKm.toFixed(1)} km` : ""}
+                  </div>
+                </div>
+              );
+            })}
+            {filteredActivities.length === 0 && (
+              <div style={{ fontSize: 11, color: "#334155", padding: "32px 0" }}>No activities found.</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {activeView === "dashboard" && <>
 
       {/* TODAY'S SESSION — compact bar */}
       {workouts[todayKey] && workouts[todayKey].type !== "rest" && (() => {
@@ -748,6 +861,8 @@ export default function IronmanTracker() {
       <div style={{ borderTop: "1px solid #1e293b", padding: "20px 40px", textAlign: "center" }}>
         <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#334155" }}>IRONMAN 2026 · {daysLeft} DAYS OUT</div>
       </div>
+
+      </>}
     </div>
   );
 }
