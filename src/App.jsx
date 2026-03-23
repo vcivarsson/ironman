@@ -489,7 +489,7 @@ export default function IronmanTracker() {
 
       {/* HEADER */}
       <div style={{ background: "linear-gradient(180deg, #0d1117 0%, #080c14 100%)", borderBottom: "1px solid #1e293b", padding: "32px 40px 28px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ padding: "0 40px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 24 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
               <button onClick={() => setSidebarOpen(o => !o)} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, display: "flex", flexDirection: "column", gap: 5, flexShrink: 0 }}>
@@ -520,7 +520,7 @@ export default function IronmanTracker() {
 
       {/* STATS ROW */}
       <div style={{ borderBottom: "1px solid #1e293b", background: "#0a0f1a" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 40px", display: "flex", gap: 32, alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ padding: "20px 40px", display: "flex", gap: 32, alignItems: "center", flexWrap: "wrap" }}>
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "#94a3b8", marginBottom: 6 }}>COMPLETED WORKOUTS</div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -558,7 +558,7 @@ export default function IronmanTracker() {
       </div>
 
       {activeView === "activities" && (
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 40px" }}>
+        <div style={{ padding: "32px 40px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
             <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, letterSpacing: "0.08em", color: "#e2e8f0" }}>LATEST ACTIVITIES</div>
             <div style={{ fontSize: 9, color: "#334155", letterSpacing: "0.1em" }}>{filteredActivities.length} ACTIVITIES</div>
@@ -604,7 +604,7 @@ export default function IronmanTracker() {
         const disc = DISCIPLINES[w.type] || DISCIPLINES.rest;
         return (
           <div style={{ borderBottom: "1px solid #1e293b", borderLeft: `3px solid ${disc.color}`, background: disc.color + "08" }}>
-            <div style={{ maxWidth: 1100, margin: "0 auto", padding: "10px 40px", display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ padding: "10px 40px", display: "flex", alignItems: "center", gap: 16 }}>
               <div style={{ fontSize: 8, letterSpacing: "0.2em", color: "#475569", flexShrink: 0 }}>TODAY</div>
               <div style={{ display: "inline-block", fontSize: 7, letterSpacing: "0.15em", color: disc.color, background: disc.color + "20", padding: "2px 6px", flexShrink: 0 }}>{disc.label}</div>
               <div style={{ fontSize: 11, color: "#e2e8f0", letterSpacing: "0.02em", fontFamily: "'Bebas Neue', sans-serif" }}>{w.label}</div>
@@ -628,7 +628,7 @@ export default function IronmanTracker() {
       })()}
 
       {/* CALENDAR */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 40px" }}>
+      <div style={{ padding: "32px 40px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.3em", color: "#94a3b8", marginBottom: 4 }}>WEEK VIEW</div>
