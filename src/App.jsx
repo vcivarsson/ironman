@@ -489,7 +489,7 @@ export default function IronmanTracker() {
 
       {/* HEADER */}
       <div style={{ background: "linear-gradient(180deg, #0d1117 0%, #080c14 100%)", borderBottom: "1px solid #1e293b", padding: "32px 40px 28px" }}>
-        <div style={{ padding: "0 40px" }}>
+        <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 24 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
               <button onClick={() => setSidebarOpen(o => !o)} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, display: "flex", flexDirection: "column", gap: 5, flexShrink: 0 }}>
