@@ -395,10 +395,10 @@ export default function IronmanTracker() {
         actual: match || null, // actual Strava stats for this day
       };
     }
-    // Strava activities on days with no TP plan (skip "other" types)
+    // Strava activities on days with no TP plan (include all, even "other")
     for (const [key, acts] of Object.entries(stravaByDate)) {
       if (merged[key]) continue;
-      const primary = acts.find(a => a.type !== "other");
+      const primary = acts.find(a => a.type !== "other") || acts[0];
       if (!primary) continue;
       merged[key] = { ...primary, completed: true, actual: primary };
     }
@@ -601,7 +601,7 @@ export default function IronmanTracker() {
                 <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#64748b", marginBottom: 4 }}>{label}</div>
                 <div style={{ fontSize: 16, fontFamily: "'Bebas Neue', sans-serif", color: isToday ? "#f59e0b" : "#64748b", marginBottom: 10 }}>{date.getDate()}</div>
 
-                {workout && workout.type !== "rest" ? (
+                {workout && workout.type !== "rest" && workout.type !== "other" ? (
                   <>
                     <div style={{ display: "inline-block", fontSize: 8, letterSpacing: "0.15em", color: disc.color, background: disc.color + "20", border: `1px solid ${disc.color}30`, padding: "2px 6px", marginBottom: 8, borderRadius: 2 }}>
                       {disc.label}
@@ -631,6 +631,20 @@ export default function IronmanTracker() {
                         opacity: workout.completed ? 1 : 0.3,
                       }}
                     >{workout.completed ? "✓" : ""}</div>
+                  </>
+                ) : workout?.type === "other" ? (
+                  <>
+                    <div style={{ display: "inline-block", fontSize: 8, letterSpacing: "0.15em", color: "#64748b", background: "#64748b20", border: "1px solid #64748b30", padding: "2px 6px", marginBottom: 8, borderRadius: 2 }}>
+                      ACTIVITY
+                    </div>
+                    <div style={{ fontSize: 10, color: "#e2e8f0", lineHeight: 1.4, letterSpacing: "0.02em", marginBottom: 4 }}>{workout.label}</div>
+                    {workout.actual && (
+                      <div style={{ fontSize: 9, color: "#64748b", letterSpacing: "0.05em" }}>
+                        {formatDuration(workout.actual.durationMin)}
+                        {workout.actual.distanceKm ? ` · ${workout.actual.distanceKm.toFixed(1)}km` : ""}
+                      </div>
+                    )}
+                    <div style={{ position: "absolute", top: 10, right: 10, width: 16, height: 16, background: "#64748b", border: "1px solid #64748b", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#000" }}>✓</div>
                   </>
                 ) : workout?.type === "rest" ? (
                   <div style={{ fontSize: 10, color: "#475569", letterSpacing: "0.05em" }}>REST</div>
