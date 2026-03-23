@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import cachedWorkouts from "./workouts-cache.json";
+import stravaActuals from "./strava-actuals.json";
 import ironmanLogo from "./assets/images.jpeg";
 
 const RACE_DATE = new Date(2026, 10, 22); // month is 0-indexed
@@ -37,14 +38,9 @@ const PLAN_TOTALS = {
   run:  { min: 142 * 32, km: 25.8 * 32 },
 };
 
-// Strava YTD actuals (Jan 1 – Mar 22, 2026)
-const STRAVA_YTD = {
-  swim:  { count: 4,  min: 91,  km: 3.93 },
-  bike:  { count: 10, min: 565, km: 240.10 },
-  run:   { count: 20, min: 780, km: 129.37 },
-  other: { count: 8,  min: 436, km: 31.01 },
-};
-const STRAVA_TOTAL_MIN = Object.values(STRAVA_YTD).reduce((s, v) => s + v.min, 0); // 1872
+// Strava YTD actuals — live from strava-actuals.json (synced daily via GitHub Actions)
+const STRAVA_YTD = stravaActuals.ytd;
+const STRAVA_TOTAL_MIN = Object.values(STRAVA_YTD).reduce((s, v) => s + v.min, 0);
 const PLAN_TOTAL_MIN   = (124 + 240 + 142) * 32; // 16192
 
 const BADGES = [
