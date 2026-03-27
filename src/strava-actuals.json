@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-26T08:09:26.598Z",
+  "updatedAt": "2026-03-27T08:06:05.608Z",
   "ytd": {
     "swim": {
       "count": 5,
@@ -12,9 +12,9 @@
       "km": 269.7
     },
     "run": {
-      "count": 21,
-      "min": 814,
-      "km": 134.5
+      "count": 22,
+      "min": 858,
+      "km": 142.9
     },
     "other": {
       "count": 9,
@@ -414,6 +414,15 @@
         "durationMin": 21,
         "distanceKm": 0.9,
         "stravaId": 17835291926
+      }
+    ],
+    "2026-03-26": [
+      {
+        "type": "run",
+        "label": "Threshold work 5x30 hard + 30 min hard",
+        "durationMin": 44,
+        "distanceKm": 8.4,
+        "stravaId": 17871588679
       }
     ]
   }
