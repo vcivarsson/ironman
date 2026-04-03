@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-02T08:15:30.730Z",
+  "updatedAt": "2026-04-03T08:08:48.753Z",
   "ytd": {
     "swim": {
       "count": 6,
@@ -12,9 +12,9 @@
       "km": 307.1
     },
     "run": {
-      "count": 24,
-      "min": 990,
-      "km": 165.9
+      "count": 25,
+      "min": 1015,
+      "km": 169.3
     },
     "other": {
       "count": 9,
@@ -459,6 +459,15 @@
         "durationMin": 42,
         "distanceKm": 7,
         "stravaId": 17944378167
+      }
+    ],
+    "2026-04-02": [
+      {
+        "type": "run",
+        "label": "Lunch Run",
+        "durationMin": 25,
+        "distanceKm": 3.4,
+        "stravaId": 17953731057
       }
     ]
   }
