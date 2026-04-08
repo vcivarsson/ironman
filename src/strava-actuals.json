@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-07T08:45:29.349Z",
+  "updatedAt": "2026-04-08T08:45:09.457Z",
   "ytd": {
     "swim": {
       "count": 7,
@@ -12,9 +12,9 @@
       "km": 357.1
     },
     "run": {
-      "count": 25,
-      "min": 1015,
-      "km": 169.3
+      "count": 26,
+      "min": 1045,
+      "km": 174.3
     },
     "other": {
       "count": 11,
@@ -502,6 +502,15 @@
         "durationMin": 31,
         "distanceKm": 0,
         "stravaId": 17991522469
+      }
+    ],
+    "2026-04-07": [
+      {
+        "type": "run",
+        "label": "New England Snowrun ❄️",
+        "durationMin": 30,
+        "distanceKm": 5,
+        "stravaId": 18011182330
       }
     ]
   }
