@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-10T08:56:39.576Z",
+  "updatedAt": "2026-04-11T07:55:23.898Z",
   "ytd": {
     "swim": {
       "count": 7,
@@ -12,9 +12,9 @@
       "km": 357.1
     },
     "run": {
-      "count": 26,
-      "min": 1045,
-      "km": 174.3
+      "count": 27,
+      "min": 1083,
+      "km": 180.6
     },
     "other": {
       "count": 11,
@@ -511,6 +511,15 @@
         "durationMin": 30,
         "distanceKm": 5,
         "stravaId": 18011182330
+      }
+    ],
+    "2026-04-10": [
+      {
+        "type": "run",
+        "label": "Z2 jog",
+        "durationMin": 38,
+        "distanceKm": 6.3,
+        "stravaId": 18059112830
       }
     ]
   }
