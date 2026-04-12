@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-11T07:55:23.898Z",
+  "updatedAt": "2026-04-12T08:09:14.477Z",
   "ytd": {
     "swim": {
       "count": 7,
@@ -7,9 +7,9 @@
       "km": 7.6
     },
     "bike": {
-      "count": 12,
-      "min": 836,
-      "km": 357.1
+      "count": 13,
+      "min": 966,
+      "km": 418.3
     },
     "run": {
       "count": 27,
@@ -520,6 +520,15 @@
         "durationMin": 38,
         "distanceKm": 6.3,
         "stravaId": 18059112830
+      }
+    ],
+    "2026-04-11": [
+      {
+        "type": "bike",
+        "label": "Pls make it go faster 🚲",
+        "durationMin": 130,
+        "distanceKm": 61.2,
+        "stravaId": 18070627857
       }
     ]
   }
