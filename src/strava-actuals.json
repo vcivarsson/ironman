@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-15T10:00:57.623Z",
+  "updatedAt": "2026-04-16T10:00:25.478Z",
   "ytd": {
     "swim": {
       "count": 8,
@@ -12,9 +12,9 @@
       "km": 418.3
     },
     "run": {
-      "count": 27,
-      "min": 1083,
-      "km": 180.6
+      "count": 28,
+      "min": 1116,
+      "km": 185.5
     },
     "other": {
       "count": 12,
@@ -545,6 +545,15 @@
         "durationMin": 19,
         "distanceKm": 1,
         "stravaId": 18084624660
+      }
+    ],
+    "2026-04-15": [
+      {
+        "type": "run",
+        "label": "Mountain sprints 🌋",
+        "durationMin": 33,
+        "distanceKm": 4.9,
+        "stravaId": 18125950682
       }
     ]
   }
