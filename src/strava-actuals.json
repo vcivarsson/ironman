@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-22T10:05:41.985Z",
+  "updatedAt": "2026-04-23T06:59:55.640Z",
   "ytd": {
     "swim": {
       "count": 9,
@@ -12,9 +12,9 @@
       "km": 468.4
     },
     "run": {
-      "count": 29,
-      "min": 1155,
-      "km": 192.9
+      "count": 30,
+      "min": 1205,
+      "km": 200.9
     },
     "other": {
       "count": 13,
@@ -588,6 +588,15 @@
         "durationMin": 101,
         "distanceKm": 50.1,
         "stravaId": 18177667507
+      }
+    ],
+    "2026-04-22": [
+      {
+        "type": "run",
+        "label": "Desert run 🌵🌵🌵",
+        "durationMin": 50,
+        "distanceKm": 8,
+        "stravaId": 18217252375
       }
     ]
   }
