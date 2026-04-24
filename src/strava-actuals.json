@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-23T06:59:55.640Z",
+  "updatedAt": "2026-04-24T07:03:24.588Z",
   "ytd": {
     "swim": {
       "count": 9,
@@ -17,9 +17,9 @@
       "km": 200.9
     },
     "other": {
-      "count": 13,
-      "min": 735,
-      "km": 48.1
+      "count": 14,
+      "min": 802,
+      "km": 52.7
     }
   },
   "byDate": {
@@ -597,6 +597,13 @@
         "durationMin": 50,
         "distanceKm": 8,
         "stravaId": 18217252375
+      },
+      {
+        "type": "other",
+        "label": "Afternoon Hike",
+        "durationMin": 67,
+        "distanceKm": 4.6,
+        "stravaId": 18227145342
       }
     ]
   }
