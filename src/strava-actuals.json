@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-25T06:19:44.393Z",
+  "updatedAt": "2026-04-26T06:57:55.965Z",
   "ytd": {
     "swim": {
       "count": 9,
@@ -7,9 +7,9 @@
       "km": 10.7
     },
     "bike": {
-      "count": 14,
-      "min": 1067,
-      "km": 468.4
+      "count": 15,
+      "min": 1153,
+      "km": 512.3
     },
     "run": {
       "count": 30,
@@ -17,9 +17,9 @@
       "km": 200.9
     },
     "other": {
-      "count": 14,
-      "min": 802,
-      "km": 52.7
+      "count": 15,
+      "min": 843,
+      "km": 54.7
     }
   },
   "byDate": {
@@ -604,6 +604,22 @@
         "durationMin": 67,
         "distanceKm": 4.6,
         "stravaId": 18227145342
+      }
+    ],
+    "2026-04-25": [
+      {
+        "type": "other",
+        "label": "Morning Tennis",
+        "durationMin": 41,
+        "distanceKm": 2,
+        "stravaId": 18256994197
+      },
+      {
+        "type": "bike",
+        "label": "Love cycling in headwind",
+        "durationMin": 86,
+        "distanceKm": 43.9,
+        "stravaId": 18256994329
       }
     ]
   }
