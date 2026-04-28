@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-27T07:33:31.997Z",
+  "updatedAt": "2026-04-28T07:30:12.754Z",
   "ytd": {
     "swim": {
       "count": 9,
@@ -12,9 +12,9 @@
       "km": 512.3
     },
     "run": {
-      "count": 31,
-      "min": 1239,
-      "km": 207.1
+      "count": 32,
+      "min": 1268,
+      "km": 212.1
     },
     "other": {
       "count": 15,
@@ -625,10 +625,19 @@
     "2026-04-27": [
       {
         "type": "run",
-        "label": "Morning Run",
+        "label": "London run",
         "durationMin": 34,
         "distanceKm": 6.2,
         "stravaId": 18274673038
+      }
+    ],
+    "2026-04-28": [
+      {
+        "type": "run",
+        "label": "Found a roundabout in London",
+        "durationMin": 29,
+        "distanceKm": 5,
+        "stravaId": 18287940025
       }
     ]
   }
