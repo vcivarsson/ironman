@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-05-06T07:33:54.686Z",
+  "updatedAt": "2026-05-07T07:41:21.598Z",
   "ytd": {
     "swim": {
-      "count": 9,
-      "min": 228,
-      "km": 10.7
+      "count": 10,
+      "min": 248,
+      "km": 11.7
     },
     "bike": {
       "count": 15,
@@ -647,6 +647,15 @@
         "durationMin": 25,
         "distanceKm": 5,
         "stravaId": 18392746750
+      }
+    ],
+    "2026-05-06": [
+      {
+        "type": "swim",
+        "label": "Back on the seahorse 🐬",
+        "durationMin": 20,
+        "distanceKm": 1,
+        "stravaId": 18406786831
       }
     ]
   }
