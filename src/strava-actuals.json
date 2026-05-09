@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-08T06:50:52.861Z",
+  "updatedAt": "2026-05-09T07:05:33.208Z",
   "ytd": {
     "swim": {
       "count": 10,
@@ -7,9 +7,9 @@
       "km": 11.7
     },
     "bike": {
-      "count": 15,
-      "min": 1153,
-      "km": 512.3
+      "count": 17,
+      "min": 1260,
+      "km": 558.1
     },
     "run": {
       "count": 34,
@@ -665,6 +665,22 @@
         "durationMin": 41,
         "distanceKm": 7.1,
         "stravaId": 18419184524
+      }
+    ],
+    "2026-05-08": [
+      {
+        "type": "bike",
+        "label": "New commute unlocked",
+        "durationMin": 51,
+        "distanceKm": 23.3,
+        "stravaId": 18425333843
+      },
+      {
+        "type": "bike",
+        "label": "Commute home",
+        "durationMin": 56,
+        "distanceKm": 22.5,
+        "stravaId": 18430731008
       }
     ]
   }
