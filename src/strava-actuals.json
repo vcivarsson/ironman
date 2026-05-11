@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-10T07:24:24.233Z",
+  "updatedAt": "2026-05-11T08:23:10.417Z",
   "ytd": {
     "swim": {
       "count": 10,
@@ -12,9 +12,9 @@
       "km": 558.1
     },
     "run": {
-      "count": 34,
-      "min": 1334,
-      "km": 224.2
+      "count": 35,
+      "min": 1405,
+      "km": 236.2
     },
     "other": {
       "count": 17,
@@ -697,6 +697,15 @@
         "durationMin": 63,
         "distanceKm": 5.2,
         "stravaId": 18444494908
+      }
+    ],
+    "2026-05-10": [
+      {
+        "type": "run",
+        "label": "Sunday run day 🏎️",
+        "durationMin": 71,
+        "distanceKm": 12,
+        "stravaId": 18458575249
       }
     ]
   }
