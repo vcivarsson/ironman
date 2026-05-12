@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-05-11T08:23:10.417Z",
+  "updatedAt": "2026-05-12T07:41:18.222Z",
   "ytd": {
     "swim": {
-      "count": 10,
-      "min": 248,
-      "km": 11.7
+      "count": 11,
+      "min": 277,
+      "km": 13.2
     },
     "bike": {
       "count": 17,
@@ -706,6 +706,15 @@
         "durationMin": 71,
         "distanceKm": 12,
         "stravaId": 18458575249
+      }
+    ],
+    "2026-05-11": [
+      {
+        "type": "swim",
+        "label": "Evening Swim",
+        "durationMin": 29,
+        "distanceKm": 1.5,
+        "stravaId": 18471425176
       }
     ]
   }
