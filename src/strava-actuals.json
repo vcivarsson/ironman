@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-14T07:40:24.510Z",
+  "updatedAt": "2026-05-15T07:50:28.771Z",
   "ytd": {
     "swim": {
       "count": 11,
@@ -12,9 +12,9 @@
       "km": 594.9
     },
     "run": {
-      "count": 35,
-      "min": 1405,
-      "km": 236.2
+      "count": 37,
+      "min": 1460,
+      "km": 248.5
     },
     "other": {
       "count": 17,
@@ -740,6 +740,22 @@
         "durationMin": 43,
         "distanceKm": 20.8,
         "stravaId": 18497766331
+      }
+    ],
+    "2026-05-14": [
+      {
+        "type": "run",
+        "label": "Afternoon Run",
+        "durationMin": 34,
+        "distanceKm": 7.3,
+        "stravaId": 18510807465
+      },
+      {
+        "type": "run",
+        "label": "5k fitness test 🍗🦵🏻🦿",
+        "durationMin": 21,
+        "distanceKm": 5,
+        "stravaId": 18510626551
       }
     ]
   }
