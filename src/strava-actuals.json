@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-17T07:32:31.296Z",
+  "updatedAt": "2026-05-18T08:42:56.970Z",
   "ytd": {
     "swim": {
       "count": 12,
@@ -17,9 +17,9 @@
       "km": 259.5
     },
     "other": {
-      "count": 17,
-      "min": 954,
-      "km": 62
+      "count": 18,
+      "min": 1000,
+      "km": 64
     }
   },
   "byDate": {
@@ -779,6 +779,15 @@
         "durationMin": 68,
         "distanceKm": 11,
         "stravaId": 18534251858
+      }
+    ],
+    "2026-05-17": [
+      {
+        "type": "other",
+        "label": "Smash 🎾🎾🎾",
+        "durationMin": 46,
+        "distanceKm": 2,
+        "stravaId": 18547743550
       }
     ]
   }
