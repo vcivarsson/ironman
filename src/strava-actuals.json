@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-24T07:47:41.597Z",
+  "updatedAt": "2026-05-25T08:55:24.032Z",
   "ytd": {
     "swim": {
       "count": 12,
@@ -7,9 +7,9 @@
       "km": 14.2
     },
     "bike": {
-      "count": 21,
-      "min": 1472,
-      "km": 639.9
+      "count": 22,
+      "min": 1504,
+      "km": 650.2
     },
     "run": {
       "count": 38,
@@ -806,6 +806,15 @@
         "durationMin": 70,
         "distanceKm": 5.1,
         "stravaId": 18574609119
+      }
+    ],
+    "2026-05-24": [
+      {
+        "type": "bike",
+        "label": "Recovery cycling with a man cold",
+        "durationMin": 32,
+        "distanceKm": 10.3,
+        "stravaId": 18640596453
       }
     ]
   }
