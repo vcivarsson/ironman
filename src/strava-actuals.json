@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-27T08:37:14.294Z",
+  "updatedAt": "2026-05-28T08:41:00.432Z",
   "ytd": {
     "swim": {
       "count": 12,
@@ -12,9 +12,9 @@
       "km": 676.4
     },
     "run": {
-      "count": 38,
-      "min": 1528,
-      "km": 259.5
+      "count": 39,
+      "min": 1572,
+      "km": 267.5
     },
     "other": {
       "count": 20,
@@ -831,6 +831,15 @@
         "durationMin": 60,
         "distanceKm": 25.2,
         "stravaId": 18668011242
+      }
+    ],
+    "2026-05-27": [
+      {
+        "type": "run",
+        "label": "Threshold hill sprints in Point Dume 🏄🏼‍♂️",
+        "durationMin": 44,
+        "distanceKm": 8,
+        "stravaId": 18682399860
       }
     ]
   }
