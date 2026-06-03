@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-02T09:05:05.691Z",
+  "updatedAt": "2026-06-03T09:23:35.856Z",
   "ytd": {
     "swim": {
       "count": 12,
@@ -12,9 +12,9 @@
       "km": 676.4
     },
     "run": {
-      "count": 39,
-      "min": 1572,
-      "km": 267.5
+      "count": 40,
+      "min": 1600,
+      "km": 271.5
     },
     "other": {
       "count": 20,
@@ -840,6 +840,15 @@
         "durationMin": 44,
         "distanceKm": 8,
         "stravaId": 18682399860
+      }
+    ],
+    "2026-06-02": [
+      {
+        "type": "run",
+        "label": "Vegas run 🎢",
+        "durationMin": 28,
+        "distanceKm": 4,
+        "stravaId": 18755523575
       }
     ]
   }
