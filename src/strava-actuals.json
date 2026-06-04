@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-03T09:23:35.856Z",
+  "updatedAt": "2026-06-04T08:46:08.032Z",
   "ytd": {
     "swim": {
       "count": 12,
@@ -7,18 +7,18 @@
       "km": 14.2
     },
     "bike": {
-      "count": 24,
-      "min": 1565,
-      "km": 676.4
+      "count": 25,
+      "min": 1589,
+      "km": 686.4
     },
     "run": {
-      "count": 40,
-      "min": 1600,
-      "km": 271.5
+      "count": 41,
+      "min": 1630,
+      "km": 276.6
     },
     "other": {
-      "count": 20,
-      "min": 1118,
+      "count": 21,
+      "min": 1159,
       "km": 74.2
     }
   },
@@ -849,6 +849,29 @@
         "durationMin": 28,
         "distanceKm": 4,
         "stravaId": 18755523575
+      }
+    ],
+    "2026-06-03": [
+      {
+        "type": "other",
+        "label": "Morning HIIT",
+        "durationMin": 41,
+        "distanceKm": 0,
+        "stravaId": 18770485935
+      },
+      {
+        "type": "run",
+        "label": "Morning Sprints",
+        "durationMin": 30,
+        "distanceKm": 5.1,
+        "stravaId": 18770465098
+      },
+      {
+        "type": "bike",
+        "label": "Bike intervals 2:2 min hard/slow",
+        "durationMin": 24,
+        "distanceKm": 10,
+        "stravaId": 18770472346
       }
     ]
   }
