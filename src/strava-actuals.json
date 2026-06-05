@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-04T08:46:08.032Z",
+  "updatedAt": "2026-06-05T08:42:15.492Z",
   "ytd": {
     "swim": {
       "count": 12,
@@ -7,9 +7,9 @@
       "km": 14.2
     },
     "bike": {
-      "count": 25,
-      "min": 1589,
-      "km": 686.4
+      "count": 26,
+      "min": 1632,
+      "km": 706.4
     },
     "run": {
       "count": 41,
@@ -872,6 +872,15 @@
         "durationMin": 24,
         "distanceKm": 10,
         "stravaId": 18770472346
+      }
+    ],
+    "2026-06-04": [
+      {
+        "type": "bike",
+        "label": "Indoor Cycling",
+        "durationMin": 43,
+        "distanceKm": 20,
+        "stravaId": 18791211161
       }
     ]
   }
