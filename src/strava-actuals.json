@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-05T08:42:15.492Z",
+  "updatedAt": "2026-06-06T07:44:32.603Z",
   "ytd": {
     "swim": {
       "count": 12,
@@ -12,9 +12,9 @@
       "km": 706.4
     },
     "run": {
-      "count": 41,
-      "min": 1630,
-      "km": 276.6
+      "count": 42,
+      "min": 1667,
+      "km": 283.6
     },
     "other": {
       "count": 21,
@@ -881,6 +881,15 @@
         "durationMin": 43,
         "distanceKm": 20,
         "stravaId": 18791211161
+      }
+    ],
+    "2026-06-05": [
+      {
+        "type": "run",
+        "label": "Lightweight! 🏃🏼‍♂️",
+        "durationMin": 37,
+        "distanceKm": 7,
+        "stravaId": 18802970039
       }
     ]
   }
