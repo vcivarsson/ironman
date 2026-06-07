@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-06T07:44:32.603Z",
+  "updatedAt": "2026-06-07T08:22:31.320Z",
   "ytd": {
     "swim": {
       "count": 12,
@@ -7,9 +7,9 @@
       "km": 14.2
     },
     "bike": {
-      "count": 26,
-      "min": 1632,
-      "km": 706.4
+      "count": 27,
+      "min": 1784,
+      "km": 781.5
     },
     "run": {
       "count": 42,
@@ -890,6 +890,15 @@
         "durationMin": 37,
         "distanceKm": 7,
         "stravaId": 18802970039
+      }
+    ],
+    "2026-06-06": [
+      {
+        "type": "bike",
+        "label": "75k fun day 🎢",
+        "durationMin": 152,
+        "distanceKm": 75.1,
+        "stravaId": 18815249173
       }
     ]
   }
