@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-06-07T08:22:31.320Z",
+  "updatedAt": "2026-06-08T09:21:18.109Z",
   "ytd": {
     "swim": {
-      "count": 12,
-      "min": 296,
-      "km": 14.2
+      "count": 13,
+      "min": 334,
+      "km": 16.2
     },
     "bike": {
       "count": 27,
@@ -17,9 +17,9 @@
       "km": 283.6
     },
     "other": {
-      "count": 21,
-      "min": 1159,
-      "km": 74.2
+      "count": 22,
+      "min": 1213,
+      "km": 76.9
     }
   },
   "byDate": {
@@ -899,6 +899,22 @@
         "durationMin": 152,
         "distanceKm": 75.1,
         "stravaId": 18815249173
+      }
+    ],
+    "2026-06-07": [
+      {
+        "type": "other",
+        "label": "French Open 🎾",
+        "durationMin": 54,
+        "distanceKm": 2.7,
+        "stravaId": 18828443256
+      },
+      {
+        "type": "swim",
+        "label": "Lunch 2k 👙",
+        "durationMin": 38,
+        "distanceKm": 2,
+        "stravaId": 18829650883
       }
     ]
   }
