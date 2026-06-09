@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-08T09:21:18.109Z",
+  "updatedAt": "2026-06-09T08:29:23.735Z",
   "ytd": {
     "swim": {
       "count": 13,
@@ -17,8 +17,8 @@
       "km": 283.6
     },
     "other": {
-      "count": 22,
-      "min": 1213,
+      "count": 23,
+      "min": 1244,
       "km": 76.9
     }
   },
@@ -915,6 +915,15 @@
         "durationMin": 38,
         "distanceKm": 2,
         "stravaId": 18829650883
+      }
+    ],
+    "2026-06-08": [
+      {
+        "type": "other",
+        "label": "First time yoga. Ever 🧘🏼‍♂️",
+        "durationMin": 31,
+        "distanceKm": 0,
+        "stravaId": 18844165769
       }
     ]
   }
