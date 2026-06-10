@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-09T08:29:23.735Z",
+  "updatedAt": "2026-06-10T08:47:01.239Z",
   "ytd": {
     "swim": {
       "count": 13,
@@ -7,9 +7,9 @@
       "km": 16.2
     },
     "bike": {
-      "count": 27,
-      "min": 1784,
-      "km": 781.5
+      "count": 28,
+      "min": 1834,
+      "km": 797
     },
     "run": {
       "count": 42,
@@ -924,6 +924,15 @@
         "durationMin": 31,
         "distanceKm": 0,
         "stravaId": 18844165769
+      }
+    ],
+    "2026-06-09": [
+      {
+        "type": "bike",
+        "label": "Intervals Z4 🐶",
+        "durationMin": 50,
+        "distanceKm": 15.5,
+        "stravaId": 18858136823
       }
     ]
   }
