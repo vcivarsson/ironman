@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-13T08:19:48.128Z",
+  "updatedAt": "2026-06-14T08:39:36.060Z",
   "ytd": {
     "swim": {
       "count": 13,
@@ -7,8 +7,8 @@
       "km": 16.2
     },
     "bike": {
-      "count": 28,
-      "min": 1834,
+      "count": 29,
+      "min": 1869,
       "km": 797
     },
     "run": {
@@ -17,8 +17,8 @@
       "km": 283.6
     },
     "other": {
-      "count": 23,
-      "min": 1244,
+      "count": 24,
+      "min": 1263,
       "km": 76.9
     }
   },
@@ -933,6 +933,22 @@
         "durationMin": 50,
         "distanceKm": 15.5,
         "stravaId": 18858136823
+      }
+    ],
+    "2026-06-13": [
+      {
+        "type": "bike",
+        "label": "Morning Watt intervals",
+        "durationMin": 35,
+        "distanceKm": 0,
+        "stravaId": 18904358417
+      },
+      {
+        "type": "other",
+        "label": "Morning Weight Training",
+        "durationMin": 19,
+        "distanceKm": 0,
+        "stravaId": 18904636287
       }
     ]
   }
