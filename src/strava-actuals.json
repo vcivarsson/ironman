@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-16T10:05:10.129Z",
+  "updatedAt": "2026-06-17T09:28:09.936Z",
   "ytd": {
     "swim": {
       "count": 13,
@@ -12,9 +12,9 @@
       "km": 797
     },
     "run": {
-      "count": 42,
-      "min": 1667,
-      "km": 283.6
+      "count": 43,
+      "min": 1703,
+      "km": 290.6
     },
     "other": {
       "count": 25,
@@ -958,6 +958,15 @@
         "durationMin": 33,
         "distanceKm": 0,
         "stravaId": 18918477035
+      }
+    ],
+    "2026-06-16": [
+      {
+        "type": "run",
+        "label": "Run + ice bath premier 🥶🧊",
+        "durationMin": 36,
+        "distanceKm": 7,
+        "stravaId": 18951699813
       }
     ]
   }
