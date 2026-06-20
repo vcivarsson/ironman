@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-19T09:27:15.128Z",
+  "updatedAt": "2026-06-20T08:20:04.188Z",
   "ytd": {
     "swim": {
       "count": 14,
@@ -12,9 +12,9 @@
       "km": 811.9
     },
     "run": {
-      "count": 43,
-      "min": 1703,
-      "km": 290.6
+      "count": 44,
+      "min": 1739,
+      "km": 297.6
     },
     "other": {
       "count": 25,
@@ -985,6 +985,15 @@
         "durationMin": 10,
         "distanceKm": 0.5,
         "stravaId": 18976981999
+      }
+    ],
+    "2026-06-19": [
+      {
+        "type": "run",
+        "label": "Midsummer Malibu Run 🇸🇪",
+        "durationMin": 36,
+        "distanceKm": 7,
+        "stravaId": 18989400265
       }
     ]
   }
