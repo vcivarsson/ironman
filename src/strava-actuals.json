@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-06-21T08:56:01.279Z",
+  "updatedAt": "2026-06-22T10:35:31.317Z",
   "ytd": {
     "swim": {
-      "count": 14,
-      "min": 344,
-      "km": 16.7
+      "count": 15,
+      "min": 364,
+      "km": 17.7
     },
     "bike": {
       "count": 30,
@@ -17,9 +17,9 @@
       "km": 297.6
     },
     "other": {
-      "count": 25,
-      "min": 1296,
-      "km": 76.9
+      "count": 26,
+      "min": 1337,
+      "km": 79
     }
   },
   "byDate": {
@@ -994,6 +994,22 @@
         "durationMin": 36,
         "distanceKm": 7,
         "stravaId": 18989400265
+      }
+    ],
+    "2026-06-21": [
+      {
+        "type": "swim",
+        "label": "Multi sports Sunday’s 👙🎾",
+        "durationMin": 20,
+        "distanceKm": 1,
+        "stravaId": 19013591920
+      },
+      {
+        "type": "other",
+        "label": "Lunch Tennis",
+        "durationMin": 41,
+        "distanceKm": 2.1,
+        "stravaId": 19014886622
       }
     ]
   }
