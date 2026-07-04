@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-07-03T08:07:13.797Z",
+  "updatedAt": "2026-07-04T07:44:33.753Z",
   "ytd": {
     "swim": {
-      "count": 15,
-      "min": 364,
-      "km": 17.7
+      "count": 16,
+      "min": 390,
+      "km": 18.8
     },
     "bike": {
       "count": 30,
@@ -1037,6 +1037,15 @@
         "durationMin": 41,
         "distanceKm": 6.6,
         "stravaId": 19152689179
+      }
+    ],
+    "2026-07-03": [
+      {
+        "type": "swim",
+        "label": "Freshwater buoyancy 🐳",
+        "durationMin": 26,
+        "distanceKm": 1.1,
+        "stravaId": 19165372039
       }
     ]
   }
