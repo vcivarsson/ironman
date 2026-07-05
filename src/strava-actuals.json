@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T07:44:33.753Z",
+  "updatedAt": "2026-07-05T07:55:27.729Z",
   "ytd": {
     "swim": {
       "count": 16,
@@ -7,14 +7,14 @@
       "km": 18.8
     },
     "bike": {
-      "count": 30,
-      "min": 1901,
+      "count": 31,
+      "min": 1960,
       "km": 811.9
     },
     "run": {
-      "count": 46,
-      "min": 1817,
-      "km": 311.2
+      "count": 47,
+      "min": 1855,
+      "km": 318.2
     },
     "other": {
       "count": 27,
@@ -1046,6 +1046,24 @@
         "durationMin": 26,
         "distanceKm": 1.1,
         "stravaId": 19165372039
+      }
+    ],
+    "2026-07-04": [
+      {
+        "type": "bike",
+        "label": "Speed workout 30x20 sec @ 350W",
+        "durationMin": 59,
+        "distanceKm": 0,
+        "stravaId": 19175474591
+      }
+    ],
+    "2026-07-05": [
+      {
+        "type": "run",
+        "label": "Östergötlands PCH",
+        "durationMin": 38,
+        "distanceKm": 7,
+        "stravaId": 19184694330
       }
     ]
   }
