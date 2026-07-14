@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-13T08:14:57.883Z",
+  "updatedAt": "2026-07-14T07:09:25.258Z",
   "ytd": {
     "swim": {
       "count": 16,
@@ -7,9 +7,9 @@
       "km": 18.8
     },
     "bike": {
-      "count": 31,
-      "min": 1960,
-      "km": 811.9
+      "count": 32,
+      "min": 1992,
+      "km": 829.9
     },
     "run": {
       "count": 47,
@@ -17,8 +17,8 @@
       "km": 318.2
     },
     "other": {
-      "count": 29,
-      "min": 1457,
+      "count": 30,
+      "min": 1474,
       "km": 85.3
     }
   },
@@ -1082,6 +1082,22 @@
         "durationMin": 22,
         "distanceKm": 0,
         "stravaId": 19238217207
+      }
+    ],
+    "2026-07-13": [
+      {
+        "type": "bike",
+        "label": "Power ride 🌪️",
+        "durationMin": 32,
+        "distanceKm": 18,
+        "stravaId": 19292455228
+      },
+      {
+        "type": "other",
+        "label": "Lunch Weight Training",
+        "durationMin": 17,
+        "distanceKm": 0,
+        "stravaId": 19292756654
       }
     ]
   }
