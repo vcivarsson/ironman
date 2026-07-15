@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-14T07:09:25.258Z",
+  "updatedAt": "2026-07-15T07:12:58.998Z",
   "ytd": {
     "swim": {
       "count": 16,
@@ -12,9 +12,9 @@
       "km": 829.9
     },
     "run": {
-      "count": 47,
-      "min": 1855,
-      "km": 318.2
+      "count": 48,
+      "min": 1904,
+      "km": 326.2
     },
     "other": {
       "count": 30,
@@ -1098,6 +1098,15 @@
         "durationMin": 17,
         "distanceKm": 0,
         "stravaId": 19292756654
+      }
+    ],
+    "2026-07-14": [
+      {
+        "type": "run",
+        "label": "14x1min sprints + 5x3min threshold",
+        "durationMin": 49,
+        "distanceKm": 8,
+        "stravaId": 19306674472
       }
     ]
   }
