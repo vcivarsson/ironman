@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-15T07:12:58.998Z",
+  "updatedAt": "2026-07-16T07:21:03.585Z",
   "ytd": {
     "swim": {
       "count": 16,
@@ -7,9 +7,9 @@
       "km": 18.8
     },
     "bike": {
-      "count": 32,
-      "min": 1992,
-      "km": 829.9
+      "count": 33,
+      "min": 2027,
+      "km": 852.4
     },
     "run": {
       "count": 48,
@@ -1107,6 +1107,15 @@
         "durationMin": 49,
         "distanceKm": 8,
         "stravaId": 19306674472
+      }
+    ],
+    "2026-07-15": [
+      {
+        "type": "bike",
+        "label": "Threshold workout 🚴",
+        "durationMin": 35,
+        "distanceKm": 22.5,
+        "stravaId": 19319905601
       }
     ]
   }
