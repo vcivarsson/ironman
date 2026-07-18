@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-17T07:14:33.775Z",
+  "updatedAt": "2026-07-18T06:58:45.662Z",
   "ytd": {
     "swim": {
       "count": 17,
@@ -7,9 +7,9 @@
       "km": 19.2
     },
     "bike": {
-      "count": 33,
-      "min": 2027,
-      "km": 852.4
+      "count": 34,
+      "min": 2089,
+      "km": 883.2
     },
     "run": {
       "count": 49,
@@ -1132,6 +1132,15 @@
         "durationMin": 10,
         "distanceKm": 0.4,
         "stravaId": 19339178100
+      }
+    ],
+    "2026-07-17": [
+      {
+        "type": "bike",
+        "label": "Morning Ride",
+        "durationMin": 62,
+        "distanceKm": 30.8,
+        "stravaId": 19347182808
       }
     ]
   }
