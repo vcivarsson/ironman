@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-19T07:25:14.383Z",
+  "updatedAt": "2026-07-20T07:56:38.272Z",
   "ytd": {
     "swim": {
       "count": 17,
@@ -7,9 +7,9 @@
       "km": 19.2
     },
     "bike": {
-      "count": 34,
-      "min": 2089,
-      "km": 883.2
+      "count": 35,
+      "min": 2182,
+      "km": 924.4
     },
     "run": {
       "count": 50,
@@ -1150,6 +1150,15 @@
         "durationMin": 82,
         "distanceKm": 15,
         "stravaId": 19361572528
+      }
+    ],
+    "2026-07-19": [
+      {
+        "type": "bike",
+        "label": "Zero fun ride 🌧️",
+        "durationMin": 93,
+        "distanceKm": 41.2,
+        "stravaId": 19374442614
       }
     ]
   }
