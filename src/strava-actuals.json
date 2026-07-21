@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-07-20T07:56:38.272Z",
+  "updatedAt": "2026-07-21T07:31:01.548Z",
   "ytd": {
     "swim": {
-      "count": 17,
-      "min": 400,
-      "km": 19.2
+      "count": 18,
+      "min": 431,
+      "km": 20.9
     },
     "bike": {
       "count": 35,
@@ -17,8 +17,8 @@
       "km": 351.3
     },
     "other": {
-      "count": 30,
-      "min": 1474,
+      "count": 31,
+      "min": 1508,
       "km": 85.3
     }
   },
@@ -1159,6 +1159,22 @@
         "durationMin": 93,
         "distanceKm": 41.2,
         "stravaId": 19374442614
+      }
+    ],
+    "2026-07-20": [
+      {
+        "type": "swim",
+        "label": "Fast 🐠 Swim",
+        "durationMin": 31,
+        "distanceKm": 1.7,
+        "stravaId": 19387068552
+      },
+      {
+        "type": "other",
+        "label": "Pumping wood > pumping iron 🪓",
+        "durationMin": 34,
+        "distanceKm": 0,
+        "stravaId": 19387655009
       }
     ]
   }
