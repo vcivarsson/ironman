@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-22T07:32:31.835Z",
+  "updatedAt": "2026-07-23T07:31:25.906Z",
   "ytd": {
     "swim": {
       "count": 18,
@@ -7,9 +7,9 @@
       "km": 20.9
     },
     "bike": {
-      "count": 36,
-      "min": 2242,
-      "km": 959
+      "count": 37,
+      "min": 2374,
+      "km": 1020.6
     },
     "run": {
       "count": 51,
@@ -1191,6 +1191,15 @@
         "durationMin": 54,
         "distanceKm": 10,
         "stravaId": 19404461420
+      }
+    ],
+    "2026-07-22": [
+      {
+        "type": "bike",
+        "label": "ta mig fan motvind åt båda håll",
+        "durationMin": 132,
+        "distanceKm": 61.6,
+        "stravaId": 19415207093
       }
     ]
   }
