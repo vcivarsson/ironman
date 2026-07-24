@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-07-23T07:31:25.906Z",
+  "updatedAt": "2026-07-24T07:29:05.412Z",
   "ytd": {
     "swim": {
-      "count": 18,
-      "min": 431,
-      "km": 20.9
+      "count": 19,
+      "min": 450,
+      "km": 21.9
     },
     "bike": {
       "count": 37,
@@ -12,9 +12,9 @@
       "km": 1020.6
     },
     "run": {
-      "count": 51,
-      "min": 2094,
-      "km": 361.3
+      "count": 52,
+      "min": 2132,
+      "km": 367.7
     },
     "other": {
       "count": 31,
@@ -1200,6 +1200,22 @@
         "durationMin": 132,
         "distanceKm": 61.6,
         "stravaId": 19415207093
+      }
+    ],
+    "2026-07-23": [
+      {
+        "type": "swim",
+        "label": "Afternoon Swim",
+        "durationMin": 19,
+        "distanceKm": 1,
+        "stravaId": 19433469957
+      },
+      {
+        "type": "run",
+        "label": "14x1 min intervals",
+        "durationMin": 38,
+        "distanceKm": 6.4,
+        "stravaId": 19434116040
       }
     ]
   }
