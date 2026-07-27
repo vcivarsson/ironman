@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-26T07:33:23.612Z",
+  "updatedAt": "2026-07-27T08:29:00.562Z",
   "ytd": {
     "swim": {
       "count": 20,
@@ -12,9 +12,9 @@
       "km": 1139.8
     },
     "run": {
-      "count": 53,
-      "min": 2155,
-      "km": 371.7
+      "count": 54,
+      "min": 2284,
+      "km": 392.7
     },
     "other": {
       "count": 31,
@@ -1241,6 +1241,15 @@
         "durationMin": 271,
         "distanceKm": 119.2,
         "stravaId": 19459549677
+      }
+    ],
+    "2026-07-26": [
+      {
+        "type": "run",
+        "label": "Z1 half marathon with Deer friends",
+        "durationMin": 129,
+        "distanceKm": 21,
+        "stravaId": 19472430632
       }
     ]
   }
