@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-27T08:29:00.562Z",
+  "updatedAt": "2026-07-28T07:36:03.210Z",
   "ytd": {
     "swim": {
       "count": 20,
@@ -17,8 +17,8 @@
       "km": 392.7
     },
     "other": {
-      "count": 31,
-      "min": 1508,
+      "count": 33,
+      "min": 1661,
       "km": 85.3
     }
   },
@@ -1250,6 +1250,22 @@
         "durationMin": 129,
         "distanceKm": 21,
         "stravaId": 19472430632
+      }
+    ],
+    "2026-07-27": [
+      {
+        "type": "other",
+        "label": "Building things 🪵",
+        "durationMin": 133,
+        "distanceKm": 0,
+        "stravaId": 19488852042
+      },
+      {
+        "type": "other",
+        "label": "Stretch / recovery",
+        "durationMin": 20,
+        "distanceKm": 0,
+        "stravaId": 19488860229
       }
     ]
   }
