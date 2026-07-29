@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-28T07:36:03.210Z",
+  "updatedAt": "2026-07-29T07:40:47.385Z",
   "ytd": {
     "swim": {
       "count": 20,
@@ -12,13 +12,13 @@
       "km": 1139.8
     },
     "run": {
-      "count": 54,
-      "min": 2284,
-      "km": 392.7
+      "count": 55,
+      "min": 2326,
+      "km": 399.7
     },
     "other": {
-      "count": 33,
-      "min": 1661,
+      "count": 34,
+      "min": 1683,
       "km": 85.3
     }
   },
@@ -1266,6 +1266,24 @@
         "durationMin": 20,
         "distanceKm": 0,
         "stravaId": 19488860229
+      }
+    ],
+    "2026-07-28": [
+      {
+        "type": "run",
+        "label": "Afternoon Run",
+        "durationMin": 42,
+        "distanceKm": 7,
+        "stravaId": 19500379902
+      }
+    ],
+    "2026-07-29": [
+      {
+        "type": "other",
+        "label": "Morning Weight Training",
+        "durationMin": 22,
+        "distanceKm": 0,
+        "stravaId": 19510430438
       }
     ]
   }
