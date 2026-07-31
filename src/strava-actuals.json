@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-30T07:32:01.227Z",
+  "updatedAt": "2026-07-31T07:48:31.730Z",
   "ytd": {
     "swim": {
       "count": 21,
@@ -7,14 +7,14 @@
       "km": 24.1
     },
     "bike": {
-      "count": 38,
-      "min": 2645,
-      "km": 1139.8
+      "count": 39,
+      "min": 2687,
+      "km": 1162.9
     },
     "run": {
-      "count": 55,
-      "min": 2326,
-      "km": 399.7
+      "count": 56,
+      "min": 2359,
+      "km": 405.5
     },
     "other": {
       "count": 34,
@@ -1291,6 +1291,22 @@
         "durationMin": 24,
         "distanceKm": 1.2,
         "stravaId": 19515989720
+      }
+    ],
+    "2026-07-30": [
+      {
+        "type": "bike",
+        "label": "Speed ride ☀️",
+        "durationMin": 42,
+        "distanceKm": 23.1,
+        "stravaId": 19527894780
+      },
+      {
+        "type": "run",
+        "label": "Brick run",
+        "durationMin": 33,
+        "distanceKm": 5.8,
+        "stravaId": 19528441203
       }
     ]
   }
