@@ -1,25 +1,25 @@
 {
-  "updatedAt": "2026-08-07T06:07:12.765Z",
+  "updatedAt": "2026-08-10T06:09:00.440Z",
   "ytd": {
     "swim": {
-      "count": 24,
-      "min": 625,
-      "km": 30.4
+      "count": 26,
+      "min": 745,
+      "km": 35.8
     },
     "bike": {
-      "count": 40,
-      "min": 2896,
-      "km": 1251.8
+      "count": 41,
+      "min": 2982,
+      "km": 1291.8
     },
     "run": {
-      "count": 57,
-      "min": 2480,
-      "km": 426.5
+      "count": 58,
+      "min": 2543,
+      "km": 436.5
     },
     "other": {
-      "count": 34,
-      "min": 1683,
-      "km": 85.3
+      "count": 35,
+      "min": 1776,
+      "km": 93.3
     }
   },
   "byDate": {
@@ -1346,6 +1346,45 @@
         "durationMin": 121,
         "distanceKm": 21,
         "stravaId": 19583292580
+      }
+    ],
+    "2026-08-08": [
+      {
+        "type": "bike",
+        "label": "New bike new sore ass",
+        "durationMin": 86,
+        "distanceKm": 40,
+        "stravaId": 19659967207
+      },
+      {
+        "type": "other",
+        "label": "Afternoon Hike",
+        "durationMin": 93,
+        "distanceKm": 8,
+        "stravaId": 19660811171
+      }
+    ],
+    "2026-08-09": [
+      {
+        "type": "swim",
+        "label": "Stupid Garmin shaved off 800m",
+        "durationMin": 57,
+        "distanceKm": 2.3,
+        "stravaId": 19671798331
+      },
+      {
+        "type": "swim",
+        "label": "3k shark race 🦈",
+        "durationMin": 63,
+        "distanceKm": 3.1,
+        "stravaId": 19673134282
+      },
+      {
+        "type": "run",
+        "label": "Brick swim run",
+        "durationMin": 63,
+        "distanceKm": 10,
+        "stravaId": 19672913410
       }
     ]
   }
