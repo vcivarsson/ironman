@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-10T06:09:00.440Z",
+  "updatedAt": "2026-08-11T05:51:23.103Z",
   "ytd": {
     "swim": {
       "count": 26,
@@ -17,8 +17,8 @@
       "km": 436.5
     },
     "other": {
-      "count": 35,
-      "min": 1776,
+      "count": 36,
+      "min": 1823,
       "km": 93.3
     }
   },
@@ -1385,6 +1385,15 @@
         "durationMin": 63,
         "distanceKm": 10,
         "stravaId": 19672913410
+      }
+    ],
+    "2026-08-10": [
+      {
+        "type": "other",
+        "label": "Downward upward warrior dog",
+        "durationMin": 47,
+        "distanceKm": 0,
+        "stravaId": 19688191238
       }
     ]
   }
