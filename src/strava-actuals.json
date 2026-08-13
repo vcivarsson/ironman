@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-12T06:11:45.234Z",
+  "updatedAt": "2026-08-13T06:14:25.882Z",
   "ytd": {
     "swim": {
       "count": 26,
@@ -12,9 +12,9 @@
       "km": 1309.1
     },
     "run": {
-      "count": 58,
-      "min": 2543,
-      "km": 436.5
+      "count": 59,
+      "min": 2587,
+      "km": 444.1
     },
     "other": {
       "count": 36,
@@ -1403,6 +1403,15 @@
         "durationMin": 38,
         "distanceKm": 17.3,
         "stravaId": 19702470772
+      }
+    ],
+    "2026-08-12": [
+      {
+        "type": "run",
+        "label": "Hill sprints Ocean side",
+        "durationMin": 44,
+        "distanceKm": 7.6,
+        "stravaId": 19719066887
       }
     ]
   }
