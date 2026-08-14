@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-13T06:14:25.882Z",
+  "updatedAt": "2026-08-14T06:11:09.650Z",
   "ytd": {
     "swim": {
       "count": 26,
@@ -7,9 +7,9 @@
       "km": 35.8
     },
     "bike": {
-      "count": 42,
-      "min": 3020,
-      "km": 1309.1
+      "count": 43,
+      "min": 3114,
+      "km": 1359.2
     },
     "run": {
       "count": 59,
@@ -1412,6 +1412,15 @@
         "durationMin": 44,
         "distanceKm": 7.6,
         "stravaId": 19719066887
+      }
+    ],
+    "2026-08-13": [
+      {
+        "type": "bike",
+        "label": "Aero like a flying fridge 🪽",
+        "durationMin": 94,
+        "distanceKm": 50.1,
+        "stravaId": 19732199408
       }
     ]
   }
