@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-15T05:21:45.537Z",
+  "updatedAt": "2026-08-16T05:24:53.985Z",
   "ytd": {
     "swim": {
       "count": 29,
@@ -7,9 +7,9 @@
       "km": 42.9
     },
     "bike": {
-      "count": 43,
-      "min": 3114,
-      "km": 1359.2
+      "count": 44,
+      "min": 3316,
+      "km": 1459.3
     },
     "run": {
       "count": 59,
@@ -1446,6 +1446,13 @@
         "durationMin": 40,
         "distanceKm": 2.2,
         "stravaId": 19745401975
+      },
+      {
+        "type": "bike",
+        "label": "Malibu <> Manhattan Beach 🌴",
+        "durationMin": 202,
+        "distanceKm": 100.1,
+        "stravaId": 19757814264
       }
     ]
   }
