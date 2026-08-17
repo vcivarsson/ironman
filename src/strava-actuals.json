@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-16T05:24:53.985Z",
+  "updatedAt": "2026-08-17T05:32:34.267Z",
   "ytd": {
     "swim": {
       "count": 29,
@@ -17,9 +17,9 @@
       "km": 444.1
     },
     "other": {
-      "count": 36,
-      "min": 1823,
-      "km": 93.3
+      "count": 38,
+      "min": 1886,
+      "km": 96.4
     }
   },
   "byDate": {
@@ -1453,6 +1453,22 @@
         "durationMin": 202,
         "distanceKm": 100.1,
         "stravaId": 19757814264
+      }
+    ],
+    "2026-08-16": [
+      {
+        "type": "other",
+        "label": "Lunch Tennis",
+        "durationMin": 31,
+        "distanceKm": 1.4,
+        "stravaId": 19771756701
+      },
+      {
+        "type": "other",
+        "label": "Zero backflips 🤙🏻",
+        "durationMin": 32,
+        "distanceKm": 1.7,
+        "stravaId": 19773027502
       }
     ]
   }
