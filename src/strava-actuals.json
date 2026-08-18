@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-08-17T05:32:34.267Z",
+  "updatedAt": "2026-08-18T05:26:00.167Z",
   "ytd": {
     "swim": {
-      "count": 29,
-      "min": 884,
-      "km": 42.9
+      "count": 30,
+      "min": 925,
+      "km": 44.9
     },
     "bike": {
       "count": 44,
@@ -1469,6 +1469,15 @@
         "durationMin": 32,
         "distanceKm": 1.7,
         "stravaId": 19773027502
+      }
+    ],
+    "2026-08-17": [
+      {
+        "type": "swim",
+        "label": "Remembering HIGH ELBOWS ‼️‼️‼️",
+        "durationMin": 41,
+        "distanceKm": 2,
+        "stravaId": 19787584417
       }
     ]
   }
