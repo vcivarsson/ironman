@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-19T05:26:56.433Z",
+  "updatedAt": "2026-08-20T05:27:23.033Z",
   "ytd": {
     "swim": {
       "count": 30,
@@ -17,9 +17,9 @@
       "km": 444.1
     },
     "other": {
-      "count": 38,
-      "min": 1886,
-      "km": 96.4
+      "count": 39,
+      "min": 1938,
+      "km": 98.9
     }
   },
   "byDate": {
@@ -1478,6 +1478,15 @@
         "durationMin": 41,
         "distanceKm": 2,
         "stravaId": 19787584417
+      }
+    ],
+    "2026-08-19": [
+      {
+        "type": "other",
+        "label": "Evening Tennis",
+        "durationMin": 52,
+        "distanceKm": 2.5,
+        "stravaId": 19817677527
       }
     ]
   }
