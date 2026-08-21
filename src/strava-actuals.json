@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-20T05:27:23.033Z",
+  "updatedAt": "2026-08-21T05:29:49.389Z",
   "ytd": {
     "swim": {
       "count": 30,
@@ -17,9 +17,9 @@
       "km": 444.1
     },
     "other": {
-      "count": 39,
-      "min": 1938,
-      "km": 98.9
+      "count": 40,
+      "min": 1985,
+      "km": 101.3
     }
   },
   "byDate": {
@@ -1487,6 +1487,15 @@
         "durationMin": 52,
         "distanceKm": 2.5,
         "stravaId": 19817677527
+      }
+    ],
+    "2026-08-20": [
+      {
+        "type": "other",
+        "label": "Afternoon Surfing",
+        "durationMin": 47,
+        "distanceKm": 2.4,
+        "stravaId": 19830507348
       }
     ]
   }
