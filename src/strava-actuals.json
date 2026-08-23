@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-22T05:23:49.094Z",
+  "updatedAt": "2026-08-23T05:26:33.106Z",
   "ytd": {
     "swim": {
       "count": 30,
@@ -7,9 +7,9 @@
       "km": 44.9
     },
     "bike": {
-      "count": 44,
-      "min": 3316,
-      "km": 1459.3
+      "count": 45,
+      "min": 3415,
+      "km": 1509.5
     },
     "run": {
       "count": 60,
@@ -1505,6 +1505,15 @@
         "durationMin": 34,
         "distanceKm": 6.1,
         "stravaId": 19843281631
+      }
+    ],
+    "2026-08-22": [
+      {
+        "type": "bike",
+        "label": "Tired 50k",
+        "durationMin": 99,
+        "distanceKm": 50.2,
+        "stravaId": 19858158557
       }
     ]
   }
