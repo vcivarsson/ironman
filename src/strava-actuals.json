@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-26T05:31:43.681Z",
+  "updatedAt": "2026-08-27T16:05:05.088Z",
   "ytd": {
     "swim": {
       "count": 32,
@@ -17,8 +17,8 @@
       "km": 450.2
     },
     "other": {
-      "count": 40,
-      "min": 1985,
+      "count": 41,
+      "min": 2018,
       "km": 101.3
     }
   },
@@ -1530,6 +1530,15 @@
         "durationMin": 62,
         "distanceKm": 2.4,
         "stravaId": 19868901730
+      }
+    ],
+    "2026-08-26": [
+      {
+        "type": "other",
+        "label": "Morning Weight Training",
+        "durationMin": 33,
+        "distanceKm": 0,
+        "stravaId": 19908697753
       }
     ]
   }
