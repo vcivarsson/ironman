@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-27T16:05:05.088Z",
+  "updatedAt": "2026-08-28T17:08:57.116Z",
   "ytd": {
     "swim": {
       "count": 32,
@@ -12,9 +12,9 @@
       "km": 1509.5
     },
     "run": {
-      "count": 60,
-      "min": 2621,
-      "km": 450.2
+      "count": 61,
+      "min": 2664,
+      "km": 458.2
     },
     "other": {
       "count": 41,
@@ -1539,6 +1539,15 @@
         "durationMin": 33,
         "distanceKm": 0,
         "stravaId": 19908697753
+      }
+    ],
+    "2026-08-27": [
+      {
+        "type": "run",
+        "label": "Bear run in Yellowstone 🐻",
+        "durationMin": 43,
+        "distanceKm": 8,
+        "stravaId": 19929765242
       }
     ]
   }
