@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-28T17:08:57.116Z",
+  "updatedAt": "2026-08-29T11:28:14.678Z",
   "ytd": {
     "swim": {
       "count": 32,
@@ -17,9 +17,9 @@
       "km": 458.2
     },
     "other": {
-      "count": 41,
-      "min": 2018,
-      "km": 101.3
+      "count": 42,
+      "min": 2155,
+      "km": 107.9
     }
   },
   "byDate": {
@@ -1548,6 +1548,15 @@
         "durationMin": 43,
         "distanceKm": 8,
         "stravaId": 19929765242
+      }
+    ],
+    "2026-08-28": [
+      {
+        "type": "other",
+        "label": "Oatmeal Moped 🐴",
+        "durationMin": 137,
+        "distanceKm": 6.6,
+        "stravaId": 19942894600
       }
     ]
   }
