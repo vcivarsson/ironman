@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-09-02T09:17:06.383Z",
+  "updatedAt": "2026-09-03T09:27:09.763Z",
   "ytd": {
     "swim": {
-      "count": 32,
-      "min": 1049,
-      "km": 50.4
+      "count": 33,
+      "min": 1067,
+      "km": 51.4
     },
     "bike": {
       "count": 46,
@@ -12,14 +12,14 @@
       "km": 1559.5
     },
     "run": {
-      "count": 62,
-      "min": 2703,
-      "km": 465.2
+      "count": 63,
+      "min": 2748,
+      "km": 472.7
     },
     "other": {
-      "count": 42,
-      "min": 2155,
-      "km": 107.9
+      "count": 43,
+      "min": 2217,
+      "km": 113.8
     }
   },
   "byDate": {
@@ -1575,6 +1575,29 @@
         "durationMin": 98,
         "distanceKm": 50,
         "stravaId": 19998880232
+      }
+    ],
+    "2026-09-02": [
+      {
+        "type": "other",
+        "label": "Afternoon Hike",
+        "durationMin": 62,
+        "distanceKm": 5.9,
+        "stravaId": 20012913391
+      },
+      {
+        "type": "run",
+        "label": "Afternoon Run",
+        "durationMin": 45,
+        "distanceKm": 7.5,
+        "stravaId": 20013556145
+      },
+      {
+        "type": "swim",
+        "label": "Codos altos",
+        "durationMin": 18,
+        "distanceKm": 1,
+        "stravaId": 20013995545
       }
     ]
   }
