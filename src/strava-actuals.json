@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-07T09:56:34.708Z",
+  "updatedAt": "2026-09-08T09:21:36.327Z",
   "ytd": {
     "swim": {
       "count": 33,
@@ -7,14 +7,14 @@
       "km": 51.4
     },
     "bike": {
-      "count": 48,
-      "min": 3622,
-      "km": 1602.8
+      "count": 49,
+      "min": 3679,
+      "km": 1629.3
     },
     "run": {
-      "count": 64,
-      "min": 2787,
-      "km": 480
+      "count": 65,
+      "min": 2806,
+      "km": 483
     },
     "other": {
       "count": 43,
@@ -1625,6 +1625,22 @@
         "durationMin": 39,
         "distanceKm": 7.3,
         "stravaId": 20054371710
+      }
+    ],
+    "2026-09-07": [
+      {
+        "type": "bike",
+        "label": "Elevation loop x3",
+        "durationMin": 57,
+        "distanceKm": 26.5,
+        "stravaId": 20079753212
+      },
+      {
+        "type": "run",
+        "label": "Brick run off the bike",
+        "durationMin": 19,
+        "distanceKm": 3,
+        "stravaId": 20079957856
       }
     ]
   }
