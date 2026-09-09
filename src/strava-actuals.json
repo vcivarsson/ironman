@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-09-08T09:21:36.327Z",
+  "updatedAt": "2026-09-09T09:23:14.277Z",
   "ytd": {
     "swim": {
-      "count": 33,
-      "min": 1067,
-      "km": 51.4
+      "count": 35,
+      "min": 1143,
+      "km": 55.4
     },
     "bike": {
       "count": 49,
@@ -1641,6 +1641,22 @@
         "durationMin": 19,
         "distanceKm": 3,
         "stravaId": 20079957856
+      }
+    ],
+    "2026-09-08": [
+      {
+        "type": "swim",
+        "label": "Evening Swim",
+        "durationMin": 38,
+        "distanceKm": 2,
+        "stravaId": 20097210378
+      },
+      {
+        "type": "swim",
+        "label": "Technique roasted by high schoolers 👍",
+        "durationMin": 38,
+        "distanceKm": 2,
+        "stravaId": 20097246359
       }
     ]
   }
