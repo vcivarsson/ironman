@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-10T09:22:42.052Z",
+  "updatedAt": "2026-09-11T09:21:08.924Z",
   "ytd": {
     "swim": {
       "count": 34,
@@ -12,13 +12,13 @@
       "km": 1679.8
     },
     "run": {
-      "count": 65,
-      "min": 2806,
-      "km": 483
+      "count": 66,
+      "min": 2829,
+      "km": 486.5
     },
     "other": {
-      "count": 43,
-      "min": 2217,
+      "count": 44,
+      "min": 2254,
       "km": 113.8
     }
   },
@@ -1659,6 +1659,22 @@
         "durationMin": 95,
         "distanceKm": 50.5,
         "stravaId": 20110522281
+      }
+    ],
+    "2026-09-10": [
+      {
+        "type": "other",
+        "label": "Afternoon Weight Training",
+        "durationMin": 37,
+        "distanceKm": 0,
+        "stravaId": 20123494151
+      },
+      {
+        "type": "run",
+        "label": "Brick run after legs 🏋️‍♀️",
+        "durationMin": 23,
+        "distanceKm": 3.5,
+        "stravaId": 20123725509
       }
     ]
   }
