@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-09-12T09:00:54.568Z",
+  "updatedAt": "2026-09-13T09:58:42.746Z",
   "ytd": {
     "swim": {
-      "count": 34,
-      "min": 1105,
-      "km": 53.4
+      "count": 35,
+      "min": 1143,
+      "km": 55.3
     },
     "bike": {
       "count": 50,
@@ -17,9 +17,9 @@
       "km": 486.5
     },
     "other": {
-      "count": 44,
-      "min": 2254,
-      "km": 113.8
+      "count": 45,
+      "min": 2281,
+      "km": 115.9
     }
   },
   "byDate": {
@@ -1675,6 +1675,22 @@
         "durationMin": 23,
         "distanceKm": 3.5,
         "stravaId": 20123725509
+      }
+    ],
+    "2026-09-12": [
+      {
+        "type": "swim",
+        "label": "Morning Swim",
+        "durationMin": 38,
+        "distanceKm": 1.9,
+        "stravaId": 20147150192
+      },
+      {
+        "type": "other",
+        "label": "Lunch Hike",
+        "durationMin": 27,
+        "distanceKm": 2.1,
+        "stravaId": 20149096351
       }
     ]
   }
