@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-13T09:58:42.746Z",
+  "updatedAt": "2026-09-14T10:19:00.088Z",
   "ytd": {
     "swim": {
       "count": 35,
@@ -7,9 +7,9 @@
       "km": 55.3
     },
     "bike": {
-      "count": 50,
-      "min": 3774,
-      "km": 1679.8
+      "count": 51,
+      "min": 3992,
+      "km": 1790
     },
     "run": {
       "count": 66,
@@ -1691,6 +1691,15 @@
         "durationMin": 27,
         "distanceKm": 2.1,
         "stravaId": 20149096351
+      }
+    ],
+    "2026-09-13": [
+      {
+        "type": "bike",
+        "label": "Almost there, Ironman 🇲🇽",
+        "durationMin": 218,
+        "distanceKm": 110.2,
+        "stravaId": 20164267256
       }
     ]
   }
