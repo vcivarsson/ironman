@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-15T09:46:09.968Z",
+  "updatedAt": "2026-09-16T09:40:07.187Z",
   "ytd": {
     "swim": {
       "count": 35,
@@ -12,9 +12,9 @@
       "km": 1790
     },
     "run": {
-      "count": 66,
-      "min": 2829,
-      "km": 486.5
+      "count": 67,
+      "min": 2905,
+      "km": 499.6
     },
     "other": {
       "count": 46,
@@ -1709,6 +1709,15 @@
         "durationMin": 96,
         "distanceKm": 7.8,
         "stravaId": 20178264698
+      }
+    ],
+    "2026-09-15": [
+      {
+        "type": "run",
+        "label": "Is there a better view? 🌴🌊",
+        "durationMin": 76,
+        "distanceKm": 13.1,
+        "stravaId": 20193854396
       }
     ]
   }
