@@ -1,20 +1,20 @@
 {
-  "updatedAt": "2026-09-20T09:35:37.734Z",
+  "updatedAt": "2026-09-21T10:23:47.062Z",
   "ytd": {
     "swim": {
-      "count": 35,
-      "min": 1143,
-      "km": 55.3
+      "count": 36,
+      "min": 1174,
+      "km": 56.7
     },
     "bike": {
-      "count": 52,
-      "min": 4076,
-      "km": 1832.3
+      "count": 54,
+      "min": 4313,
+      "km": 1928.8
     },
     "run": {
-      "count": 67,
-      "min": 2905,
-      "km": 499.6
+      "count": 68,
+      "min": 2954,
+      "km": 509.6
     },
     "other": {
       "count": 46,
@@ -1727,6 +1727,36 @@
         "durationMin": 84,
         "distanceKm": 42.3,
         "stravaId": 20220322789
+      }
+    ],
+    "2026-09-20": [
+      {
+        "type": "swim",
+        "label": "Zuma Olympic Tri: 1,500m swim",
+        "durationMin": 31,
+        "distanceKm": 1.4,
+        "stravaId": 20258350096
+      },
+      {
+        "type": "bike",
+        "label": "Zuma Olympic Triathlon 🏊🚴🏃🏼‍♂️",
+        "durationMin": 159,
+        "distanceKm": 55.9,
+        "stravaId": 20259768244
+      },
+      {
+        "type": "bike",
+        "label": "Zuma Olympic Tri: 40km bike",
+        "durationMin": 78,
+        "distanceKm": 40.6,
+        "stravaId": 20258350300
+      },
+      {
+        "type": "run",
+        "label": "Zuma Olympic Tri: 10k",
+        "durationMin": 49,
+        "distanceKm": 10,
+        "stravaId": 20258739309
       }
     ]
   }
