@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-25T09:59:30.008Z",
+  "updatedAt": "2026-09-26T09:41:41.635Z",
   "ytd": {
     "swim": {
       "count": 36,
@@ -17,8 +17,8 @@
       "km": 516.6
     },
     "other": {
-      "count": 46,
-      "min": 2377,
+      "count": 47,
+      "min": 2409,
       "km": 123.7
     }
   },
@@ -1766,6 +1766,15 @@
         "durationMin": 38,
         "distanceKm": 7,
         "stravaId": 20318117987
+      }
+    ],
+    "2026-09-25": [
+      {
+        "type": "other",
+        "label": "Afternoon HIIT",
+        "durationMin": 32,
+        "distanceKm": 0,
+        "stravaId": 20330013266
       }
     ]
   }
