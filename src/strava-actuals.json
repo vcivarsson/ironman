@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-28T11:25:54.684Z",
+  "updatedAt": "2026-09-29T11:05:18.640Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -12,9 +12,9 @@
       "km": 1953.3
     },
     "run": {
-      "count": 69,
-      "min": 2992,
-      "km": 516.6
+      "count": 70,
+      "min": 3048,
+      "km": 526.6
     },
     "other": {
       "count": 47,
@@ -1800,6 +1800,15 @@
         "durationMin": 53,
         "distanceKm": 24.5,
         "stravaId": 20355738448
+      }
+    ],
+    "2026-09-29": [
+      {
+        "type": "run",
+        "label": "Stockholm Jet lag run 🛩️",
+        "durationMin": 56,
+        "distanceKm": 10,
+        "stravaId": 20373960345
       }
     ]
   }
