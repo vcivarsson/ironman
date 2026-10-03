@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-02T10:52:30.061Z",
+  "updatedAt": "2026-10-03T10:12:16.078Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -7,9 +7,9 @@
       "km": 58.9
     },
     "bike": {
-      "count": 55,
-      "min": 4366,
-      "km": 1953.3
+      "count": 57,
+      "min": 4417,
+      "km": 1967.9
     },
     "run": {
       "count": 70,
@@ -17,8 +17,8 @@
       "km": 526.6
     },
     "other": {
-      "count": 48,
-      "min": 2440,
+      "count": 49,
+      "min": 2473,
       "km": 123.7
     }
   },
@@ -1818,6 +1818,29 @@
         "durationMin": 31,
         "distanceKm": 0,
         "stravaId": 20388597766
+      }
+    ],
+    "2026-10-02": [
+      {
+        "type": "other",
+        "label": "Lunch Ice Skate",
+        "durationMin": 33,
+        "distanceKm": 0,
+        "stravaId": 20418367999
+      },
+      {
+        "type": "bike",
+        "label": "Evening Ride",
+        "durationMin": 27,
+        "distanceKm": 0,
+        "stravaId": 20422622080
+      },
+      {
+        "type": "bike",
+        "label": "Threshold push 🌋",
+        "durationMin": 24,
+        "distanceKm": 14.6,
+        "stravaId": 20422575315
       }
     ]
   }
