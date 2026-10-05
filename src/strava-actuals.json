@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-04T10:53:33.976Z",
+  "updatedAt": "2026-10-05T12:01:59.391Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -7,9 +7,9 @@
       "km": 58.9
     },
     "bike": {
-      "count": 57,
-      "min": 4417,
-      "km": 1967.9
+      "count": 58,
+      "min": 4463,
+      "km": 1991
     },
     "run": {
       "count": 71,
@@ -17,8 +17,8 @@
       "km": 546.6
     },
     "other": {
-      "count": 49,
-      "min": 2473,
+      "count": 50,
+      "min": 2518,
       "km": 123.7
     }
   },
@@ -1850,6 +1850,22 @@
         "durationMin": 114,
         "distanceKm": 20,
         "stravaId": 20433861951
+      }
+    ],
+    "2026-10-04": [
+      {
+        "type": "other",
+        "label": "Outdoor leg stability and shoulder strength",
+        "durationMin": 45,
+        "distanceKm": 0,
+        "stravaId": 20448513394
+      },
+      {
+        "type": "bike",
+        "label": "Power Pyramid after squats 🏋🏼‍♂️",
+        "durationMin": 46,
+        "distanceKm": 23.1,
+        "stravaId": 20449400506
       }
     ]
   }
