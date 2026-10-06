@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-05T12:01:59.391Z",
+  "updatedAt": "2026-10-06T11:47:19.643Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -7,14 +7,14 @@
       "km": 58.9
     },
     "bike": {
-      "count": 58,
-      "min": 4463,
+      "count": 59,
+      "min": 4511,
       "km": 1991
     },
     "run": {
-      "count": 71,
-      "min": 3162,
-      "km": 546.6
+      "count": 72,
+      "min": 3210,
+      "km": 556.7
     },
     "other": {
       "count": 50,
@@ -1862,10 +1862,26 @@
       },
       {
         "type": "bike",
+        "label": "Afternoon Ride",
+        "durationMin": 48,
+        "distanceKm": 0,
+        "stravaId": 20471279311
+      },
+      {
+        "type": "bike",
         "label": "Power Pyramid after squats 🏋🏼‍♂️",
         "durationMin": 46,
         "distanceKm": 23.1,
         "stravaId": 20449400506
+      }
+    ],
+    "2026-10-06": [
+      {
+        "type": "run",
+        "label": "NYC Run 🗽",
+        "durationMin": 48,
+        "distanceKm": 10.1,
+        "stravaId": 20472036759
       }
     ]
   }
