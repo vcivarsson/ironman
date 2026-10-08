@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-07T11:30:46.320Z",
+  "updatedAt": "2026-10-08T11:46:05.052Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -12,14 +12,14 @@
       "km": 1991
     },
     "run": {
-      "count": 72,
-      "min": 3210,
-      "km": 556.7
+      "count": 73,
+      "min": 3236,
+      "km": 560.5
     },
     "other": {
-      "count": 50,
-      "min": 2518,
-      "km": 123.7
+      "count": 52,
+      "min": 2656,
+      "km": 159.7
     }
   },
   "byDate": {
@@ -1882,6 +1882,31 @@
         "durationMin": 48,
         "distanceKm": 10.1,
         "stravaId": 20472036759
+      }
+    ],
+    "2026-10-07": [
+      {
+        "type": "other",
+        "label": "New York City hockey game 🏒🗽",
+        "durationMin": 120,
+        "distanceKm": 36,
+        "stravaId": 20497297228
+      }
+    ],
+    "2026-10-08": [
+      {
+        "type": "run",
+        "label": "Morning Run",
+        "durationMin": 26,
+        "distanceKm": 3.8,
+        "stravaId": 20501046374
+      },
+      {
+        "type": "other",
+        "label": "Morning Weight Training",
+        "durationMin": 18,
+        "distanceKm": 0,
+        "stravaId": 20501046391
       }
     ]
   }
