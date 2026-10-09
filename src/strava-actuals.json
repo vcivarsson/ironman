@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-08T11:46:05.052Z",
+  "updatedAt": "2026-10-09T11:38:53.084Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -1896,7 +1896,7 @@
     "2026-10-08": [
       {
         "type": "run",
-        "label": "Morning Run",
+        "label": "Morning intervals",
         "durationMin": 26,
         "distanceKm": 3.8,
         "stravaId": 20501046374
