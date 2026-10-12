@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-11T11:11:35.883Z",
+  "updatedAt": "2026-10-12T12:44:29.750Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -7,9 +7,9 @@
       "km": 58.9
     },
     "bike": {
-      "count": 59,
-      "min": 4511,
-      "km": 1991
+      "count": 60,
+      "min": 4633,
+      "km": 2051.2
     },
     "run": {
       "count": 73,
@@ -1907,6 +1907,15 @@
         "durationMin": 18,
         "distanceKm": 0,
         "stravaId": 20501046391
+      }
+    ],
+    "2026-10-11": [
+      {
+        "type": "bike",
+        "label": "Head wind in every direction 👍",
+        "durationMin": 122,
+        "distanceKm": 60.2,
+        "stravaId": 20547018875
       }
     ]
   }
