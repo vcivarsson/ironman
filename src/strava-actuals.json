@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-12T12:44:29.750Z",
+  "updatedAt": "2026-10-13T12:27:19.885Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -12,9 +12,9 @@
       "km": 2051.2
     },
     "run": {
-      "count": 73,
-      "min": 3236,
-      "km": 560.5
+      "count": 74,
+      "min": 3302,
+      "km": 572.5
     },
     "other": {
       "count": 52,
@@ -1916,6 +1916,15 @@
         "durationMin": 122,
         "distanceKm": 60.2,
         "stravaId": 20547018875
+      }
+    ],
+    "2026-10-12": [
+      {
+        "type": "run",
+        "label": "Morning beach run",
+        "durationMin": 66,
+        "distanceKm": 12,
+        "stravaId": 20554311601
       }
     ]
   }
