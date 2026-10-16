@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-15T09:36:15.287Z",
+  "updatedAt": "2026-10-16T09:28:56.894Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -12,9 +12,9 @@
       "km": 2051.2
     },
     "run": {
-      "count": 74,
-      "min": 3302,
-      "km": 572.5
+      "count": 75,
+      "min": 3338,
+      "km": 577.6
     },
     "other": {
       "count": 52,
@@ -1925,6 +1925,15 @@
         "durationMin": 66,
         "distanceKm": 12,
         "stravaId": 20554311601
+      }
+    ],
+    "2026-10-15": [
+      {
+        "type": "run",
+        "label": "Joshua Tree run 🌵",
+        "durationMin": 36,
+        "distanceKm": 5.1,
+        "stravaId": 20603398469
       }
     ]
   }
