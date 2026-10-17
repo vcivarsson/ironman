@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-16T09:28:56.894Z",
+  "updatedAt": "2026-10-17T09:00:06.922Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -17,9 +17,9 @@
       "km": 577.6
     },
     "other": {
-      "count": 52,
-      "min": 2656,
-      "km": 159.7
+      "count": 54,
+      "min": 2737,
+      "km": 164.2
     }
   },
   "byDate": {
@@ -1934,6 +1934,22 @@
         "durationMin": 36,
         "distanceKm": 5.1,
         "stravaId": 20603398469
+      }
+    ],
+    "2026-10-16": [
+      {
+        "type": "other",
+        "label": "Morning Yoga",
+        "durationMin": 15,
+        "distanceKm": 0,
+        "stravaId": 20610703064
+      },
+      {
+        "type": "other",
+        "label": "Lunch Hike",
+        "durationMin": 66,
+        "distanceKm": 4.5,
+        "stravaId": 20612871392
       }
     ]
   }
