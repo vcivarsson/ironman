@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-17T09:00:06.922Z",
+  "updatedAt": "2026-10-18T09:19:16.286Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -17,9 +17,9 @@
       "km": 577.6
     },
     "other": {
-      "count": 54,
-      "min": 2737,
-      "km": 164.2
+      "count": 55,
+      "min": 2803,
+      "km": 167.5
     }
   },
   "byDate": {
@@ -1950,6 +1950,15 @@
         "durationMin": 66,
         "distanceKm": 4.5,
         "stravaId": 20612871392
+      }
+    ],
+    "2026-10-17": [
+      {
+        "type": "other",
+        "label": "Lunch Surfing",
+        "durationMin": 66,
+        "distanceKm": 3.3,
+        "stravaId": 20626015692
       }
     ]
   }
