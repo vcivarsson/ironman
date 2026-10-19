@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-18T09:19:16.286Z",
+  "updatedAt": "2026-10-19T10:30:04.007Z",
   "ytd": {
     "swim": {
       "count": 38,
@@ -17,8 +17,8 @@
       "km": 577.6
     },
     "other": {
-      "count": 55,
-      "min": 2803,
+      "count": 56,
+      "min": 2875,
       "km": 167.5
     }
   },
@@ -1959,6 +1959,15 @@
         "durationMin": 66,
         "distanceKm": 3.3,
         "stravaId": 20626015692
+      }
+    ],
+    "2026-10-18": [
+      {
+        "type": "other",
+        "label": "Muscle Beach 🏋️‍♂️",
+        "durationMin": 72,
+        "distanceKm": 0,
+        "stravaId": 20641199336
       }
     ]
   }
