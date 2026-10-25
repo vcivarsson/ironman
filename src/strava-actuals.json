@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-24T09:17:26.775Z",
+  "updatedAt": "2026-10-25T09:34:06.973Z",
   "ytd": {
     "swim": {
       "count": 39,
@@ -7,9 +7,9 @@
       "km": 60.4
     },
     "bike": {
-      "count": 60,
-      "min": 4633,
-      "km": 2051.2
+      "count": 61,
+      "min": 4794,
+      "km": 2131.2
     },
     "run": {
       "count": 77,
@@ -1995,6 +1995,15 @@
         "durationMin": 77,
         "distanceKm": 14,
         "stravaId": 20706610387
+      }
+    ],
+    "2026-10-24": [
+      {
+        "type": "bike",
+        "label": "4 weeks until Ironman 🇲🇽",
+        "durationMin": 161,
+        "distanceKm": 80,
+        "stravaId": 20717020221
       }
     ]
   }
