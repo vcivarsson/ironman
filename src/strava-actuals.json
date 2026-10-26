@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-10-25T09:34:06.973Z",
+  "updatedAt": "2026-10-26T10:45:17.055Z",
   "ytd": {
     "swim": {
-      "count": 39,
-      "min": 1241,
-      "km": 60.4
+      "count": 40,
+      "min": 1299,
+      "km": 63.4
     },
     "bike": {
       "count": 61,
@@ -2004,6 +2004,15 @@
         "durationMin": 161,
         "distanceKm": 80,
         "stravaId": 20717020221
+      }
+    ],
+    "2026-10-25": [
+      {
+        "type": "swim",
+        "label": "Top of the peak ahead of Ironman Cozumel 🎢",
+        "durationMin": 58,
+        "distanceKm": 3,
+        "stravaId": 20729295524
       }
     ]
   }
