@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-10-28T10:57:45.760Z",
+  "updatedAt": "2026-10-29T11:17:31.513Z",
   "ytd": {
     "swim": {
-      "count": 40,
-      "min": 1299,
-      "km": 63.4
+      "count": 41,
+      "min": 1338,
+      "km": 65.5
     },
     "bike": {
       "count": 61,
@@ -2013,6 +2013,15 @@
         "durationMin": 58,
         "distanceKm": 3,
         "stravaId": 20729295524
+      }
+    ],
+    "2026-10-28": [
+      {
+        "type": "swim",
+        "label": "2,250 METERS Strava",
+        "durationMin": 39,
+        "distanceKm": 2.1,
+        "stravaId": 20773210119
       }
     ]
   }
