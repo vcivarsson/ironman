@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-29T11:17:31.513Z",
+  "updatedAt": "2026-10-30T11:10:14.038Z",
   "ytd": {
     "swim": {
       "count": 41,
@@ -7,9 +7,9 @@
       "km": 65.5
     },
     "bike": {
-      "count": 61,
-      "min": 4794,
-      "km": 2131.2
+      "count": 62,
+      "min": 4814,
+      "km": 2135.6
     },
     "run": {
       "count": 77,
@@ -17,8 +17,8 @@
       "km": 601.1
     },
     "other": {
-      "count": 56,
-      "min": 2875,
+      "count": 57,
+      "min": 2891,
       "km": 167.5
     }
   },
@@ -2022,6 +2022,22 @@
         "durationMin": 39,
         "distanceKm": 2.1,
         "stravaId": 20773210119
+      }
+    ],
+    "2026-10-29": [
+      {
+        "type": "bike",
+        "label": "Hill climb bike intervals 🌋",
+        "durationMin": 20,
+        "distanceKm": 4.4,
+        "stravaId": 20785348564
+      },
+      {
+        "type": "other",
+        "label": "Afternoon HIIT",
+        "durationMin": 16,
+        "distanceKm": 0,
+        "stravaId": 20785556471
       }
     ]
   }
