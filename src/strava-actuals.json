@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-30T11:10:14.038Z",
+  "updatedAt": "2026-10-31T10:43:16.337Z",
   "ytd": {
     "swim": {
       "count": 41,
@@ -12,9 +12,9 @@
       "km": 2135.6
     },
     "run": {
-      "count": 77,
-      "min": 3466,
-      "km": 601.1
+      "count": 78,
+      "min": 3498,
+      "km": 606.4
     },
     "other": {
       "count": 57,
@@ -2038,6 +2038,15 @@
         "durationMin": 16,
         "distanceKm": 0,
         "stravaId": 20785556471
+      }
+    ],
+    "2026-10-30": [
+      {
+        "type": "run",
+        "label": "10x400m intervals incline 🌋",
+        "durationMin": 32,
+        "distanceKm": 5.3,
+        "stravaId": 20797952032
       }
     ]
   }
