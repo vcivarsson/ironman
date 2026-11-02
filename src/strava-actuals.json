@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-01T11:40:27.386Z",
+  "updatedAt": "2026-11-02T13:04:08.437Z",
   "ytd": {
     "swim": {
       "count": 41,
@@ -17,8 +17,8 @@
       "km": 606.4
     },
     "other": {
-      "count": 57,
-      "min": 2891,
+      "count": 58,
+      "min": 2913,
       "km": 167.5
     }
   },
@@ -2047,6 +2047,15 @@
         "durationMin": 32,
         "distanceKm": 5.3,
         "stravaId": 20797952032
+      }
+    ],
+    "2026-11-01": [
+      {
+        "type": "other",
+        "label": "HIIT 💦",
+        "durationMin": 22,
+        "distanceKm": 0,
+        "stravaId": 20820409840
       }
     ]
   }
