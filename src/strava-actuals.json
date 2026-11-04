@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-03T12:36:22.210Z",
+  "updatedAt": "2026-11-04T12:45:55.446Z",
   "ytd": {
     "swim": {
       "count": 42,
@@ -7,9 +7,9 @@
       "km": 67.5
     },
     "bike": {
-      "count": 62,
-      "min": 4814,
-      "km": 2135.6
+      "count": 63,
+      "min": 4900,
+      "km": 2175.6
     },
     "run": {
       "count": 78,
@@ -2065,6 +2065,15 @@
         "durationMin": 36,
         "distanceKm": 2,
         "stravaId": 20837408975
+      }
+    ],
+    "2026-11-03": [
+      {
+        "type": "bike",
+        "label": "Quickie - all uphill home 🌋😮‍💨",
+        "durationMin": 86,
+        "distanceKm": 40,
+        "stravaId": 20851026216
       }
     ]
   }
