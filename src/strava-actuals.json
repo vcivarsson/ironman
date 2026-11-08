@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-07T11:30:08.381Z",
+  "updatedAt": "2026-11-08T11:40:37.969Z",
   "ytd": {
     "swim": {
       "count": 42,
@@ -7,9 +7,9 @@
       "km": 67.5
     },
     "bike": {
-      "count": 63,
-      "min": 4900,
-      "km": 2175.6
+      "count": 64,
+      "min": 5106,
+      "km": 2275.7
     },
     "run": {
       "count": 78,
@@ -2083,6 +2083,15 @@
         "durationMin": 24,
         "distanceKm": 0,
         "stravaId": 20868811471
+      }
+    ],
+    "2026-11-07": [
+      {
+        "type": "bike",
+        "label": "Last 100k before Ironman 🇲🇽🌋",
+        "durationMin": 206,
+        "distanceKm": 100.1,
+        "stravaId": 20899792509
       }
     ]
   }
