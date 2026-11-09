@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-08T11:40:37.969Z",
+  "updatedAt": "2026-11-09T13:36:28.692Z",
   "ytd": {
     "swim": {
       "count": 42,
@@ -12,9 +12,9 @@
       "km": 2275.7
     },
     "run": {
-      "count": 78,
-      "min": 3498,
-      "km": 606.4
+      "count": 79,
+      "min": 3647,
+      "km": 631.4
     },
     "other": {
       "count": 59,
@@ -2092,6 +2092,15 @@
         "durationMin": 206,
         "distanceKm": 100.1,
         "stravaId": 20899792509
+      }
+    ],
+    "2026-11-08": [
+      {
+        "type": "run",
+        "label": "Peak week wrapped up 🌋🇲🇽",
+        "durationMin": 149,
+        "distanceKm": 25,
+        "stravaId": 20913293354
       }
     ]
   }
