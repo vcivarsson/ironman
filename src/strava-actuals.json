@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-14T11:55:46.650Z",
+  "updatedAt": "2026-11-15T12:28:49.874Z",
   "ytd": {
     "swim": {
       "count": 42,
@@ -17,8 +17,8 @@
       "km": 631.4
     },
     "other": {
-      "count": 59,
-      "min": 2937,
+      "count": 60,
+      "min": 2958,
       "km": 167.5
     }
   },
@@ -2101,6 +2101,15 @@
         "durationMin": 149,
         "distanceKm": 25,
         "stravaId": 20913293354
+      }
+    ],
+    "2026-11-14": [
+      {
+        "type": "other",
+        "label": "Stretch + Legs",
+        "durationMin": 21,
+        "distanceKm": 0,
+        "stravaId": 20986262864
       }
     ]
   }
