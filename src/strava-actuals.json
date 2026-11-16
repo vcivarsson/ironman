@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-15T12:28:49.874Z",
+  "updatedAt": "2026-11-16T13:20:42.189Z",
   "ytd": {
     "swim": {
       "count": 42,
@@ -12,9 +12,9 @@
       "km": 2275.7
     },
     "run": {
-      "count": 79,
-      "min": 3647,
-      "km": 631.4
+      "count": 80,
+      "min": 3688,
+      "km": 638.4
     },
     "other": {
       "count": 60,
@@ -2110,6 +2110,15 @@
         "durationMin": 21,
         "distanceKm": 0,
         "stravaId": 20986262864
+      }
+    ],
+    "2026-11-15": [
+      {
+        "type": "run",
+        "label": "Maintenance run. 7 days to Ironman",
+        "durationMin": 41,
+        "distanceKm": 7,
+        "stravaId": 21002215108
       }
     ]
   }
