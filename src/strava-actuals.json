@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-16T13:20:42.189Z",
+  "updatedAt": "2026-11-17T14:05:41.845Z",
   "ytd": {
     "swim": {
       "count": 42,
@@ -17,8 +17,8 @@
       "km": 638.4
     },
     "other": {
-      "count": 60,
-      "min": 2958,
+      "count": 61,
+      "min": 2980,
       "km": 167.5
     }
   },
@@ -2119,6 +2119,15 @@
         "durationMin": 41,
         "distanceKm": 7,
         "stravaId": 21002215108
+      }
+    ],
+    "2026-11-16": [
+      {
+        "type": "other",
+        "label": "Light legs / mobility. 6 days to Ironman",
+        "durationMin": 22,
+        "distanceKm": 0,
+        "stravaId": 21021105589
       }
     ]
   }
