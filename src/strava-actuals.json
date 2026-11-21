@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-20T13:49:03.989Z",
+  "updatedAt": "2026-11-21T13:14:10.775Z",
   "ytd": {
     "swim": {
       "count": 42,
@@ -7,9 +7,9 @@
       "km": 67.5
     },
     "bike": {
-      "count": 64,
-      "min": 5106,
-      "km": 2275.7
+      "count": 65,
+      "min": 5140,
+      "km": 2290.1
     },
     "run": {
       "count": 80,
@@ -2128,6 +2128,15 @@
         "durationMin": 22,
         "distanceKm": 0,
         "stravaId": 21021105589
+      }
+    ],
+    "2026-11-20": [
+      {
+        "type": "bike",
+        "label": "Lil warmup ride before Ironman Cozumel",
+        "durationMin": 34,
+        "distanceKm": 14.4,
+        "stravaId": 21062188512
       }
     ]
   }
